@@ -19,3 +19,6 @@ coverage/
 
 # Appwrite Function secrets
 backend/functions/*/.env
+
+# Python
+__pycache__/
