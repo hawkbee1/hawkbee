@@ -1,0 +1,34 @@
+{
+    "projectId": "hawkbee",
+    "projectName": "Hawkbee",
+    "endpoint": "http://appwrite-traefik/v1",
+    "tablesDB": [
+        {
+            "$id": "hawkbee",
+            "name": "Hawkbee",
+            "enabled": true
+        }
+    ],
+    "tables": [],
+    "buckets": [],
+    "teams": [],
+    "topics": [],
+    "functions": [
+        {
+            "$id": "ping",
+            "name": "ping",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/ping"
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+name: ping
+description: Health-check Appwrite Function. Execute it after a deploy to prove the Dart runtime and the vendored hawkbee_schema work.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Vendored copy of packages/hawkbee_schema, refreshed by `melos run backend:vendor`.
+  hawkbee_schema:
+    path: vendor/hawkbee_schema
+
+dev_dependencies:
+  test: ^1.31.0
+  very_good_analysis: ^11.0.0

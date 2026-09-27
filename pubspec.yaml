@@ -2,9 +2,13 @@ name: hawkbee_workspace
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.13.0
 
-workspace: []
+workspace:
+  - apps/hawkbee
+  - packages/appwrite_api_client
+  - packages/backend_status_repository
+  - packages/hawkbee_schema
 
 dev_dependencies:
   melos: ^8.2.2
@@ -30,3 +34,26 @@ melos:
       packageFilters:
         dirExists: test
       description: Run tests in all packages that have a test directory.
+
+    # Appwrite Functions live outside the pub workspace: the CLI uploads only
+    # the function's folder, so each one resolves its own dependencies and
+    # gets a vendored copy of hawkbee_schema.
+    backend:vendor:
+      run: dart run tool/vendor_schema.dart
+      description: Copy hawkbee_schema into every Dart function under backend/functions.
+
+    backend:vendor:check:
+      run: dart run tool/vendor_schema.dart && git diff --exit-code -- backend/functions && test -z "$(git status --porcelain -- backend/functions)"
+      description: Fail if a function's vendored hawkbee_schema is out of date (run in CI).
+
+    backend:analyze:
+      run: dart run tool/vendor_schema.dart --pub-get && dart analyze --fatal-infos backend/functions
+      description: Vendor hawkbee_schema, then analyze the Appwrite Functions.
+
+    backend:test:
+      run: dart run tool/vendor_schema.dart --pub-get && for f in backend/functions/*/; do (cd "$f" && dart test) || exit 1; done
+      description: Vendor hawkbee_schema, then run each function's tests.
+
+    backend:deploy:
+      run: dart run tool/vendor_schema.dart && cd backend && appwrite push all --all --force
+      description: Vendor hawkbee_schema and push the backend (settings, tables, functions) to the selected Appwrite project.

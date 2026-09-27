@@ -1,0 +1,8 @@
+{
+    "@@locale": "es",
+    "appTitle": "Hawkbee",
+    "backendStatusChecking": "Contactando con Appwrite…",
+    "backendStatusReachable": "Conectado a Appwrite",
+    "backendStatusUnreachable": "No se puede contactar con Appwrite",
+    "backendStatusRetryButton": "Comprobar de nuevo"
+}

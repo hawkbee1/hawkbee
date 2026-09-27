@@ -13,3 +13,9 @@ pubspec_overrides.yaml
 
 # OS
 .DS_Store
+
+# Tests
+coverage/
+
+# Appwrite Function secrets
+backend/functions/*/.env

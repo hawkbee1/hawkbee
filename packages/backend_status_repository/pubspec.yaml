@@ -1,0 +1,21 @@
+name: backend_status_repository
+description: Repository that reports whether the Appwrite backend is reachable.
+version: 0.1.0+1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+  flutter: ^3.47.0
+
+dependencies:
+  appwrite_api_client:
+    path: ../appwrite_api_client
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.5
+  very_good_analysis: ^11.0.0
