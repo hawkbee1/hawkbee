@@ -48,6 +48,7 @@ to host several apps and an Appwrite backend.
 ```
 hawkbee/
 ├── apps/
+│   ├── battle_team/               # very_good create flame_game (first game)
 │   ├── <game_name>/               # very_good create flame_game
 │   └── <app_name>/                # very_good create flutter_app
 │       └── lib/

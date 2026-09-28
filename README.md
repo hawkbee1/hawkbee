@@ -9,6 +9,7 @@ Very Good Ventures layered architecture. See
 
 ```
 apps/hawkbee/                       Flutter app (flavors: development, staging, production)
+apps/battle_team/                   Flame game, same flavors, same Appwrite project
 packages/
   hawkbee_schema/                   pure Dart · Appwrite resource IDs, row models (shared with functions)
   appwrite_api_client/              Flutter · the only package importing package:appwrite
@@ -58,8 +59,10 @@ Prerequisite: the Appwrite CLI (`npm install -g appwrite-cli`).
    `env/development.json` and `hawkbee_schema`. If you pick another ID,
    update all three.
 2. **Register platforms** (Overview → Add platform), one per flavor:
-   - Android: `com.hawkbee.hawkbee.dev`, `com.hawkbee.hawkbee.stg`, `com.hawkbee.hawkbee`
+   - Android: `com.hawkbee.hawkbee` and `com.hawkbee.battle_team`, each also
+     with `.dev` and `.stg` suffixes
    - iOS / macOS: the bundle IDs set in Xcode for each flavor
+     (`com.hawkbee.hawkbee…`, `com.hawkbee.battle-team…`)
    - Web: `localhost` (and the laptop's LAN IP when testing from phones)
 3. **Point the CLI at the server and log in** (from `backend/`):
    ```sh
@@ -77,8 +80,10 @@ Prerequisite: the Appwrite CLI (`npm install -g appwrite-cli`).
 6. **Verify the app:** set `APPWRITE_ENDPOINT` in `env/development.json` for
    the device you run on (see the endpoint table in
    [docs/project-setup.md](docs/project-setup.md#which-appwrite-url-to-use-from-where)),
-   then run it (see [apps/hawkbee/README.md](apps/hawkbee/README.md)). The
-   home screen shows "Connected to Appwrite" or the error returned.
+   then run an app (see [apps/hawkbee/README.md](apps/hawkbee/README.md) and
+   [apps/battle_team/README.md](apps/battle_team/README.md)). Hawkbee's home
+   screen and Battle Team's title screen show "Connected to Appwrite" or the
+   error returned.
 
 For Appwrite Cloud (staging, production), fill in `env/staging.json` and
 `env/production.json`, and push the same config with
