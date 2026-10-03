@@ -197,9 +197,8 @@ When you intentionally change a golden or a 3D baseline, regenerate it
 
    ## Notes for the next session
    - …
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
    ```
    Report failing or skipped checks **honestly** in the table. Never mark something ✅
-   that you did not run.
+   that you did not run. **No "Generated with Claude Code" footer or any other AI
+   attribution** in PR descriptions, PR comments or commits (owner preference).
 4. Do **not** merge the PRs yourself. The owner reviews and merges.
