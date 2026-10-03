@@ -1,0 +1,137 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "battle_team (debug)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/battle_team/lib/main_development.dart",
+            "cwd": "apps/battle_team",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        },
+        {
+            "name": "battle_team (profile)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "profile",
+            "program": "apps/battle_team/lib/main_development.dart",
+            "cwd": "apps/battle_team",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        },
+        {
+            "name": "battle_team (release)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "release",
+            "program": "apps/battle_team/lib/main_development.dart",
+            "cwd": "apps/battle_team",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        },
+        {
+            "name": "dart_code_3d (debug)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/dart_code_3d/lib/main_development.dart",
+            "cwd": "apps/dart_code_3d",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart"
+            ]
+        },
+        {
+            "name": "dart_code_3d (profile)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "profile",
+            "program": "apps/dart_code_3d/lib/main_development.dart",
+            "cwd": "apps/dart_code_3d",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart"
+            ]
+        },
+        {
+            "name": "dart_code_3d (release)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "release",
+            "program": "apps/dart_code_3d/lib/main_development.dart",
+            "cwd": "apps/dart_code_3d",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart"
+            ]
+        },
+        {
+            "name": "hawkbee (debug)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/hawkbee/lib/main_development.dart",
+            "cwd": "apps/hawkbee",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        },
+        {
+            "name": "hawkbee (profile)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "profile",
+            "program": "apps/hawkbee/lib/main_development.dart",
+            "cwd": "apps/hawkbee",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        },
+        {
+            "name": "hawkbee (release)",
+            "type": "dart",
+            "request": "launch",
+            "flutterMode": "release",
+            "program": "apps/hawkbee/lib/main_development.dart",
+            "cwd": "apps/hawkbee",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json"
+            ]
+        }
+    ]
+}
