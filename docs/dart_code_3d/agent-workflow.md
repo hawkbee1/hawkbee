@@ -160,7 +160,9 @@ When you intentionally change a golden or a 3D baseline, regenerate it
    # then hawkbee (submodule pointers bumped to the pushed commits)
    git push -u origin dc3d/sNN-<slug>
    gh pr create --base main --title "dc3d sNN: <title>" --body-file <tmpfile>
-   # finally edit each sub-repository PR body to link the hawkbee PR (gh pr edit)
+   # finally edit each sub-repository PR body to link the hawkbee PR. `gh pr edit` fails
+   # on these repos (GraphQL "Projects (classic) is being deprecated"), so use REST:
+   gh api -X PATCH repos/hawkbee1/<name>/pulls/<n> -F body=@<tmpfile>
    ```
    hawkbee PR body template:
    ```markdown
