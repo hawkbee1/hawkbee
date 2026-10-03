@@ -10,3 +10,6 @@
 [submodule "packages/code_source_client"]
 	path = packages/code_source_client
 	url = https://github.com/hawkbee1/code_source_client.git
+[submodule "packages/code_analysis_engine"]
+	path = packages/code_analysis_engine
+	url = https://github.com/hawkbee1/code_analysis_engine.git
