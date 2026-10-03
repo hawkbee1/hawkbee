@@ -82,9 +82,13 @@ New-package pitfalls (found in session 03):
 - **Fix the template's dependency constraints** or `flutter pub get` fails for the whole
   workspace: `test: ^1.31.0` (Flutter pins `test_api`, `^1.32.0` does not resolve) and
   `equatable: ^3.0.0` (the other packages use 3.x).
-- Dart 3.13 style: write constructors as `const new(...)` and named ones as
-  `factory fromJson(...)`; `dart fix --apply --code=unnecessary_type_name_in_constructor`
-  converts them.
+- Dart 3.13 style: write constructors as `const new(...)`, named generative ones as
+  `new named(...)` (**a space, not a dot**: `new._(…)` is a syntax error, write
+  `new _(…)`), and factories as `factory fromJson(...)`;
+  `dart fix --apply --code=unnecessary_type_name_in_constructor` converts them.
+- **Coverage of `props` and the `const` trap**: two identical `const` instances are the
+  same object, so an Equatable comparison of them never calls `props`, and coverage stays
+  below 100%. Compare instances built at runtime, or call `.props` directly.
 - The VGV hook scans **every line** of a Bash command, heredoc content included, so
   writing a file that contains `very_good test` or `flutter test` through `cat <<EOF`
   is denied. Use the Write tool for such files.

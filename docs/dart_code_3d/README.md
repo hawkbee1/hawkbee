@@ -55,7 +55,7 @@ session, unless the dependency table below says they are independent.
 | 02 | [Visual test harness (2D goldens + 3D screenshots)](sessions/02-visual-test-harness.md) | 01 | PR open hawkbee#2, dart_code_3d#2 |
 | 03 | [`code_graph`: model + `.fscene` codec](sessions/03-code-graph-model-and-fscene-codec.md) | 01 | PR open hawkbee#3, code_graph#1 (stacked on 02) |
 | 04 | [`code_source_client`: folder / zip / public git](sessions/04-code-source-client.md) | 03 | PR open hawkbee#4, code_source_client#1 (stacked on 03) |
-| 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | todo |
+| 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | PR open (stacked on 04) |
 | 06 | [Engine 2: reference resolution and links](sessions/06-engine-resolution-and-links.md) | 05 | todo |
 | 07 | [Engine 3: CLI, performance, isolates, AltMe](sessions/07-engine-cli-performance.md) | 06 | todo |
 | 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | todo |
