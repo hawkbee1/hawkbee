@@ -58,7 +58,7 @@ session, unless the dependency table below says they are independent.
 | 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | PR open hawkbee#5, code_analysis_engine#1 (stacked on 04) |
 | 06 | [Engine 2: reference resolution and links](sessions/06-engine-resolution-and-links.md) | 05 | PR open hawkbee#6, code_analysis_engine#2 (stacked on 05) |
 | 07 | [Engine 3: CLI, performance, isolates, AltMe](sessions/07-engine-cli-performance.md) | 06 | PR open hawkbee#7, code_analysis_engine#3 (stacked on 06) |
-| 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | PR open (stacked on 07) |
+| 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | PR open hawkbee#8, code_layout#1 (stacked on 07) |
 | 09 | [`code_map_repository`: orchestration, save/open/share](sessions/09-code-map-repository.md) | 04, 07, 08 | todo |
 | 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | todo |
 | 11 | [Viewer foundation: load, instanced spheres, entry point](sessions/11-viewer-foundation.md) | 02, 03, 08, 10 | todo |
