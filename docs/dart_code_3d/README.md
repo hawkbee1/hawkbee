@@ -27,15 +27,22 @@ session, unless the dependency table below says they are independent.
 
 ## Prerequisites (owner, once)
 
-- [ ] Merge `init-appwrite-project` into `main` (sessions branch from `main`).
-- [ ] Add to the `factory1` container image (needed for Linux builds and 3D visual tests,
-      sessions 01–02):
-      `clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev xvfb libgl1-mesa-dri libegl-mesa0 libgles2 mesa-vulkan-drivers`
+- [x] Merge `init-appwrite-project` into `main` (done 2026-10-03; sessions branch from `main`).
+- [x] Linux desktop toolchain + Xvfb + Mesa installed in the **running** `factory1`
+      container (2026-10-03). Verified: `flutter doctor` Linux toolchain ✓, and
+      flutter_scene's own smoke-render test passes under Xvfb with llvmpipe (a lit cube
+      is captured). **To survive a container rebuild, add this to the `factory1` image:**
+      ```dockerfile
+      RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+          clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev \
+          xvfb libgl1-mesa-dri libegl-mesa0 libgles2 mesa-vulkan-drivers mesa-utils \
+          && rm -rf /var/lib/apt/lists/*
+      ```
       (+ the Node 22 / appwrite-cli items already listed in `docs/project-setup.md` §8).
-- [ ] During session 01, run the one `flutter create --platforms=linux` command the agent
-      gives you (the VGV hook blocks it for agents).
-- [ ] Optional: Android SDK in the container for Android builds; phones/browser for the
-      performance numbers requested in sessions 11 and 16.
+- [x] Linux platform for the VGV app: `tool/add_linux_platform.sh` copies Flutter's Linux
+      runner template, so no `flutter create` is needed (tested with a real build).
+- [ ] Optional: phones/browser for the performance numbers requested in sessions 11
+      and 16. The Android SDK is already in the container.
 
 ## Sessions
 

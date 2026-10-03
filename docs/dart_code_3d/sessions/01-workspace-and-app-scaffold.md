@@ -54,12 +54,13 @@ Very Good CLI MCP `create` tool:
 
 - Check `apps/dart_code_3d/pubspec.yaml` has `resolution: workspace`, and add
   `apps/dart_code_3d` to `workspace:` in the root `pubspec.yaml`.
-- The template has no **Linux** platform. Ask the owner to run (hooks block it for you):
+- The template has no **Linux** platform, and the VGV hook blocks `flutter create`.
+  Add it with the repo script, which copies Flutter's own Linux runner template
+  (tested: the result builds):
+  ```bash
+  tool/add_linux_platform.sh apps/dart_code_3d dart_code_3d com.hawkbee.dart_code_3d
   ```
-  ! cd /volume/hawkbee/apps/dart_code_3d && flutter create --platforms=linux --org com.hawkbee --project-name dart_code_3d .
-  ```
-  Then `git status`: **delete** any file `flutter create` added outside `linux/`
-  (typically `lib/main.dart`, `test/widget_test.dart`) so the VGV structure stays intact.
+  It creates only `apps/dart_code_3d/linux/` and refuses to run if that folder exists.
 - Run `flutter pub get` at the root. Commit.
 
 ### 4. Add flutter_scene
@@ -106,10 +107,10 @@ pubspec `flutter: assets:` entry, installed skills). Read the installed
 ### 7. Verify
 
 - `flutter build web --release -t lib/main_development.dart` succeeds.
-- `flutter build linux -t lib/main_development.dart` succeeds (needs clang, ninja,
-  GTK dev headers. If they are missing, stop and ask the owner to add them to the
-  container image: `clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
-  xvfb libgl1-mesa-dri libegl-mesa0 libgles2 mesa-vulkan-drivers`).
+- `flutter build linux -t lib/main_development.dart` succeeds. It needs clang, ninja,
+  GTK dev headers, Xvfb and Mesa, which were installed on 2026-10-03. If the container
+  was recreated and they are missing (`which clang xvfb-run`), stop and ask the owner
+  (see README "Prerequisites").
 - `flutter build apk --debug --flavor development -t lib/main_development.dart`
   succeeds if the Android SDK is present; otherwise note it in the PR.
 - Unit/widget tests: update the template tests to the new viewer page (the

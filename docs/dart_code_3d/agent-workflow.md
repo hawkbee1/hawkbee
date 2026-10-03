@@ -45,8 +45,9 @@ ask the user** rather than guessing. Guesses cost more to undo than questions.
 - `flutter drive` (3D visual tests) runs through `tool/visual_test.sh` (from session 02 on).
 - No Docker socket. No `sudo` (denied). If a system package is missing (Xvfb, clang,
   ninja, GTK, Mesa), stop and ask the user to add it to the container image.
-- If you need the user to run a command the hooks block (e.g. `flutter create
-  --platforms=linux .`), ask them to type it with the `!` prefix.
+- If you need the user to run a command the hooks block, ask them to type it with the
+  `!` prefix. Never try to get around a hook. (Adding the Linux platform needs no
+  `flutter create`: use `tool/add_linux_platform.sh`.)
 
 ## 3. While working
 
