@@ -1,0 +1,26 @@
+{
+    "permissions": {
+        "defaultMode": "acceptEdits",
+        "allow": [
+            "Read",
+            "Edit",
+            "Write",
+            "Glob",
+            "Grep",
+            "Bash(flutter:*)",
+            "Bash(dart:*)",
+            "Bash(melos:*)",
+            "Bash(git:*)",
+            "Bash(make:*)",
+            "Bash(npm:*)",
+            "Bash(docker:*)",
+            "WebFetch",
+            "WebSearch",
+            "mcp__*"
+        ],
+        "deny": [
+            "Bash(sudo:*)",
+            "Bash(rm -rf:*)"
+        ]
+    }
+}
