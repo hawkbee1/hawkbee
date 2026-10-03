@@ -12,6 +12,11 @@ workspace:
   - packages/backend_status_repository
   - packages/hawkbee_schema
 
+# flutter_scene (submodule) and our code_graph must share the same local `scene`.
+dependency_overrides:
+  scene:
+    path: packages/flutter_scene/packages/scene
+
 dev_dependencies:
   melos: ^8.2.2
 
