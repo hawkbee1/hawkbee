@@ -1,0 +1,6 @@
+[submodule "packages/flutter_scene"]
+	path = packages/flutter_scene
+	url = https://github.com/bdero/flutter_scene.git
+[submodule "apps/dart_code_3d"]
+	path = apps/dart_code_3d
+	url = https://github.com/hawkbee1/dart_code_3d.git

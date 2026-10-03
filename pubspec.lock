@@ -213,10 +213,10 @@ packages:
     dependency: transitive
     description:
       name: code_assets
-      sha256: "828110d598123b5ea96c00c9f3c72105bf79f8ee36c20a39b26209ade421ec57"
+      sha256: bf394f466ba9205f1812a0433b392d6af280f155f56651eda7c18cc32ed493b8
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "1.2.1"
   collection:
     dependency: transitive
     description:
@@ -281,6 +281,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.13"
+  data_assets:
+    dependency: transitive
+    description:
+      name: data_assets
+      sha256: "8bfdbf25ec8a0f4b5a3c993042c4ab9996ba354f0b03d40f4e360f3730d71cae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.0"
   desktop_webview_window:
     dependency: transitive
     description:
@@ -393,6 +401,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  flat_buffers:
+    dependency: transitive
+    description:
+      name: flat_buffers
+      sha256: "7c1de2d6eb5f3e61e5c50040841109f509deaaf2b12ec0d57b92456d9ea50345"
+      url: "https://pub.dev"
+    source: hosted
+    version: "25.9.23"
   flutter:
     dependency: transitive
     description: flutter
@@ -406,11 +422,31 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.1"
+  flutter_gpu:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  flutter_gpu_shaders:
+    dependency: transitive
+    description:
+      name: flutter_gpu_shaders
+      sha256: "1e8c5438c24e79629f5688c7b5dfd2b7cf09b36b443a806bc8c083cd8c04644a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.2"
   flutter_localizations:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_scene:
+    dependency: transitive
+    description:
+      path: "packages/flutter_scene/packages/flutter_scene"
+      relative: true
+    source: path
+    version: "0.23.0"
   flutter_test:
     dependency: transitive
     description: flutter
@@ -501,6 +537,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      sha256: a1e7f4951e538a568e14b856702afc9ae1d2f4b202daced8d22c1b9cd211ce89
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.10.1"
   intl:
     dependency: transitive
     description:
@@ -705,10 +749,10 @@ packages:
     dependency: transitive
     description:
       name: objective_c
-      sha256: ad56fd53a78ff6b1472fa59ff2a4e8b8ccabafc586fc263a1dfad0b99b5553e3
+      sha256: b7fb95a6d9a4f009edd63dc5ac69f07420b23a16161c6dd8660290b59c602e8e
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.0"
+    version: "9.5.0"
   ordered_set:
     dependency: transitive
     description:
@@ -901,6 +945,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  scene:
+    dependency: "direct overridden"
+    description:
+      path: "packages/flutter_scene/packages/scene"
+      relative: true
+    source: path
+    version: "0.3.0"
   shelf:
     dependency: transitive
     description:
@@ -1236,4 +1287,4 @@ packages:
     version: "2.2.4"
 sdks:
   dart: ">=3.13.0 <4.0.0"
-  flutter: ">=3.47.0 <4.0.0"
+  flutter: ">=3.47.1 <4.0.0"

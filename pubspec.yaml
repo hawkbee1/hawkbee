@@ -6,10 +6,16 @@ environment:
 
 workspace:
   - apps/battle_team
+  - apps/dart_code_3d
   - apps/hawkbee
   - packages/appwrite_api_client
   - packages/backend_status_repository
   - packages/hawkbee_schema
+
+# flutter_scene (submodule) and our code_graph must share the same local `scene`.
+dependency_overrides:
+  scene:
+    path: packages/flutter_scene/packages/scene
 
 dev_dependencies:
   melos: ^8.2.2
@@ -24,9 +30,11 @@ melos:
         concurrency: 1
       description: Run dart analyze in all packages.
 
+    # Lists our own code explicitly so third-party submodules (packages/flutter_scene)
+    # are never formatted. Add every new app or package of ours here.
     format:
-      run: dart format --set-exit-if-changed .
-      description: Check formatting across the workspace.
+      run: dart format --set-exit-if-changed apps/hawkbee apps/battle_team apps/dart_code_3d packages/appwrite_api_client packages/backend_status_repository packages/hawkbee_schema tool backend
+      description: Check formatting of our own code (not third-party submodules).
 
     test:
       exec:

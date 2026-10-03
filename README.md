@@ -10,7 +10,9 @@ Very Good Ventures layered architecture. See
 ```
 apps/hawkbee/                       Flutter app (flavors: development, staging, production)
 apps/battle_team/                   Flame game, same flavors, same Appwrite project
+apps/dart_code_3d/                  submodule (hawkbee1/dart_code_3d) · 3D code map viewer, see docs/dart_code_3d/
 packages/
+  flutter_scene/                    submodule (bdero/flutter_scene @ 0.23.0) · 3D engine, read-only
   hawkbee_schema/                   pure Dart · Appwrite resource IDs, row models (shared with functions)
   appwrite_api_client/              Flutter · the only package importing package:appwrite
   backend_status_repository/        repository · "is the backend reachable?"
@@ -29,7 +31,14 @@ own dependencies and ships a committed copy of `hawkbee_schema` under
 
 ## Getting started
 
+Some apps and packages are git submodules (see `.gitmodules`), so clone with
+submodules:
+
 ```sh
+git clone --recurse-submodules https://github.com/hawkbee1/hawkbee.git
+# or, in an existing clone:
+git submodule update --init --recursive
+
 dart pub get
 ```
 
