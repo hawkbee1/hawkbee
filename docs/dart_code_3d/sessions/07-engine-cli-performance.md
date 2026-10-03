@@ -17,8 +17,9 @@ per stage, batching and progress, and a run on **AltMe** (the scale reference) a
 dart run code_analysis_engine:analyze <folder> [--rules rules.json] [--out graph.json] [--stats]
 ```
 
-- Uses a CLI-only `SourceSnapshot` reading from disk (`bin/` may import `dart:io`;
-  `lib/` may not).
+- Reads the folder with `CodeSourceClient().fetch(LocalFolderSource(path))` from
+  `code_source_client` (no need for a CLI-only snapshot). `bin/` may import `dart:io`;
+  `lib/` may not.
 - `--stats` prints: files kept/skipped, parse errors, nodes per kind, links per kind ×
   resolution, duration per stage, peak RSS (`ProcessInfo.maxRss`).
 - `--out` writes the `CodeGraph` as JSON (debug format, not the `.fscene`; layout comes later).

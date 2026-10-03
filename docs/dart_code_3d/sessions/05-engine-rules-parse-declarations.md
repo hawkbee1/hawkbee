@@ -77,7 +77,9 @@ or `AnalysisFailed(error)`. Check `cancel` between files.
 
 Create `test/fixtures/` with **small hand-written projects**, each with an
 `expected.json` describing the exact expected nodes (ids, kinds, parents, loc).
-Write a test helper that loads a fixture folder into an in-memory `SourceSnapshot`.
+Write a test helper that loads a fixture folder into an in-memory `SourceSnapshot`
+(`MemorySnapshot` from `code_source_client`; reading a folder from disk:
+`CodeSourceClient().fetch(LocalFolderSource(path))`).
 
 | Fixture | Covers |
 |---|---|

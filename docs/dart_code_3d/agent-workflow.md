@@ -89,6 +89,12 @@ New-package pitfalls (found in session 03):
   writing a file that contains `very_good test` or `flutter test` through `cat <<EOF`
   is denied. Use the Write tool for such files.
 - The MCP `test` tool rejects `timeout_seconds` together with `dart: true`.
+- Very Good CLI merges test files into one, which **drops library-level `@Tags`**. A file
+  with its own tags (e.g. opt-in `network` tests) also needs the
+  `skip_very_good_optimization` tag, declared in `dart_test.yaml` (see
+  `code_source_client`).
+- A description containing `:` breaks the generated `pubspec.yaml` (the create tool fails
+  with a YAML error). Quote it, or avoid colons.
 
 ### Branches, commits and PRs across repositories
 
