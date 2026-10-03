@@ -54,6 +54,12 @@ few draws, per the flutter_scene performance skill).
     keep post-processing minimal (performance skill step 4).
 - Camera: `PerspectiveCamera` positioned at `entryPosition + (0, r, 3r)` looking at the
   entry node (r = its radius, with sensible minimum). No navigation yet (session 12).
+  **Adapt the field of view to the aspect ratio.** `PerspectiveCamera.fovRadiansY` is a
+  *vertical* FOV (45° by default), so on a portrait phone the scene gets cropped left and
+  right. Session 02's `sphere/phone_*` baselines show it: the sphere fills the width.
+  Keep a minimum *horizontal* FOV (e.g. ~60°) by computing
+  `fovY = 2·atan(tan(fovX/2) / aspect)` when the view is taller than wide, and add the
+  phone-size captures to the visual tests to prove it.
 - Debug overlay (development flavor, toggle with F3): fps, frame build/raster times
   (`SchedulerBinding.addTimingsCallback`), instance count, draw count if available.
 

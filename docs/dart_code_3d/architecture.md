@@ -390,7 +390,8 @@ individually raycastable).
   **3 sizes** (phone 390×844, tablet 820×1180, desktop 1440×900, logical pixels,
   device pixel ratio 1) in **light and dark** themes, with **real fonts loaded**
   (not the Ahem test font), so a human can read the screenshots and judge the UX.
-  They live in `test/goldens/` next to the feature tests.
+  Write them with `goldenTest()` (`test/helpers/goldens.dart`); the images land in
+  `goldens/<name>/<device>_<theme>[_<locale>].png` next to the test file.
 - **3D visual tests** (`integration_test`, Linux desktop under Xvfb with software
   rendering): fixed scenes and fixed camera paths captured at the same 3 sizes,
   compared to committed baselines in `apps/dart_code_3d/visual_baselines/` with a

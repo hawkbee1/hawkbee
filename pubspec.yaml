@@ -44,6 +44,10 @@ melos:
         dirExists: test
       description: Run tests in all packages that have a test directory.
 
+    visual:test:
+      run: tool/visual_test.sh
+      description: dart_code_3D 3D visual tests (Linux desktop under Xvfb). Add --update to refresh baselines.
+
     # Appwrite Functions live outside the pub workspace: the CLI uploads only
     # the function's folder, so each one resolves its own dependencies and
     # gets a vendored copy of hawkbee_schema.
