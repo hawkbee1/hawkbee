@@ -9,8 +9,8 @@ pubspec_overrides.yaml
 # IDE
 .idea/
 *.iml
-.vscode/*
-!.vscode/launch.json
+**/.vscode/*
+!/.vscode/launch.json
 
 # OS
 .DS_Store
