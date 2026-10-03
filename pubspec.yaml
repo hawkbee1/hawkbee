@@ -6,6 +6,7 @@ environment:
 
 workspace:
   - apps/battle_team
+  - apps/dart_code_3d
   - apps/hawkbee
   - packages/appwrite_api_client
   - packages/backend_status_repository
