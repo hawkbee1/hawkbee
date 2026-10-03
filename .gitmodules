@@ -7,3 +7,6 @@
 [submodule "packages/code_graph"]
 	path = packages/code_graph
 	url = https://github.com/hawkbee1/code_graph.git
+[submodule "packages/code_source_client"]
+	path = packages/code_source_client
+	url = https://github.com/hawkbee1/code_source_client.git
