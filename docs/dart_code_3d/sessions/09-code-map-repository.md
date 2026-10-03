@@ -9,7 +9,7 @@ The repository the app's blocs talk to. It chains **fetch → analyze → layout
 encode** with one progress stream, handles cancellation and cleanup, and stores,
 opens and lists code maps.
 
-## Create the package
+## Create the package (own repository + submodule: `agent-workflow.md` §2 procedure)
 
 `dart_package` `code_map_repository` in `packages/` (pure Dart), `workspace: true`,
 wired. Dependencies: `code_source_client`, `code_analysis_engine`, `code_layout`,

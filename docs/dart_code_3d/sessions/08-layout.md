@@ -9,7 +9,7 @@
 A pure-Dart, **deterministic** package that computes a `Placement` (position relative
 to the parent centre + radius) for every node of a `CodeGraph`, producing a `CodeMap`.
 
-## Create the package
+## Create the package (own repository + submodule: `agent-workflow.md` §2 procedure)
 
 `dart_package` `code_layout` in `packages/`, `workspace: true`, wired. Dependencies:
 `code_graph`, `vector_math` (`package:vector_math/vector_math.dart`), `meta`.

@@ -61,7 +61,13 @@ Very Good CLI MCP `create` tool:
   tool/add_linux_platform.sh apps/dart_code_3d dart_code_3d com.hawkbee.dart_code_3d
   ```
   It creates only `apps/dart_code_3d/linux/` and refuses to run if that folder exists.
-- Run `flutter pub get` at the root. Commit.
+- Run `flutter pub get` at the root.
+- Make the app its **own public repository** `hawkbee1/dart_code_3d` and add it to
+  hawkbee as a submodule at `apps/dart_code_3d`, following the procedure in
+  `agent-workflow.md` §2 (`git init` → `gh repo create --public --source=. --push` →
+  merge-commit-only settings → `git submodule add`). Its README gets the "Part of hawkbee"
+  section. From here on, app changes are committed **inside** `apps/dart_code_3d` on
+  branch `dc3d/s01-workspace`, and hawkbee commits only bump the pointer.
 
 ### 4. Add flutter_scene
 
@@ -120,6 +126,7 @@ pubspec `flutter: assets:` entry, installed skills). Read the installed
 ## Acceptance criteria
 
 - [ ] `git submodule status` shows `packages/flutter_scene` at `0dc6ee8` (tag `flutter_scene-0.23.0`).
+- [ ] `apps/dart_code_3d` is a submodule pointing to the public repo `hawkbee1/dart_code_3d` (merge commits only), with a "Part of hawkbee" README section; one PR there + one PR in hawkbee.
 - [ ] `melos run format`, `melos run analyze` and `melos run test` do not touch the submodule and pass.
 - [ ] `apps/dart_code_3d` builds for web and Linux. A sphere renders (screenshot from
       the web build via the owner's browser, or from session 02's harness, attached to the PR).

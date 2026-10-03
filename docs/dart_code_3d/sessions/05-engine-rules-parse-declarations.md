@@ -10,7 +10,7 @@ Create `code_analysis_engine` and implement pipeline stages **1–4 and 7** (col
 parse, declarations, containment, metrics). The output is a `CodeGraph` with every
 node and the containment tree, but **no call links yet** (session 06).
 
-## Create the package
+## Create the package (own repository + submodule: `agent-workflow.md` §2 procedure)
 
 `dart_package` `code_analysis_engine` in `packages/`, `workspace: true`, wired into
 the workspace and the melos format list. Dependencies: `analyzer` (latest

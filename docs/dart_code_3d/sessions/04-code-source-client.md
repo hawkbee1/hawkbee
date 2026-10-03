@@ -10,7 +10,7 @@ repository URL) into a **`SourceSnapshot`**: a read-only set of files in a tempo
 folder (native) or in memory (web). Getting the code is **separated** from analyzing
 it: the engine only ever sees a `SourceSnapshot`.
 
-## Create the package
+## Create the package (own repository + submodule: `agent-workflow.md` §2 procedure)
 
 `dart_package` named `code_source_client` in `packages/`, `workspace: true`.
 Add it to the root workspace and the melos format list. Dependencies: `http`,

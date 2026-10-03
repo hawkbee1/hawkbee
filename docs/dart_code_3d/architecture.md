@@ -129,6 +129,13 @@ hawkbee/
 Package names are **lowercase snake_case** (Dart requires it): the app is
 `dart_code_3d`, displayed as "dart_code_3D".
 
+**Repositories (owner decision, 2026-10-03):** the app and every package above
+(except the third-party `flutter_scene`) each have their **own public repository**
+`github.com/hawkbee1/<name>` and are **git submodules** of hawkbee at the paths shown.
+hawkbee keeps the workspace root (`pubspec.yaml`, melos scripts, overrides), `tool/`
+and these docs. The sub-repositories only build inside a hawkbee checkout.
+Procedure and PR flow: `agent-workflow.md` §2.
+
 ### Layers (VGV, see `docs/project-setup.md` §3)
 
 | Layer | Packages | Notes |

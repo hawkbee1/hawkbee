@@ -5,8 +5,11 @@ writes the result as a flutter_scene `.fscene` file, and lets you **fly through 
 3D**: classes are spheres sized by their code, methods and subclasses live inside them,
 calls are links.
 
+The app and each package it creates have their own public repository (`hawkbee1/<name>`),
+included in hawkbee as git submodules (see `agent-workflow.md` §2).
+
 This folder drives the build. **Each file in `sessions/` is one agent work session**
-that ends with one pull request.
+that ends with one hawkbee pull request (plus one per changed sub-repository).
 
 | File | Read it when |
 |---|---|

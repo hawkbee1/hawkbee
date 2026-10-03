@@ -11,7 +11,7 @@
 A pure-Dart package that defines **what a code map is** and converts it to and from
 a flutter_scene `SceneDocument` (`.fscene` JSON). Every other package depends on it.
 
-## Create the package
+## Create the package (own repository + submodule: `agent-workflow.md` §2 procedure)
 
 Very Good CLI MCP `create`: `subcommand: dart_package`, `name: code_graph`,
 `output_directory: packages`, `workspace: true`. Add it to the root `workspace:`

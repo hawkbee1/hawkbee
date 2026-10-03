@@ -12,7 +12,8 @@ system/light/dark, a **settings** screen where the user changes the theme and th
 
 ## 1. `settings_repository` (Flutter package)
 
-`flutter_package` `settings_repository` in `packages/`, `workspace: true`, wired.
+`flutter_package` `settings_repository` in `packages/`, `workspace: true`, wired, in its
+own repository + submodule (`agent-workflow.md` §2 procedure).
 Dependencies: `shared_preferences` (use `SharedPreferencesAsync`),
 `code_analysis_engine` (only for `AnalysisRules` / `RuleCatalog`), `equatable`.
 
