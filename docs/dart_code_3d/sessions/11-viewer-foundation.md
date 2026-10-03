@@ -82,11 +82,67 @@ owner to run the profile build on a phone and in a browser, and ask for the numb
 
 ## Acceptance criteria
 
-- [ ] Sample opens and shows the top level with the entry node in view, on Linux and web.
-- [ ] Instanced rendering; the instance count matches the top-level node count (tested via `CodeWorld` API).
-- [ ] Measurements recorded; the owner was asked for device numbers.
-- [ ] Analyze/format clean, 100% coverage (exclude only genuine GPU glue, with comments).
+- [x] Sample opens and shows the top level with the entry node in view, on Linux and web. (Linux: 3D visual test; web: release build compiles, the owner checks it in a browser.)
+- [x] Instanced rendering; the instance count matches the top-level node count (tested via `CodeWorld` API).
+- [x] Measurements recorded; the owner was asked for device numbers (in the PR).
+- [x] Analyze/format clean, 100% coverage (exclude only genuine GPU glue, with comments).
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-04. Run by Claude (the planning model), not by a session agent.** Stacked on
+session 10 (branch created from `dc3d/s10-settings`).
+
+### Built
+- **Sample**: `assets/samples/sample.dc3d`, a hand-written weather app (46 top-level
+  declarations, 155 nodes, 108 links, 4 external packages). Its source is a single text bundle,
+  `tool/sample/sample_source.txt`, so no stray `.dart` or `pubspec.yaml` files sit in the app.
+  `tool/sample/build_sample.sh` unpacks it and runs the engine and layout CLIs. Home: **Open
+  sample** replaces the session 01 "3D demo".
+- **`ViewerBloc`** (sealed `ViewerLoading` / `ViewerReady` / `ViewerFailure`, every event from
+  the plan) decodes through the new `CodeMapRepository.openBytes` (code_map_repository PR,
+  isolate on native). Asset and local file bytes are read through injected functions.
+- **`CodeWorld`**: positions (`world_transforms.dart`), instances (`sphere_instance.dart`, sRGB
+  theme colors converted to linear), start pose and FOV (`camera_pose.dart`), and the scene:
+  **one `InstancedMesh`** (`SphereGeometry` 48×24, shared `PhysicallyBasedMaterial`) for the
+  top level. Everything but the scene is plain Dart, so it is unit-tested.
+- **Camera**: `entry + (0, r, 3r)` with `r = max(radius, 1.5)`, origin without an entry node.
+  **FOV adapts to the aspect ratio**: `fovY = max(45°, 2·atan(tan(30°)/aspect))`, so portrait
+  screens keep 60° horizontally (visible in the `sample_start/phone_*` baselines).
+- `ViewerView`: loading, failure ("This file is not a code map" + details + Back to home) and
+  ready (3D area + HUD with node and link counts); **F3** debug overlay in the development flavor
+  (fps, median build/raster times, sphere count).
+- Development flavor: `--dart-define=DC3D_OPEN=<path>` opens `/viewer?file=<path>` at startup
+  (ignored in other flavors). `AppFlavor` is provided by `App`; `bootstrap.dart` has
+  `buildApp(flavor)` so the three `main_*.dart` files no longer repeat the wiring.
+- 3D visual scenario **`sample_start`** (3 sizes × light/dark). The capture background is now the
+  world background (`CodeWorldColors.background`), so the `sphere` baselines were refreshed too.
+  Scenarios gained `clearCorners` (false for a world that reaches the edges).
+- `integration_test/perf` + `tool/perf_test.sh`: opening time and frame times in a profile build.
+- Tests: 100 unit/widget tests (100% coverage, `*.g.dart` excluded; only `CodeWorld.scene` and
+  `buildCodeWorldScene` are GPU glue, marked `coverage:ignore`), 102 goldens, 14 3D captures.
+
+### Measured (2026-10-04, this container: profile build, Xvfb + Mesa llvmpipe, 1440×900)
+| Map | Nodes | Top-level spheres | Open (decode, isolate) | Scene build | Start view fps | UI build (median) | Raster (median) |
+|---|---|---|---|---|---|---|---|
+| sample | 155 | 30 | 16 ms | < 1 ms | 59 (vsync) | 0.39 ms | 7.6 ms |
+| AltMe | 11,012 | 439 | 1.01 s | 1 ms | 26 | 0.39 ms | 4.6 ms |
+| flutter_scene | 11,050 | 2,542 | 1.14 s | 4 ms | 9.4 | 0.39 ms | 4.2 ms |
+
+- The UI thread is idle (0.4 ms). The low fps on big maps comes from llvmpipe rasterizing
+  ~2,300 triangles per sphere on the CPU (flutter_scene: ~5.9 M triangles per frame). The frame
+  phases do not include that wait, so judge by fps here. A real GPU should be far faster: device
+  numbers were requested from the owner.
+- Web: `flutter build web --release` builds; no browser in this container to measure.
+
+### Things the next agents must know
+- **Performance (session 16)**: if devices confirm the cost, draw small or far spheres with a
+  low-poly geometry (a second `InstancedMesh` per tessellation level). flutter_scene's
+  `LodComponent` works on meshes, not instanced batches. Only the top level is drawn today, but
+  entering a big container (session 13) can also show thousands of children.
+- flutter_scene's `PerspectiveCamera` defaults to `fovFar = 1000`: `CodeWorld.camera` sets the
+  far plane from the world radius (AltMe's world is a few hundred units wide).
+- `CodeWorldView` rebuilds the `CodeWorld` (and its `Scene`) only when the map instance or the
+  theme colors change.
+- Unnamed factory constructors in Dart 3.13 are written `factory (…)`.
+- Phones have no F3: measure on devices with DevTools (profile build), or run the perf test on
+  the device (`flutter drive --profile … -d <device>`; it measures the bundled sample).
