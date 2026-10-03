@@ -54,6 +54,10 @@ says so and explains how to clone hawkbee with `--recurse-submodules`.
 
 1. Scaffold it in place with the Very Good CLI MCP `create` tool (`workspace: true`),
    add it to the root `workspace:` and to the melos `format` list.
+   **`.vscode` lives only at the melos root (owner rule):** delete the generated
+   `<path>/.vscode/` folder and the `!.vscode/...` lines from `<path>/.gitignore`. For a
+   new app, add its debug/profile/release entries to the root `.vscode/launch.json`
+   instead (same shape as the existing ones).
 2. Make it its own repository and publish it:
    ```bash
    cd <path>                                  # e.g. packages/code_graph
