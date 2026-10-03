@@ -34,7 +34,9 @@ Source choices, shown according to platform support:
 ## 3. Progress page
 
 - Stage list (fetching → analyzing → laying out → saving) with a determinate progress
-  bar, the current file name (ellipsized in the middle), elapsed time.
+  bar, the current file name (ellipsized in the middle), elapsed time. **Layout + encoding
+  take ~6 s on AltMe while the fraction stays at 80%** (session 09): animate the "laying
+  out" stage (indeterminate bar) so the app never looks frozen.
 - **Cancel** (confirmation) → `CancelToken`, back to the form, temp files gone.
 - Failures map to clear messages with actions: not found/private ("Private
   repositories are not supported yet"), rate limited (retry later), network (retry),

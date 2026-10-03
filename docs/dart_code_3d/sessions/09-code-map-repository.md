@@ -67,9 +67,45 @@ Rules:
 
 ## Acceptance criteria
 
-- [ ] Repository API as above, documented. Analyze/format clean, 100% coverage.
-- [ ] AltMe and flutter_scene end-to-end build times (CLI or slow test) and file sizes are in the session log.
+- [x] Repository API as above, documented. Analyze/format clean, 100% coverage.
+- [x] AltMe and flutter_scene end-to-end build times (CLI or slow test) and file sizes are in the session log.
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-04. Run by Claude Opus 5.5 (the planning model), not by a session agent.** Stacked on
+session 08.
+
+### Built
+- `packages/code_map_repository`: public repo
+  [hawkbee1/code_map_repository](https://github.com/hawkbee1/code_map_repository), submodule +
+  workspace member (pure Dart).
+- API as planned, with: `CodeMapFile` (`id`, `name`, `bytes` = `.dc3d`, `project`, `summary`),
+  `CodeMapSummary` (JSON for store indexes), `BuildFailure` (`kind` + `message` + `details`;
+  also `invalidGitUrl` and `invalidFile` kinds), `load(id)`, and `exportForSharing` returning
+  `(fileName, bytes)`.
+- `MapWorker` (`InlineMapWorker`, `IsolateMapWorker` via `Isolate.run`, `defaultMapWorker()`
+  through a conditional export): layout + encoding and decoding off the UI thread.
+- `importBytes` re-compresses a plain `.fscene` so every stored map is a `.dc3d`.
+
+### Measured (building from a local folder, isolates)
+| Dataset | Build | Analysis | Layout + encoding | `.dc3d` | Open (decode) |
+|---|---|---|---|---|---|
+| flutter_scene | 7.8 s | 1.8 s | 6.0 s | 1.64 MB | 0.89 s |
+| AltMe | 7.6 s | 1.3 s | 6.2 s | 1.50 MB | 0.82 s |
+
+31 tests, coverage 100%. A JS build builds a map from a zip (inline worker).
+
+### Bugs found by the tests (fixed)
+- **Temp folder leak**: cancelling during the download dropped the `FetchDone` snapshot before
+  it was stored, so it was never disposed. The snapshot is now taken first.
+- **Engine (session 07)**: `IsolateEngineRunner` cancelled the caller's `CancelToken` whenever
+  the stream completed, because `StreamController.onCancel` also runs on normal completion.
+  Fixed in `code_analysis_engine` (branch `dc3d/s09-repository`, PR stacked on the session 07 PR),
+  with a test that checks the token after a normal finish.
+
+### Things the next agents must know
+- **UX (session 15)**: layout + encoding take ~6 s for AltMe-sized maps while progress stays at
+  80%. The progress screen must show activity during "laying out" (an indeterminate bar or an
+  animated stage), or layout must report progress across the isolate.
+- `build` does not save: call `save(file)` on success.
+- Dart 3.13 allows private named initializing formals (`required this._store`, used as `store:`).
