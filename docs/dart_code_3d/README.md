@@ -62,7 +62,7 @@ session, unless the dependency table below says they are independent.
 | 09 | [`code_map_repository`: orchestration, save/open/share](sessions/09-code-map-repository.md) | 04, 07, 08 | PR open hawkbee#9, code_map_repository#1, code_analysis_engine#4 (stacked on 08) |
 | 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | PR open hawkbee#10, dart_code_3d#3, settings_repository#1 (stacked on 09) |
 | 11 | [Viewer foundation: load, instanced spheres, entry point](sessions/11-viewer-foundation.md) | 02, 03, 08, 10 | PR open hawkbee#11, dart_code_3d#4, code_map_repository#2 (stacked on 10) |
-| 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | todo |
+| 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | PR open (stacked on 11) |
 | 13 | [Entering spheres, interior/window view, links](sessions/13-viewer-inside-spheres-and-links.md) | 12 | todo |
 | 14 | [Selection, info panel, labels, search, minimap](sessions/14-viewer-selection-hud-minimap.md) | 13 | todo |
 | 15 | [New analysis flow, recent maps, open & share](sessions/15-analysis-flow-and-files.md) | 09, 10, 11 | todo |
