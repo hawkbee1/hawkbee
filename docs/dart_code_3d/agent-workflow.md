@@ -54,6 +54,10 @@ says so and explains how to clone hawkbee with `--recurse-submodules`.
 
 1. Scaffold it in place with the Very Good CLI MCP `create` tool (`workspace: true`),
    add it to the root `workspace:` and to the melos `format` list.
+   **`.vscode` lives only at the melos root (owner rule):** delete the generated
+   `<path>/.vscode/` folder and the `!.vscode/...` lines from `<path>/.gitignore`. For a
+   new app, add its debug/profile/release entries to the root `.vscode/launch.json`
+   instead (same shape as the existing ones).
 2. Make it its own repository and publish it:
    ```bash
    cd <path>                                  # e.g. packages/code_graph
@@ -160,7 +164,9 @@ When you intentionally change a golden or a 3D baseline, regenerate it
    # then hawkbee (submodule pointers bumped to the pushed commits)
    git push -u origin dc3d/sNN-<slug>
    gh pr create --base main --title "dc3d sNN: <title>" --body-file <tmpfile>
-   # finally edit each sub-repository PR body to link the hawkbee PR (gh pr edit)
+   # finally edit each sub-repository PR body to link the hawkbee PR. `gh pr edit` fails
+   # on these repos (GraphQL "Projects (classic) is being deprecated"), so use REST:
+   gh api -X PATCH repos/hawkbee1/<name>/pulls/<n> -F body=@<tmpfile>
    ```
    hawkbee PR body template:
    ```markdown
@@ -191,9 +197,8 @@ When you intentionally change a golden or a 3D baseline, regenerate it
 
    ## Notes for the next session
    - …
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
    ```
    Report failing or skipped checks **honestly** in the table. Never mark something ✅
-   that you did not run.
+   that you did not run. **No "Generated with Claude Code" footer or any other AI
+   attribution** in PR descriptions, PR comments or commits (owner preference).
 4. Do **not** merge the PRs yourself. The owner reviews and merges.

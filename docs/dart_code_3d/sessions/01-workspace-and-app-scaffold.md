@@ -125,13 +125,13 @@ pubspec `flutter: assets:` entry, installed skills). Read the installed
 
 ## Acceptance criteria
 
-- [ ] `git submodule status` shows `packages/flutter_scene` at `0dc6ee8` (tag `flutter_scene-0.23.0`).
-- [ ] `apps/dart_code_3d` is a submodule pointing to the public repo `hawkbee1/dart_code_3d` (merge commits only), with a "Part of hawkbee" README section; one PR there + one PR in hawkbee.
-- [ ] `melos run format`, `melos run analyze` and `melos run test` do not touch the submodule and pass.
-- [ ] `apps/dart_code_3d` builds for web and Linux. A sphere renders (screenshot from
+- [x] `git submodule status` shows `packages/flutter_scene` at `0dc6ee8` (tag `flutter_scene-0.23.0`).
+- [x] `apps/dart_code_3d` is a submodule pointing to the public repo `hawkbee1/dart_code_3d` (merge commits only), with a "Part of hawkbee" README section; one PR there + one PR in hawkbee.
+- [x] `melos run format`, `melos run analyze` and `melos run test` do not touch the submodule and pass.
+- [x] `apps/dart_code_3d` builds for web and Linux. A sphere renders (screenshot from
       the web build via the owner's browser, or from session 02's harness, attached to the PR).
-- [ ] Flutter GPU enabled in all 5 native platform files.
-- [ ] Coverage 100% for `apps/dart_code_3d`.
+- [x] Flutter GPU enabled in all 5 native platform files.
+- [x] Coverage 100% for `apps/dart_code_3d`.
 
 ## Out of scope
 
@@ -139,4 +139,52 @@ Engine, real viewer, settings, goldens harness (session 02).
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-03. Run by Claude Opus 5.5 (the planning model), not by a session agent.**
+
+### Built
+- `packages/flutter_scene`: submodule at `0dc6ee8` (tag `flutter_scene-0.23.0`), https URL.
+- `apps/dart_code_3d`: Very Good CLI `flutter_app` (org `com.hawkbee`), its own public repo
+  [hawkbee1/dart_code_3d](https://github.com/hawkbee1/dart_code_3d) (merge commits only), submodule
+  of hawkbee, workspace member. Linux runner added with `tool/add_linux_platform.sh`.
+- Root `pubspec.yaml`: `dependency_overrides: scene` → submodule copy. Melos `format` lists our
+  code explicitly (now includes `apps/dart_code_3d`). Root `analysis_options.yaml` excludes the submodule.
+- App: `flutter_scene` (path) + `vector_math` + `hooks` dependencies; `flutter_scene:init` →
+  `hook/build.dart`, `flutter_scene_generated/`; Flutter GPU enabled in the 5 native platform files;
+  Flutter constraint `^3.47.1`.
+- Temporary `viewer/` feature (`ViewerPage`, `SphereSceneView`) replacing the template counter.
+  `App.home`, `ViewerPage.sceneView`, `SphereSceneView.initialize/sceneBuilder` are injectable so
+  widget tests avoid the GPU. `buildSphereScene` (GPU glue) is under `coverage:ignore` and is
+  covered by the 3D visual tests from session 02.
+
+### Verified
+- `melos run format`, `melos run analyze`, `melos run test`: all 6 workspace packages pass, and the submodule is untouched.
+- App tests: 10 passed, coverage 100%.
+- `flutter build web --release`, `flutter build linux`, `flutter build apk --debug --flavor development`: all succeed.
+- The Linux release build, run under Xvfb + llvmpipe with no command-line flag, renders the
+  lit sphere: [screenshot](../screenshots/s01-linux-sphere.png).
+- Not built: iOS, macOS, Windows (no toolchains in this Linux container). The web build was
+  not opened in a browser.
+
+### Deviations and things the next agents must know
+- **The Very Good CLI 1.5.0 template uses new Dart 3.13 syntax and packages**: constructors
+  are written `const new({super.key});`, and Material comes from **`package:material_ui/material_ui.dart`**
+  (not `package:flutter/material.dart`). Follow the template's style.
+- Removed the template's `.github/workflows` and `dependabot.yaml` from the app repo: the app only
+  resolves inside hawkbee, so standalone CI would always fail. CI for hawkbee is not set up yet.
+- flutter_scene's skills were installed into `.github/skills` (the installer writes to every agent
+  folder already present). They were moved to **`apps/dart_code_3d/.claude/skills`**. As a result,
+  `dart run flutter_scene:skills --check` reports them "not installed" for `.github`. That is expected.
+- Android: the template pins Kotlin 2.2.10; Flutter 3.47.1 needs ≥ 2.2.20. Bumped to 2.2.20 (same as
+  the other hawkbee apps).
+- `dart format` indents the `// flutter_scene:init:start/end` markers in `hook/build.dart`. Harmless:
+  flutter_scene finds them with a substring search.
+- Fixed `directives_ordering` infos in the template's `l10n.dart` and `pump_app.dart`.
+- **Locales are English and French** (owner decision): the template's Spanish ARB was replaced by
+  `app_fr.arb`, and iOS `CFBundleLocalizations` lists `en`, `fr`.
+- **Template l10n bug fixed:** the generated `AppLocalizations.localizationsDelegates` registers
+  `flutter_localizations`' Material/Cupertino delegates, which do not serve `material_ui` widgets,
+  so any non-English locale failed ("A MaterialLocalizations delegate that supports the fr locale
+  was not found"). `lib/l10n/l10n.dart` now exposes `appLocalizationsDelegates`
+  (`AppLocalizations.delegate` + `material_ui`'s `GlobalMaterialLocalizations.delegates`); use it
+  everywhere. A test locks in `en`/`fr` and renders a French string.
+- The template's `LICENSE` says "Copyright (c) 2026 com.hawkbee". The owner may want a real name there.

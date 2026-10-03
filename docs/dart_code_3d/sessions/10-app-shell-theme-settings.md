@@ -43,7 +43,11 @@ never a crash.
   Also expose `CodeWorldColors` as a `ThemeExtension` (background, per-`CodeNodeKind`
   sphere colors, link colors per `LinkKind`, selection highlight) so the 3D viewer
   follows the theme.
-- l10n: every string in ARB files (English). Keep the template's l10n setup.
+- l10n: every string in ARB files, in **English and French** (`app_en.arb`, `app_fr.arb`; owner
+  decision, no other locale). Give `MaterialApp` the `appLocalizationsDelegates` list from
+  `lib/l10n/l10n.dart`, **never** the generated `AppLocalizations.localizationsDelegates`
+  (it registers `flutter_localizations` delegates that do not serve `material_ui` widgets).
+  Goldens: add a French variant for at least one phone golden per screen.
 
 ## 3. Settings screen (`settings/`)
 
