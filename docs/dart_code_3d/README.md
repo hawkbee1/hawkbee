@@ -53,7 +53,7 @@ session, unless the dependency table below says they are independent.
 |---|---|---|---|
 | 01 | [Workspace, submodule, app scaffold, first sphere](sessions/01-workspace-and-app-scaffold.md) | prerequisites | merged |
 | 02 | [Visual test harness (2D goldens + 3D screenshots)](sessions/02-visual-test-harness.md) | 01 | PR open hawkbee#2, dart_code_3d#2 |
-| 03 | [`code_graph`: model + `.fscene` codec](sessions/03-code-graph-model-and-fscene-codec.md) | 01 | PR open (stacked on 02) |
+| 03 | [`code_graph`: model + `.fscene` codec](sessions/03-code-graph-model-and-fscene-codec.md) | 01 | PR open hawkbee#3, code_graph#1 (stacked on 02) |
 | 04 | [`code_source_client`: folder / zip / public git](sessions/04-code-source-client.md) | 03 | todo |
 | 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | todo |
 | 06 | [Engine 2: reference resolution and links](sessions/06-engine-resolution-and-links.md) | 05 | todo |
