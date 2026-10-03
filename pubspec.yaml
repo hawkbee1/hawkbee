@@ -24,9 +24,11 @@ melos:
         concurrency: 1
       description: Run dart analyze in all packages.
 
+    # Lists our own code explicitly so third-party submodules (packages/flutter_scene)
+    # are never formatted. Add every new app or package of ours here.
     format:
-      run: dart format --set-exit-if-changed .
-      description: Check formatting across the workspace.
+      run: dart format --set-exit-if-changed apps/hawkbee apps/battle_team packages/appwrite_api_client packages/backend_status_repository packages/hawkbee_schema tool backend
+      description: Check formatting of our own code (not third-party submodules).
 
     test:
       exec:
