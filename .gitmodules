@@ -1,0 +1,3 @@
+[submodule "packages/flutter_scene"]
+	path = packages/flutter_scene
+	url = https://github.com/bdero/flutter_scene.git
