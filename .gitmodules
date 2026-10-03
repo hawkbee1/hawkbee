@@ -19,3 +19,6 @@
 [submodule "packages/code_map_repository"]
 	path = packages/code_map_repository
 	url = https://github.com/hawkbee1/code_map_repository.git
+[submodule "packages/settings_repository"]
+	path = packages/settings_repository
+	url = https://github.com/hawkbee1/settings_repository.git

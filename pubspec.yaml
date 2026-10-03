@@ -16,6 +16,7 @@ workspace:
   - packages/code_map_repository
   - packages/code_source_client
   - packages/hawkbee_schema
+  - packages/settings_repository
 
 # flutter_scene (submodule) and our code_graph must share the same local `scene`.
 dependency_overrides:
@@ -38,7 +39,7 @@ melos:
     # Lists our own code explicitly so third-party submodules (packages/flutter_scene)
     # are never formatted. Add every new app or package of ours here.
     format:
-      run: dart format --set-exit-if-changed apps/hawkbee apps/battle_team apps/dart_code_3d packages/appwrite_api_client packages/backend_status_repository packages/code_analysis_engine packages/code_graph packages/code_layout packages/code_map_repository packages/code_source_client packages/hawkbee_schema tool backend
+      run: dart format --set-exit-if-changed apps/hawkbee apps/battle_team apps/dart_code_3d packages/appwrite_api_client packages/backend_status_repository packages/code_analysis_engine packages/code_graph packages/code_layout packages/code_map_repository packages/code_source_client packages/hawkbee_schema packages/settings_repository tool backend
       description: Check formatting of our own code (not third-party submodules).
 
     test:
