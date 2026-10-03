@@ -60,7 +60,7 @@ session, unless the dependency table below says they are independent.
 | 07 | [Engine 3: CLI, performance, isolates, AltMe](sessions/07-engine-cli-performance.md) | 06 | PR open hawkbee#7, code_analysis_engine#3 (stacked on 06) |
 | 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | PR open hawkbee#8, code_layout#1 (stacked on 07) |
 | 09 | [`code_map_repository`: orchestration, save/open/share](sessions/09-code-map-repository.md) | 04, 07, 08 | PR open hawkbee#9, code_map_repository#1, code_analysis_engine#4 (stacked on 08) |
-| 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | todo |
+| 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | PR open (stacked on 09) |
 | 11 | [Viewer foundation: load, instanced spheres, entry point](sessions/11-viewer-foundation.md) | 02, 03, 08, 10 | todo |
 | 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | todo |
 | 13 | [Entering spheres, interior/window view, links](sessions/13-viewer-inside-spheres-and-links.md) | 12 | todo |
