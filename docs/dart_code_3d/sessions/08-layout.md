@@ -77,14 +77,14 @@ runs or platforms; write a small FNV-1a hash).
 
 ## Debug aid
 
-Extend the session 07 CLI with `--layout --out map.fscene` (engine → layout →
-`CodeMapCodec` → file). The owner can open the result in the Flutter Scene Editor.
+Extend the session 07 CLI with `--layout --out map.dc3d` (engine → layout →
+`CodeMapCodec.encodeToBytes` → file; `--out map.fscene` writes plain JSON). The owner can open the result in the Flutter Scene Editor.
 Commit **no** large output files; describe how to produce them.
 
 ## Acceptance criteria
 
 - [ ] Invariant, determinism and performance tests pass. Timings are in the session log.
-- [ ] `map.fscene` for flutter_scene produced by the CLI; its size is in the session log.
+- [ ] `map.dc3d` for flutter_scene produced by the CLI; its size is in the session log.
 - [ ] Analyze/format clean, 100% coverage.
 
 ## Session log

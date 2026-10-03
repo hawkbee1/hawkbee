@@ -8,7 +8,7 @@ and `flutter_scene-performance/SKILL.md`. Also `architecture.md` §7.
 
 ## Goal
 
-Open a `.fscene` code map and see the **top level of the world**: one sphere per
+Open a `.dc3d` code map and see the **top level of the world**: one sphere per
 top-level node, sized and coloured by kind, with the camera in front of the entry
 node. Render with **GPU instancing** from the start (decided: AltMe has ~1–2k top-level
 spheres and up to thousands inside large containers; instancing collapses them to a
@@ -16,13 +16,13 @@ few draws, per the flutter_scene performance skill).
 
 ## 1. Sample data
 
-- Add `apps/dart_code_3d/assets/samples/sample.fscene`, produced with the engine CLI
+- Add `apps/dart_code_3d/assets/samples/sample.dc3d`, produced with the engine CLI
   (`--layout --out`) from the engine fixture `vgv_feature` (or a slightly larger
   hand-made fixture with ~40 classes so it looks like an app). Document the exact
   command in `assets/samples/README.md`.
 - Home gets an **"Open sample"** action (all flavors; useful for demos).
 - For performance work only: in the **development** flavor, `--dart-define=DC3D_OPEN=<path>`
-  opens a local `.fscene` at startup (native only). Never ship it in production.
+  opens a local `.dc3d` at startup (native only). Never ship it in production.
 
 ## 2. Business logic (`viewer/bloc/`)
 

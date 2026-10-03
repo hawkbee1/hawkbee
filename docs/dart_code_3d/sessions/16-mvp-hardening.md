@@ -18,7 +18,7 @@ leave the project documented and green.
    flutter_scene. Compare with the budgets in `architecture.md` §1 and §7.3 and fix
    the biggest gap first (profile before optimizing; follow `flutter_scene-performance`).
 2. **Web build** (`flutter build web --release`, also try `--wasm`): open the AltMe
-   `.fscene` exported in step 1. Record load time and frame times in Chromium (via the
+   `.dc3d` exported in step 1. Record load time and frame times in Chromium (via the
    hermes-playwright container if the owner has set up remote access, otherwise ask the
    owner to measure in their browser).
 3. **Phones**: ask the owner to run a profile build on the Android phone and the iPhone 11

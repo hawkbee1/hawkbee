@@ -14,7 +14,8 @@ Windows, Linux, web) that:
 1. **gets source code** from a local folder, a zip file, or a **public** git
    repository, into a temporary folder;
 2. **analyzes** it with a configurable set of **rules** (the *engine*);
-3. writes the result as a **`.fscene` file** (flutter_scene's scene document),
+3. writes the result as a **`.dc3d` file** (a gzip-compressed flutter_scene `.fscene`
+   scene document),
    which can be stored and shared;
 4. lets the user **fly** through the result in 3D (the *viewer*).
 
@@ -94,7 +95,7 @@ Consequences for the design (non-negotiable):
   source, which phones and browsers don't have.
 - Browsers block downloads from GitHub (no CORS headers on archive downloads).
   The web build therefore cannot fetch a git repo. It analyzes a **zip** the user
-  picks, or opens an existing `.fscene`.
+  picks, or opens an existing `.dc3d` / `.fscene`.
 
 ---
 
@@ -200,9 +201,14 @@ with `writeFscene` from `package:scene`). Reasons:
 `CodeMap (graph + placement) → SceneDocument` and `SceneDocument → CodeMap`.
 Re-layout or re-theme therefore never needs a re-analysis.
 
-When a document exceeds ~20 MB of JSON, `code_graph` writes the `.fscene` plus a
-`.fsceneb` payload (see `SceneDocument.payloadSource`). Sharing then exports both,
-zipped as `<name>.dc3d.zip`. Session 09 decides the threshold from measurements.
+**Files are `.dc3d` = gzip-compressed `.fscene` (decided in session 03, measured).**
+The JSON is verbose: 20,000 nodes + 60,000 links = 52.6 MB of `.fscene` JSON (the
+binary `.fsceneb` is the same size, it wraps the JSON), but **2.0 MB gzipped**, in
+~0.2 s more. `CodeMapCodec.encodeToBytes` writes `.dc3d`; `decodeFromBytes` reads
+`.dc3d` and plain `.fscene` (gzip detected by its magic bytes) and reports any
+unreadable input as `CodeMapFormatException`. `gunzip` turns a `.dc3d` into a plain
+`.fscene` for the Flutter Scene Editor. Links are stored as columns of node indices
+(`from`, `to`, `kind`, `resolution`, `count`) with name tables, not one map per link.
 
 ---
 
@@ -325,7 +331,7 @@ the graph), and tested.
 
 ### 7.1 Loading
 
-`.fscene` bytes → `code_graph` decode → `CodeMap`. Rendering builds the scene
+`.dc3d` / `.fscene` bytes → `CodeMapCodec.decodeFromBytes` → `CodeMap`. Rendering builds the scene
 **from the `CodeMap`** in a `CodeWorld` class (imperative flutter_scene style: a plain
 Dart class that owns the `Scene`; see the idioms skill, "Choosing declarative or
 imperative"). Spheres are drawn with **GPU instancing** (`InstancedMesh` +
@@ -410,5 +416,5 @@ individually raycastable).
 | Code node | Anything that becomes a sphere: class, mixin, enum, extension, extension type, method, constructor, getter, setter, top-level function, ghost parent, external package. |
 | Container | A node with children (enterable sphere). |
 | Ghost parent | Synthetic node for an external superclass that holds the project classes extending it. |
-| Code map | `CodeGraph` + `Placement`s = what a `.fscene` file holds. |
+| Code map | `CodeGraph` + `Placement`s = what a `.dc3d` (gzipped `.fscene`) file holds. |
 | Snapshot | The source files fetched into a temporary folder (or memory on web). |

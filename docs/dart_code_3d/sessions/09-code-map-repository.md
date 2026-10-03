@@ -25,8 +25,7 @@ class BuildFailed extends BuildEvent { final BuildFailure failure; } // typed: s
 
 class CodeMapFile extends Equatable {
   final String name;            // 'AltMe @ main'
-  final Uint8List fscene;       // encoded .fscene (UTF-8 JSON)
-  final Uint8List? payload;     // optional .fsceneb (see below)
+  final Uint8List bytes;        // a .dc3d file: CodeMapCodec.encodeToBytes (gzipped .fscene)
   final ProjectInfo project;
 }
 
@@ -35,8 +34,8 @@ class CodeMapRepository {
                      CodeLayoutEngine? layoutEngine, required CodeMapStore store});
   Stream<BuildEvent> build(CodeSource source, AnalysisRules rules, {CancelToken? cancel});
   Future<CodeMap> open(CodeMapFile file);         // decode + validate
-  Future<CodeMapFile> importBytes(String fileName, Uint8List bytes); // .fscene or .dc3d.zip
-  Uint8List exportForSharing(CodeMapFile file);   // .fscene alone, or .dc3d.zip when there is a payload
+  Future<CodeMapFile> importBytes(String fileName, Uint8List bytes); // .dc3d or plain .fscene
+  Uint8List exportForSharing(CodeMapFile file);   // the .dc3d bytes (file name: <name>.dc3d)
   Future<List<CodeMapSummary>> recent();          // newest first
   Future<void> save(CodeMapFile file);
   Future<void> delete(String id);
@@ -53,16 +52,15 @@ Rules:
   only receives bytes);
 - progress fractions are weighted per stage (fetch 0–20%, analyze 20–80%, layout
   80–95%, encode 95–100%) and never go backwards;
-- payload split: measure the JSON size of AltMe and flutter_scene maps. If both are
-  under 20 MB, keep a single `.fscene` and leave `payload` null (still support
-  importing a `.dc3d.zip`). Write the decision and the numbers in the session log
-  and in `architecture.md` §4.
+- file format: **decided in session 03**, a `.dc3d` file is a gzip-compressed `.fscene`
+  (`CodeMapCodec.encodeToBytes` / `decodeFromBytes`, architecture §4). Record the real
+  `.dc3d` sizes of the AltMe and flutter_scene maps in the session log.
 
 ## Tests (100% coverage)
 
 - Fakes for the source client and runner. Success path, each failure type,
   cancel at each stage, snapshot disposal.
-- Import: `.fscene`, `.dc3d.zip`, garbage bytes → typed failure; files from a newer
+- Import: `.dc3d`, plain `.fscene`, garbage bytes → typed failure; files from a newer
   `schemaVersion` → typed failure with a clear message.
 - An integration-style test (tag `slow`) building a map from the `basic_app` engine
   fixture end-to-end with the real engine and layout.
