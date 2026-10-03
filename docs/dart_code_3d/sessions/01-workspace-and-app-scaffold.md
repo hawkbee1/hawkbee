@@ -158,7 +158,7 @@ Engine, real viewer, settings, goldens harness (session 02).
 
 ### Verified
 - `melos run format`, `melos run analyze`, `melos run test`: all 6 workspace packages pass, and the submodule is untouched.
-- App tests: 8 passed, coverage 27/27 lines (100%).
+- App tests: 10 passed, coverage 100%.
 - `flutter build web --release`, `flutter build linux`, `flutter build apk --debug --flavor development`: all succeed.
 - The Linux release build, run under Xvfb + llvmpipe with no command-line flag, renders the
   lit sphere: [screenshot](../screenshots/s01-linux-sphere.png).
@@ -178,6 +178,13 @@ Engine, real viewer, settings, goldens harness (session 02).
   the other hawkbee apps).
 - `dart format` indents the `// flutter_scene:init:start/end` markers in `hook/build.dart`. Harmless:
   flutter_scene finds them with a substring search.
-- Fixed `directives_ordering` infos in the template's `l10n.dart` and `pump_app.dart`. Kept the
-  template's Spanish ARB alongside English.
+- Fixed `directives_ordering` infos in the template's `l10n.dart` and `pump_app.dart`.
+- **Locales are English and French** (owner decision): the template's Spanish ARB was replaced by
+  `app_fr.arb`, and iOS `CFBundleLocalizations` lists `en`, `fr`.
+- **Template l10n bug fixed:** the generated `AppLocalizations.localizationsDelegates` registers
+  `flutter_localizations`' Material/Cupertino delegates, which do not serve `material_ui` widgets,
+  so any non-English locale failed ("A MaterialLocalizations delegate that supports the fr locale
+  was not found"). `lib/l10n/l10n.dart` now exposes `appLocalizationsDelegates`
+  (`AppLocalizations.delegate` + `material_ui`'s `GlobalMaterialLocalizations.delegates`); use it
+  everywhere. A test locks in `en`/`fr` and renders a French string.
 - The template's `LICENSE` says "Copyright (c) 2026 com.hawkbee". The owner may want a real name there.
