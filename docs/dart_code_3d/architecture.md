@@ -306,7 +306,8 @@ There is **no depth limit** rule.
 
 Input: `CodeGraph`. Output: `Placement` per node (`position` relative to its
 parent's center, `radius`). Pure Dart, **deterministic** (seeded from a hash of
-the graph), and tested.
+the graph, independent of node order) on a given platform; VM and JavaScript agree
+to ~1e-12 (maps are laid out once and stored). Tested.
 
 1. **Radii, bottom-up.** Leaf: `r = clamp(k · cbrt(loc), rMin, rMax)`, so volume
    grows linearly with code length. Container: `R = max(r_own, packingRadius(children) · margin)`,
