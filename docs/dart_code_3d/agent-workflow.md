@@ -143,6 +143,16 @@ A session is done only when **all** of these hold:
    viewpoints get new baselines.
 6. Every acceptance criterion in your session file is checked.
 
+Golden test pitfalls (found in session 02):
+- Use `goldenTest()` from `test/helpers/goldens.dart`; it tags every test with
+  `TestTag.golden`. **Do not** write a library-level `@Tags([TestTag.golden])`:
+  the test runner only accepts string literals there and refuses to load the file
+  (the VGV testing skill shows that pattern, but it does not work).
+- Indeterminate animations (spinners) are captured on their first frame, where they
+  are a dot. Pass `pump:` to advance them (see `viewer_page_golden_test.dart`).
+- 3D scenarios go in `integration_test/visual/visual_scenarios.dart`; they must be
+  deterministic (no time-based animation, fixed camera).
+
 When you intentionally change a golden or a 3D baseline, regenerate it
 (`update_goldens: true` in the MCP test tool, or `tool/visual_test.sh --update`),
 **look at the new image** (Read tool), and list it in the PR.
@@ -190,7 +200,7 @@ When you intentionally change a golden or a 3D baseline, regenerate it
    ## Goldens / screenshots
    <!-- one image per changed golden; the repos are public, so raw links render.
         Goldens live in the app repository, so link to its branch. -->
-   ![home – phone – dark](https://github.com/hawkbee1/dart_code_3d/blob/dc3d/sNN-<slug>/test/goldens/…png?raw=true)
+   ![home – phone – dark](https://github.com/hawkbee1/dart_code_3d/blob/dc3d/sNN-<slug>/test/<feature>/…/goldens/<name>/phone_dark.png?raw=true)
 
    ## Acceptance criteria
    - [x] …
