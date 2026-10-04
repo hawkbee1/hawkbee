@@ -52,3 +52,10 @@ Sessions must **not** implement them unless the owner asks.
 - Diff two code maps (two commits) and highlight changes (`diffScene` exists in `package:scene`).
 - Show source code of the selected node (needs embedding sources or keeping the snapshot).
 - Analysis of languages other than Dart.
+- Local folders on Android and iOS: a picked folder is a scoped-storage URI or a security-scoped
+  bookmark, not a path `dart:io` can read, so the folder source is hidden there (session 15). It needs
+  a snapshot source that reads through the platform (SAF / bookmarks), or copies the folder first.
+- Keep the screen awake during an analysis on phones (`wakelock_plus`; not a dependency yet).
+- Report the layout's progress across the isolate, instead of the indeterminate bar of the "laying
+  out" stage (`MapWorker.layoutAndEncode` has no progress stream yet).
+- Share a map by link instead of a file (see the Appwrite item above).
