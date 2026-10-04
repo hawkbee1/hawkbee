@@ -7,14 +7,14 @@
 ## Goal
 
 The full user journey: **pick a source → analyze with progress → open the 3D map**,
-plus a list of recent maps, opening `.fscene` / `.dc3d.zip` files, and sharing them.
+plus a list of recent maps, opening `.dc3d` / `.fscene` files, and sharing them.
 
 ## 1. Platform storage (`CodeMapStore` implementation, app side)
 
 `apps/dart_code_3d/lib/app/storage/` (platform glue, the only place using
 `path_provider` / `dart:io`, behind conditional imports):
 - native: maps saved as files in the application support directory
-  (`code_maps/<id>.fscene` + `index.json` with summaries);
+  (`code_maps/<id>.dc3d` + `index.json` with summaries);
 - web: `InMemoryCodeMapStore` (maps are lost on reload in the MVP; say so in the UI with
   a one-line notice and an **Export** button). Note IndexedDB persistence in `future.md`.
 
@@ -34,7 +34,9 @@ Source choices, shown according to platform support:
 ## 3. Progress page
 
 - Stage list (fetching → analyzing → laying out → saving) with a determinate progress
-  bar, the current file name (ellipsized in the middle), elapsed time.
+  bar, the current file name (ellipsized in the middle), elapsed time. **Layout + encoding
+  take ~6 s on AltMe while the fraction stays at 80%** (session 09): animate the "laying
+  out" stage (indeterminate bar) so the app never looks frozen.
 - **Cancel** (confirmation) → `CancelToken`, back to the form, temp files gone.
 - Failures map to clear messages with actions: not found/private ("Private
   repositories are not supported yet"), rate limited (retry later), network (retry),
@@ -47,7 +49,7 @@ Source choices, shown according to platform support:
 
 - Recent list (newest first): name, source (folder / repo URL @ ref / zip), date,
   node count; tap → viewer; swipe/menu → delete (with undo snackbar), share.
-- **Open file**: pick `.fscene` or `.dc3d.zip` (`withData: true` on web) →
+- **Open file**: pick `.dc3d` or `.fscene` (`withData: true` on web) →
   `importBytes` → save → viewer. Errors: not a code map, newer format ("update the app").
 - **Share/export**: mobile → `share_plus` (`ShareParams` with an `XFile`); desktop →
   `file_picker` `saveFile`; web → download (via `package:web` anchor with a blob URL, or
@@ -73,7 +75,7 @@ Source choices, shown according to platform support:
 ## Acceptance criteria
 
 - [ ] From an empty install: analyze a public GitHub repo → fly in it → restart → it is in the recent list → share it → open the shared file elsewhere (web build).
-- [ ] Web: zip upload and `.fscene` open work; git option hidden with the explanation.
+- [ ] Web: zip upload and `.dc3d` open work; git option hidden with the explanation.
 - [ ] Analyze/format clean, 100% coverage, goldens committed.
 
 ## Session log

@@ -101,11 +101,61 @@ sites**. These numbers measure the quality of parse-only mode.
 
 ## Acceptance criteria
 
-- [ ] Fixtures pass with exact expected links.
-- [ ] No code outside `lib/src/resolve/` depends on `DeclaredTypeResolver` directly (only on the interface).
-- [ ] Resolution quality numbers in the session log.
-- [ ] Analyze/format clean, 100% coverage, still compiles to JS.
+- [x] Fixtures pass with exact expected links.
+- [x] No code outside `lib/src/resolve/` depends on `DeclaredTypeResolver` directly (only on the interface).
+- [x] Resolution quality numbers in the session log.
+- [x] Analyze/format clean, 100% coverage, still compiles to JS.
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-03/04. Run by Claude Opus 5.5 (the planning model), not by a session agent.**
+Stacked on session 05. Interrupted once by a usage limit (WIP commit `77ced39`), then finished.
+
+### Built (`code_analysis_engine`, `lib/src/resolve/`)
+- `reference_resolver.dart`: `ReferenceSite` (kind, node, enclosing node, library, scope,
+  enclosing type), `LocalVariable`/`Scope`, `ResolvedReference` (`ResolvedToNode`,
+  `ResolvedAmbiguous`, `ResolvedExternal`, `Unresolved`), `ResolverContext`, and the
+  `ReferenceResolver` interface (documents the future `AnalyzerResolver`).
+- `declared_type_resolver.dart`: the parse-only resolver. `resolvers.dart`: `resolverFor(mode)`
+  is the only place that names it (`fullResolution` throws `UnsupportedError`).
+- `reference_collector.dart`: walks bodies and field initializers with a scope stack (params,
+  `this.field`, locals, for-in, catch, local functions) and resolves each site **while walking**
+  (no site list: AltMe has hundreds of thousands of sites).
+- `link_builder.dart`: call links (merged, strongest resolution kept, sorted), `implements` /
+  `with` / import (largest declaration of a file → of the imported file or package) /
+  `extendsExternal` links, `CallSiteStats`, and the `GraphAnnotator` interface.
+- Engine: `links` stage with progress and cancellation; `AnalysisDone.callSites`;
+  `CodeAnalysisEngine(annotators: …)`.
+- `SymbolTable.lookup` (renamed from `lookupType`: it finds any declaration),
+  `isImportPrefix`, a larger table of well-known external names (dart:core, Flutter,
+  flutter_bloc, bloc, equatable).
+
+### Measured (call sites: exact / byName / external / unresolved)
+| Dataset | Links | Time | Exact | By name | External | Unresolved | Getter links |
+|---|---|---|---|---|---|---|---|
+| flutter_scene | 17,609 | ~1.7 s | 45.7% | 1.0% | 35.4% | 17.9% | 3,164 |
+| AltMe | 7,414 | ~1.1 s | 26.9% | 1.4% | 49.5% | 22.2% | 2,158 |
+
+AltMe is a Flutter app: half of its calls are widget constructors and Flutter APIs (external).
+1,905 (flutter_scene) and 224 (AltMe) call sites sit in top-level variable initializers and are
+skipped. 90 tests, coverage 100%; a JS build resolves links in Node.
+
+### Deviations and things the next agents must know
+- **Parse-only `Type()`**: without `new`/`const`, a constructor call parses as a
+  `MethodInvocation`. The resolver treats an UpperCamelCase name that resolves to a type as a
+  constructor call (to the constructor sphere, or to the class when the constructor is
+  implicit or not shown).
+- **Getter reads are linked only when exact** (or to a unique project extension getter); no
+  by-name fallback for getters, it would be noise. Setters are not linked in the MVP.
+- `dynamic`, `Object`, `void`, `Never`, `Null` are treated as unknown types; `toString`,
+  `hashCode`, `noSuchMethod`, `runtimeType` are never linked by name.
+- The "inherited from an external superclass" guess (e.g. `setState`) applies to lowercase
+  names only, so `BlocProvider(...)` inside a widget goes to `flutter_bloc`, not `flutter`.
+- With `nodes.dart_sdk` on, `pkg:dart` always exists (dart:core is implicit).
+- A mixin's `on` types are no longer stored as `with` types (no link for `on`).
+- Bugs found by the fixtures and fixed: `dynamic` parameters taken for an external type, the
+  inherited-member guess applied to constructor calls, `pkg:dart` missing without an explicit
+  `dart:` import, and `Uri`/`print` attributed to an imported package.
+- Fixture expectations now include links (`links` key, checked exactly when present); all were
+  regenerated and reviewed (nodes, entries and lines of code unchanged).
+- `package:analyzer` also exports an `Annotation` class: hide it next to `code_graph` imports.

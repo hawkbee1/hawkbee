@@ -1,7 +1,7 @@
 # dart_code_3D — project documentation
 
 dart_code_3D analyzes a Dart code base (local folder, zip, or public git repository),
-writes the result as a flutter_scene `.fscene` file, and lets you **fly through it in
+writes the result as a `.dc3d` file (a gzip-compressed flutter_scene `.fscene`), and lets you **fly through it in
 3D**: classes are spheres sized by their code, methods and subclasses live inside them,
 calls are links.
 
@@ -53,16 +53,16 @@ session, unless the dependency table below says they are independent.
 |---|---|---|---|
 | 01 | [Workspace, submodule, app scaffold, first sphere](sessions/01-workspace-and-app-scaffold.md) | prerequisites | merged |
 | 02 | [Visual test harness (2D goldens + 3D screenshots)](sessions/02-visual-test-harness.md) | 01 | PR open hawkbee#2, dart_code_3d#2 |
-| 03 | [`code_graph`: model + `.fscene` codec](sessions/03-code-graph-model-and-fscene-codec.md) | 01 | todo |
-| 04 | [`code_source_client`: folder / zip / public git](sessions/04-code-source-client.md) | 03 | todo |
-| 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | todo |
-| 06 | [Engine 2: reference resolution and links](sessions/06-engine-resolution-and-links.md) | 05 | todo |
-| 07 | [Engine 3: CLI, performance, isolates, AltMe](sessions/07-engine-cli-performance.md) | 06 | todo |
-| 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | todo |
-| 09 | [`code_map_repository`: orchestration, save/open/share](sessions/09-code-map-repository.md) | 04, 07, 08 | todo |
-| 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | todo |
-| 11 | [Viewer foundation: load, instanced spheres, entry point](sessions/11-viewer-foundation.md) | 02, 03, 08, 10 | todo |
-| 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | todo |
+| 03 | [`code_graph`: model + `.fscene` codec](sessions/03-code-graph-model-and-fscene-codec.md) | 01 | PR open hawkbee#3, code_graph#1 (stacked on 02) |
+| 04 | [`code_source_client`: folder / zip / public git](sessions/04-code-source-client.md) | 03 | PR open hawkbee#4, code_source_client#1 (stacked on 03) |
+| 05 | [Engine 1: rules, parsing, declarations, containment](sessions/05-engine-rules-parse-declarations.md) | 03, 04 | PR open hawkbee#5, code_analysis_engine#1 (stacked on 04) |
+| 06 | [Engine 2: reference resolution and links](sessions/06-engine-resolution-and-links.md) | 05 | PR open hawkbee#6, code_analysis_engine#2 (stacked on 05) |
+| 07 | [Engine 3: CLI, performance, isolates, AltMe](sessions/07-engine-cli-performance.md) | 06 | PR open hawkbee#7, code_analysis_engine#3 (stacked on 06) |
+| 08 | [`code_layout`: 3D placement](sessions/08-layout.md) | 03 (07 for real data) | PR open hawkbee#8, code_layout#1 (stacked on 07) |
+| 09 | [`code_map_repository`: orchestration, save/open/share](sessions/09-code-map-repository.md) | 04, 07, 08 | PR open hawkbee#9, code_map_repository#1, code_analysis_engine#4 (stacked on 08) |
+| 10 | [App shell, theme, settings + rules editor](sessions/10-app-shell-theme-settings.md) | 02, 05 | PR open hawkbee#10, dart_code_3d#3, settings_repository#1 (stacked on 09) |
+| 11 | [Viewer foundation: load, instanced spheres, entry point](sessions/11-viewer-foundation.md) | 02, 03, 08, 10 | PR open hawkbee#11, dart_code_3d#4, code_map_repository#2 (stacked on 10) |
+| 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | PR open hawkbee#12, dart_code_3d#5, settings_repository#2 (stacked on 11) |
 | 13 | [Entering spheres, interior/window view, links](sessions/13-viewer-inside-spheres-and-links.md) | 12 | todo |
 | 14 | [Selection, info panel, labels, search, minimap](sessions/14-viewer-selection-hud-minimap.md) | 13 | todo |
 | 15 | [New analysis flow, recent maps, open & share](sessions/15-analysis-flow-and-files.md) | 09, 10, 11 | todo |

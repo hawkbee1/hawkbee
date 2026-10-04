@@ -84,11 +84,45 @@ fetches a public **archive over HTTPS**, without git:
 
 ## Acceptance criteria
 
-- [ ] Package created and wired. Analyze/format clean, 100% coverage.
-- [ ] Compiles for web: add a test with `platform: chrome` for the web temp storage,
+- [x] Package created and wired. Analyze/format clean, 100% coverage.
+- [x] Compiles for web: add a test with `platform: chrome` for the web temp storage,
       or at least `dart compile js` a small entrypoint in CI notes.
-- [ ] Session log: time and size to fetch flutter_scene 0.23.0 and AltMe (`main`) with the opt-in test.
+- [x] Session log: time and size to fetch flutter_scene 0.23.0 and AltMe (`main`) with the opt-in test.
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-03. Run by Claude Opus 5.5 (the planning model), not by a session agent.** This
+branch is stacked on session 03.
+
+### Built
+- `packages/code_source_client`: public repo
+  [hawkbee1/code_source_client](https://github.com/hawkbee1/code_source_client), submodule +
+  workspace member.
+- API as planned: `CodeSource` (`LocalFolderSource`, `ZipBytesSource`, `GitRepositorySource`),
+  `SourceSnapshot` (+ `MemorySnapshot`), `CodeSourceClient.fetch` → `FetchProgress*` then
+  `FetchDone` | `FetchFailed`, typed `FetchFailure`s (+ `InvalidGitUrl`), `GitUrl.tryParse`,
+  `FileFilter`, `TempStorage` / `SnapshotBuilder` (`MemoryTempStorage`), `LocalFolderReader`.
+- Platform defaults through a conditional export (`lib/src/platform/`): native = temp
+  directory (`DirectoryTempStorage`, deleted on dispose) + `IoLocalFolderReader` + git;
+  web = memory, no folders, no git. `localFoldersSupported` / `gitSupported` flags reproduce
+  the web in VM tests.
+- Opt-in `network` tests download flutter_scene and AltMe (skipped by default).
+
+### Measured
+- flutter_scene @ `flutter_scene-0.23.0`: 1.5 s, 12.7 MB downloaded, 944 files kept (914 Dart),
+  commit `0dc6ee8` detected.
+- AltMe @ default branch: 3.1 s, 64.6 MB downloaded, 1,349 files kept (1,347 Dart), commit `e1f596d`.
+- 73 tests (+2 opt-in), coverage 100%. A JS build extracts a zip in memory and refuses git.
+
+### Deviations and things the next agents must know
+- **`ZipDecoder` never throws on bad input**: garbage, or a truncated zip, gives an empty archive.
+  The extractor checks the `PK` signature, rejects empty archives, and catches the
+  `FormatException` thrown when a **corrupt entry is decompressed (lazily, on `content`)**.
+- A single top folder is stripped only if it is not a package layout folder (`lib`, `bin`,
+  `test`, `tool`, `example`, `web`, `integration_test`, `test_driver`, `packages`, `apps`).
+  Otherwise a zip of only `lib/` would lose `lib/`.
+- Unexpected errors (bugs) are added to the stream as errors, not swallowed.
+- Template quirks: a `:` in the create description breaks the YAML; Very Good CLI's test
+  merging drops library `@Tags` (use `skip_very_good_optimization`). Both are now in
+  `agent-workflow.md`.
+- GitLab support is tested with mocks only (no opt-in GitLab download yet).

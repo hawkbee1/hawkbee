@@ -77,7 +77,9 @@ or `AnalysisFailed(error)`. Check `cancel` between files.
 
 Create `test/fixtures/` with **small hand-written projects**, each with an
 `expected.json` describing the exact expected nodes (ids, kinds, parents, loc).
-Write a test helper that loads a fixture folder into an in-memory `SourceSnapshot`.
+Write a test helper that loads a fixture folder into an in-memory `SourceSnapshot`
+(`MemorySnapshot` from `code_source_client`; reading a folder from disk:
+`CodeSourceClient().fetch(LocalFolderSource(path))`).
 
 | Fixture | Covers |
 |---|---|
@@ -96,11 +98,55 @@ Tag it `slow` and keep it under 60 s.
 
 ## Acceptance criteria
 
-- [ ] All fixtures pass with exact expectations.
-- [ ] `dart compile js` of a tiny entrypoint using the engine succeeds (prove web compatibility; document the command in the package README).
-- [ ] Smoke test on flutter_scene passes. Counts and duration are in the session log.
-- [ ] Analyze/format clean, 100% coverage.
+- [x] All fixtures pass with exact expectations.
+- [x] `dart compile js` of a tiny entrypoint using the engine succeeds (prove web compatibility; document the command in the package README).
+- [x] Smoke test on flutter_scene passes. Counts and duration are in the session log.
+- [x] Analyze/format clean, 100% coverage.
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-03. Run by Claude Opus 5.5 (the planning model), not by a session agent.** This
+branch is stacked on session 04.
+
+### Built
+- `packages/code_analysis_engine`: public repo
+  [hawkbee1/code_analysis_engine](https://github.com/hawkbee1/code_analysis_engine),
+  submodule + workspace member. `analyzer: ^13.0.0` (13.3.0 was already resolved in the
+  workspace), parser only.
+- Rules: `RuleParameter` (`Bool`, `Enum`, `EnumSet`, `GlobList`, `String`) with
+  `RuleOption` (enabled + note), `RuleCatalog.all` (every MVP rule of architecture §5.3,
+  `fullResolution` shown disabled with "Coming later"), `RuleIds`, and `AnalysisRules`
+  (immutable, `copyWith` validation, tolerant `fromJson` with warnings, typed getters,
+  works with any catalog).
+- Pipeline (`lib/src/pipeline/`): `FileCollector`, `UriResolver`, `ParsedFile` +
+  `groupLibraries`, `SymbolTable` (transitive export namespaces, `lookupType` with package
+  guessing), `buildContainment` (+ `findEntryNode`), `linesOfCode`.
+- `CodeAnalysisEngine.analyze` → `AnalysisProgress` (every 25 files) then `AnalysisDone` |
+  `AnalysisFailed` (`AnalysisCancelled` or a bug with its stack trace); `CancelToken`.
+  `Containment.nodeIdsByAst` (syntax node → node id) and `externalSuperclasses` (classes
+  extending external classes while ghost parents are off) are ready for session 06.
+
+### Measured
+- flutter_scene (submodule): 622 files, **11,050 nodes in ~1.6 s**, 0 parse errors, entry
+  `examples/flutter_app/lib/main.dart#main`, 26 ghost parents, 34 packages.
+- AltMe: 1,044 files, **11,012 nodes in ~1.0 s**, entry `lib/main.dart#main`, 19 ghost
+  parents, 92 packages. Its generated localization files (not `*.g.dart`) contribute most
+  of its 6,447 getters. A user can add their pattern to `files.generated_patterns`.
+- 72 tests (incl. the smoke test), coverage 100%. A JS build analyzes a project in Node.
+
+### Deviations and things the next agents must know
+- **Analyzer 13 AST**: classes, enums and extension types expose their name through
+  `namePart.typeName` and their members through `body.members`. A `PrimaryConstructorDeclaration`
+  (Dart 3.13 `class Point(int x, int y)`) is the `namePart` itself, and becomes a constructor
+  node. New-style `new()` constructors have `newKeyword` and no `typeName`.
+- Fixtures are **text files** (`source.txt` with `=== path` sections), not `.dart` files, so
+  the package's own analyze and format never see broken or unresolvable code. Expected
+  results were generated, then reviewed line by line.
+- Duplicate top-level names (broken code) keep the first declaration; duplicate members get
+  `#2`, `#3` id suffixes.
+- A primary constructor's line is not subtracted from its type's lines of code (it is the
+  header). Annotations (`@override`) count as code.
+- Two bugs found by tests and fixed: iterating a map while removing from it
+  (`groupLibraries`), and a non-deterministic tie in the "largest declaration" entry fallback.
+- `analyzer`'s own `Declaration` class clashes with ours: import the analyzer with
+  `hide Declaration` where both are used.

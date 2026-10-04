@@ -4,3 +4,21 @@
 [submodule "apps/dart_code_3d"]
 	path = apps/dart_code_3d
 	url = https://github.com/hawkbee1/dart_code_3d.git
+[submodule "packages/code_graph"]
+	path = packages/code_graph
+	url = https://github.com/hawkbee1/code_graph.git
+[submodule "packages/code_source_client"]
+	path = packages/code_source_client
+	url = https://github.com/hawkbee1/code_source_client.git
+[submodule "packages/code_analysis_engine"]
+	path = packages/code_analysis_engine
+	url = https://github.com/hawkbee1/code_analysis_engine.git
+[submodule "packages/code_layout"]
+	path = packages/code_layout
+	url = https://github.com/hawkbee1/code_layout.git
+[submodule "packages/code_map_repository"]
+	path = packages/code_map_repository
+	url = https://github.com/hawkbee1/code_map_repository.git
+[submodule "packages/settings_repository"]
+	path = packages/settings_repository
+	url = https://github.com/hawkbee1/settings_repository.git

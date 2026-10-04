@@ -77,16 +77,53 @@ runs or platforms; write a small FNV-1a hash).
 
 ## Debug aid
 
-Extend the session 07 CLI with `--layout --out map.fscene` (engine → layout →
-`CodeMapCodec` → file). The owner can open the result in the Flutter Scene Editor.
+Extend the session 07 CLI with `--layout --out map.dc3d` (engine → layout →
+`CodeMapCodec.encodeToBytes` → file; `--out map.fscene` writes plain JSON). The owner can open the result in the Flutter Scene Editor.
 Commit **no** large output files; describe how to produce them.
 
 ## Acceptance criteria
 
-- [ ] Invariant, determinism and performance tests pass. Timings are in the session log.
-- [ ] `map.fscene` for flutter_scene produced by the CLI; its size is in the session log.
-- [ ] Analyze/format clean, 100% coverage.
+- [x] Invariant, determinism and performance tests pass. Timings are in the session log.
+- [x] `map.dc3d` for flutter_scene produced by the CLI; its size is in the session log.
+- [x] Analyze/format clean, 100% coverage.
 
 ## Session log
 
-_(to be filled by the agent)_
+**2026-10-04. Run by Claude Opus 5.5 (the planning model), not by a session agent.** Stacked on
+session 07.
+
+### Built
+- `packages/code_layout`: public repo [hawkbee1/code_layout](https://github.com/hawkbee1/code_layout),
+  submodule + workspace member. Pure Dart; depends on `code_graph` (+ `args` for its CLI).
+- `CodeLayoutEngine().layout(graph, {options, onProgress})`, `LayoutOptions` (with an extra
+  `overlapIterations`), `Octree` (Barnes–Hut), `relaxOverlaps` / `hasNoOverlap` /
+  `latticePacking`, `Vec3` + `fibonacciDirection`.
+- **Invariants are guaranteed**: a container that relaxation cannot fill grows (up to 6×),
+  then falls back to a cubic lattice; the top level spreads out by 10% until no overlap is left.
+- `bin/layout.dart`: `dart run code_layout:layout graph.json --out map.dc3d|map.fscene`.
+
+### Measured
+| Input | Nodes | Layout | File | Overlaps | Outside parent |
+|---|---|---|---|---|---|
+| flutter_scene | 11,050 | 5.2 s | 1.6 MB `.dc3d` | 0 | 0 |
+| AltMe | 11,012 | 4.7 s | 1.5 MB `.dc3d` | 0 | 0 |
+| generated (tests) | 20,004 | 3.8 s | — | 0 | 0 |
+
+Entry node at the origin in all of them. Top view of AltMe's top level:
+[screenshots/s08-altme-top-level.png](../screenshots/s08-altme-top-level.png). Grey = ghost
+parents, dark = packages, colours = folders, red = entry.
+
+### Deviations and things the next agents must know
+- **The layout CLI lives in `code_layout`** (`bin/layout.dart`, reading the engine CLI's graph
+  JSON), not as `--layout` on the engine CLI: that would make the engine depend on the layout
+  package.
+- **`Vec3` instead of `vector_math`**: `vector_math`'s `Vector3` is single precision, which is not
+  enough for exact overlap checks. Convert at the rendering boundary (`Placement.position`).
+- Determinism is exact on a given platform; **VM and JavaScript differ around 1e-13** (`pow`,
+  `sin`, `cos`). Checked, documented, harmless: maps are laid out once and stored.
+- Fixed while looking at AltMe's top view: package spheres ended on a shell twice as far as
+  needed (similar directions overlapped, and the shell grew 15% per try). They now switch to evenly
+  spread directions after 3 tries, from the base radius.
+- `dart fix` rewrites `0.0` → `0` and `1.0` → `1` (prefer_int_literals), which changes type
+  inference (`fold(0, …)` becomes `int`, `List.filled(n, 1)` becomes `List<int>`). Add explicit
+  type arguments when it complains.

@@ -76,6 +76,30 @@ says so and explains how to clone hawkbee with `--recurse-submodules`.
 3. Add a README section "Part of hawkbee" (clone with
    `git clone --recurse-submodules https://github.com/hawkbee1/hawkbee.git`).
 
+New-package pitfalls (found in session 03):
+- **Delete the template's `.github/workflows/` and `.github/dependabot.yaml`**: the
+  package only resolves inside hawkbee, so standalone CI would always fail.
+- **Fix the template's dependency constraints** or `flutter pub get` fails for the whole
+  workspace: `test: ^1.31.0` (Flutter pins `test_api`, `^1.32.0` does not resolve) and
+  `equatable: ^3.0.0` (the other packages use 3.x).
+- Dart 3.13 style: write constructors as `const new(...)`, named generative ones as
+  `new named(...)` (**a space, not a dot**: `new._(…)` is a syntax error, write
+  `new _(…)`), and factories as `factory fromJson(...)`;
+  `dart fix --apply --code=unnecessary_type_name_in_constructor` converts them.
+- **Coverage of `props` and the `const` trap**: two identical `const` instances are the
+  same object, so an Equatable comparison of them never calls `props`, and coverage stays
+  below 100%. Compare instances built at runtime, or call `.props` directly.
+- The VGV hook scans **every line** of a Bash command, heredoc content included, so
+  writing a file that contains `very_good test` or `flutter test` through `cat <<EOF`
+  is denied. Use the Write tool for such files.
+- The MCP `test` tool rejects `timeout_seconds` together with `dart: true`.
+- Very Good CLI merges test files into one, which **drops library-level `@Tags`**. A file
+  with its own tags (e.g. opt-in `network` tests) also needs the
+  `skip_very_good_optimization` tag, declared in `dart_test.yaml` (see
+  `code_source_client`).
+- A description containing `:` breaks the generated `pubspec.yaml` (the create tool fails
+  with a YAML error). Quote it, or avoid colons.
+
 ### Branches, commits and PRs across repositories
 
 - Use the **same branch name** (`dc3d/sNN-<slug>`) in hawkbee and in every
