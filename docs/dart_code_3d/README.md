@@ -65,7 +65,7 @@ session, unless the dependency table below says they are independent.
 | 12 | [Fly mode: keyboard arrows, touch trackball, collisions](sessions/12-viewer-fly-navigation.md) | 11 | PR open hawkbee#12, dart_code_3d#5, settings_repository#2 (stacked on 11) |
 | 13 | [Entering spheres, interior/window view, links](sessions/13-viewer-inside-spheres-and-links.md) | 12 | merged (hawkbee#13, dart_code_3d#6) |
 | 14 | [Selection, info panel, labels, search, minimap](sessions/14-viewer-selection-hud-minimap.md) | 13 | merged (hawkbee#14, dart_code_3d#7) |
-| 15 | [New analysis flow, recent maps, open & share](sessions/15-analysis-flow-and-files.md) | 09, 10, 11 | todo |
+| 15 | [New analysis flow, recent maps, open & share](sessions/15-analysis-flow-and-files.md) | 09, 10, 11 | PR open hawkbee#15, dart_code_3d#8, code_map_repository#3 |
 | 16 | [MVP hardening: AltMe end-to-end, perf, a11y, docs](sessions/16-mvp-hardening.md) | all | todo |
 
 Sessions that can run in parallel once their dependencies are merged: **02 ∥ 03**,
