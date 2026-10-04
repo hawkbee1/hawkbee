@@ -177,6 +177,19 @@ Golden test pitfalls (found in session 02):
 - 3D scenarios go in `integration_test/visual/visual_scenarios.dart`; they must be
   deterministic (no time-based animation, fixed camera).
 
+Pitfalls found later:
+- **Re-run the whole unit suite as the last step before committing**, after any change made
+  while iterating on 3D baselines (a speed constant changed in session 12 broke a test that
+  nobody re-ran).
+- A mock bloc (`MockBloc`) only rebuilds a widget through its stream: use `whenListen` to change
+  its state in a test. A missing `registerFallbackValue` leaves mocktail stuck in `verify` and
+  many unrelated tests fail afterwards: fix the **first** failure.
+- `flutter_scene` blended (translucent) materials ignore `doubleSided`; see the session 13 log.
+- `DC3D_SCENARIO=<id> tool/visual_test.sh` captures a single 3D scenario; after
+  `--update`, a compare run (without `--update`) proves the baselines are stable.
+- 2D goldens depend on the theme seed (the app bar color): an uncommitted theme edit makes every
+  golden fail. Generate goldens with the committed theme.
+
 When you intentionally change a golden or a 3D baseline, regenerate it
 (`update_goldens: true` in the MCP test tool, or `tool/visual_test.sh --update`),
 **look at the new image** (Read tool), and list it in the PR.
