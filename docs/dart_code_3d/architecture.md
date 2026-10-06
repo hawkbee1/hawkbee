@@ -419,3 +419,36 @@ individually raycastable).
 | Ghost parent | Synthetic node for an external superclass that holds the project classes extending it. |
 | Code map | `CodeGraph` + `Placement`s = what a `.dc3d` (gzipped `.fscene`) file holds. |
 | Snapshot | The source files fetched into a temporary folder (or memory on web). |
+
+---
+
+## 12. As built (where reality differs from the plan above)
+
+Recorded at the end of the MVP (session 16); each item has its session log.
+
+- **Tools**: `tool/` holds `visual_test.sh`, `perf_test.sh`, `e2e_test.sh` (the real UI against GitHub,
+  opt-in) and `web_perf.mjs` (a browser measurement), besides the plan's `visual_test.sh`.
+- **Layers**: the app imports `code_graph` (as planned) and, through `code_map_repository`'s
+  re-exports, the source types it builds with; only `bootstrap.dart` (the composition root) imports
+  `code_source_client`. The platform glue lives in the app: `lib/app/platform/` (capabilities, file
+  dialogs, exporter over `file_picker` and `share_plus`) and `lib/app/storage/` (a file store on
+  native platforms, memory on the web). `CodeMapRepository` also reports store errors as a typed
+  `storage` failure and a `changes` stream.
+- **Analysis flow**: one route, `/new-analysis`, swaps the form, the progress and the failure screen
+  by state (not separate routes). The folder source is hidden on Android and iOS (scoped storage,
+  see `future.md`). On the web the maps live in memory.
+- **Viewer**: spheres are three instanced meshes per material (12×6, 24×12 and 48×24 segments), dealt
+  out by how large each looks from the camera (`SphereDetail`); shells are unlit flat tints; the
+  selection is a proxy node with `Node.highlightColor`; the HUD adds a toolbar, an info panel, labels,
+  search and a minimap. Settings also hold the touch controls mode. Locales are English and French.
+- **Nesting scale**: the layout packs a container's children into about a quarter of its volume, which left
+  no room to fly between them. When the viewer opens a map it draws each level of nesting at half the
+  size of the one above it (`scaleNested`, factor `nestedScale` = 0.5): top-level spheres as laid out,
+  their children half, theirs a quarter, and so on; each sphere keeps its place in its parent, and the
+  parent keeps its size. Done at load, so every stored map and the sample get it without a re-layout; the
+  `.dc3d` file still holds the layout as computed. The near plane and the flying speed follow the size of
+  the current sphere, so deep levels stay usable.
+- **Layout progress**: the layout cannot report progress across its isolate, so the progress screen
+  shows an indeterminate bar for that stage.
+- **Performance budget (§7.3)**: measured under software rendering only (a lower bound), on a
+  real GPU nowhere yet: see the session 16 log for the numbers and what is still to measure.
