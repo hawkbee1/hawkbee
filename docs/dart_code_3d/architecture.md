@@ -441,6 +441,13 @@ Recorded at the end of the MVP (session 16); each item has its session log.
   out by how large each looks from the camera (`SphereDetail`); shells are unlit flat tints; the
   selection is a proxy node with `Node.highlightColor`; the HUD adds a toolbar, an info panel, labels,
   search and a minimap. Settings also hold the touch controls mode. Locales are English and French.
+- **Nesting scale**: the layout packs a container's children into about a quarter of its volume, which left
+  no room to fly between them. When the viewer opens a map it draws each level of nesting at half the
+  size of the one above it (`scaleNested`, factor `nestedScale` = 0.5): top-level spheres as laid out,
+  their children half, theirs a quarter, and so on; each sphere keeps its place in its parent, and the
+  parent keeps its size. Done at load, so every stored map and the sample get it without a re-layout; the
+  `.dc3d` file still holds the layout as computed. The near plane and the flying speed follow the size of
+  the current sphere, so deep levels stay usable.
 - **Layout progress**: the layout cannot report progress across its isolate, so the progress screen
   shows an indeterminate bar for that stage.
 - **Performance budget (§7.3)**: measured under software rendering only (a lower bound), on a
