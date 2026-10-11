@@ -558,7 +558,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_scene:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "packages/flutter_scene/packages/flutter_scene"
       relative: true
