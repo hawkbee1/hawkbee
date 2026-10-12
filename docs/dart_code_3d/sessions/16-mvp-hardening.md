@@ -120,6 +120,16 @@ Chromium with software WebGL, 1440×900): AltMe opens in **5.3 s** (7.2 s with `
   (weak, file-level copyleft; fine unmodified), which `file_picker_linux` brings. The bundled Roboto is
   Apache-2.0 with its license file in `assets/fonts`.
 
+### After the review: room to fly inside spheres
+The owner found the spheres inside a sphere too big to fly between. `scaleNested` (applied when the
+viewer opens a map) draws every level of nesting at half the size of the level above, and the same
+rule again for what those contain: top-level spheres unchanged, their children ×0.5, theirs ×0.25.
+Offsets inside a parent shrink with the parent, so children keep their places and each container keeps
+its size. Because levels get small fast, the near plane (`nearDepthFor`) and the speed floor now follow the
+current sphere. Existing stored maps need no re-analysis. `inside_interior` and `inside_window`
+baselines were refreshed (I looked at before and after); 2D goldens: `viewer_inside_window` and
+`minimap_inside`.
+
 ### Green gate
 | Package | Tests | Coverage |
 |---|---|---|

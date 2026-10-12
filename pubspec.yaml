@@ -18,8 +18,12 @@ workspace:
   - packages/hawkbee_schema
   - packages/settings_repository
 
-# flutter_scene (submodule) and our code_graph must share the same local `scene`.
+# flutter_scene and scene come from the packages/flutter_scene submodule, which is
+# its own pub workspace, so they cannot be members here. Members depend on them by
+# version; these overrides point every member at the submodule's local copies.
 dependency_overrides:
+  flutter_scene:
+    path: packages/flutter_scene/packages/flutter_scene
   scene:
     path: packages/flutter_scene/packages/scene
 

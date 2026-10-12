@@ -9,8 +9,7 @@ environment:
   flutter: ^3.47.0
 
 dependencies:
-  appwrite_api_client:
-    path: ../appwrite_api_client
+  appwrite_api_client: ^0.1.0
   flutter:
     sdk: flutter
 
