@@ -59,3 +59,9 @@ Sessions must **not** implement them unless the owner asks.
 - Report the layout's progress across the isolate, instead of the indeterminate bar of the "laying
   out" stage (`MapWorker.layoutAndEncode` has no progress stream yet).
 - Share a map by link instead of a file (see the Appwrite item above).
+- Measure on real GPUs: a phone, the iPhone, a desktop and a browser. Everything measured so far is
+  software rendering (llvmpipe, SwiftShader), which says where triangles and fill rate go, not the
+  frame rate of a device (§7.3's budget).
+- Spheres inside a very busy container (1,000+ members) are still the heaviest view; next levers are
+  culling spheres behind the camera and a coarser level for far groups.
+- Cap or aggregate links (strongest first) if a device struggles (see session 13's note).
