@@ -24,4 +24,4 @@
 	url = https://github.com/hawkbee1/settings_repository.git
 [submodule "apps/battle_team"]
 	path = apps/battle_team
-	url = E:\\documents\\battle_team.git
+	url = https://github.com/hawkbee1/battle_team.git
