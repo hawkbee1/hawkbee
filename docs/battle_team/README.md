@@ -38,7 +38,7 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 | [M4.8](sessions/m4-08-damage-friendly-fire-transports.md) | Damage, friendly fire, transports | `battle_rules` | M4.2 | PR open #24 |
 | [M4.9](sessions/m4-09-morale-and-zero-hp-outcomes.md) | Morale and 0-HP outcomes | `battle_rules` | M4.8 | PR open #28 |
 | [M4.10](sessions/m4-10-role-actions-pushing-hq-moves.md) | Role actions, pushing, HQ moves, interruption | `battle_rules` | M4.3, M4.4 | PR open #26 |
-| [M4.11](sessions/m4-11-scenario-harness.md) | Scenario harness | `battle_rules` | M4.3 to M4.10 | todo |
+| [M4.11](sessions/m4-11-scenario-harness.md) | Scenario harness | `battle_rules` | M4.3 to M4.10 | in progress |
 | [M3.2](sessions/m3-02-navigation-model.md) | Navigation model | `battle_pathfinding` | M3.1 | todo |
 | [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | todo |
 | [M3.4](sessions/m3-04-paths-for-relics-and-hqs.md) | Paths for relics and HQs | `battle_pathfinding` | M3.3 | todo |
