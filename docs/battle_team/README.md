@@ -32,7 +32,7 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 | [M4.2](sessions/m4-02-load-and-validate-data.md) | Load and validate the data files | `battle_rules` | M4.1 | PR open #20 |
 | [M4.3](sessions/m4-03-clock-and-ap-pool.md) | Simulation clock and AP pool | `battle_rules` | M4.2 | PR open #21 |
 | [M4.4](sessions/m4-04-movement-cost.md) | Movement cost | `battle_rules` | M4.2 | PR open #22 |
-| [M4.5](sessions/m4-05-vision.md) | Vision | `battle_rules` | M4.2 | todo |
+| [M4.5](sessions/m4-05-vision.md) | Vision | `battle_rules` | M4.2 | in progress |
 | [M4.6](sessions/m4-06-weapons-and-firing-cycle.md) | Weapons and firing cycle | `battle_rules` | M4.3 | todo |
 | [M4.7](sessions/m4-07-hit-chance-and-first-person-shots.md) | Hit chance and first-person shots | `battle_rules` | M4.5, M4.6 | todo |
 | [M4.8](sessions/m4-08-damage-friendly-fire-transports.md) | Damage, friendly fire, transports | `battle_rules` | M4.2 | todo |
