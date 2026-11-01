@@ -28,3 +28,6 @@
 [submodule "packages/battle_rules"]
 	path = packages/battle_rules
 	url = https://github.com/hawkbee1/battle_rules.git
+[submodule "packages/battle_pathfinding"]
+	path = packages/battle_pathfinding
+	url = https://github.com/hawkbee1/battle_pathfinding.git
