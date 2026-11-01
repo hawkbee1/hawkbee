@@ -29,7 +29,7 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 |---|---|---|---|---|
 | [M4.1](sessions/m4-01-project-scaffold.md) | `battle_rules`: project scaffold | `battle_rules` | prerequisites | merged |
 | [M3.1](sessions/m3-01-project-scaffold.md) | `battle_pathfinding`: project scaffold | `battle_pathfinding` | M4.1 (both edit the hawkbee root files) | merged |
-| [M4.2](sessions/m4-02-load-and-validate-data.md) | Load and validate the data files | `battle_rules` | M4.1 | in progress |
+| [M4.2](sessions/m4-02-load-and-validate-data.md) | Load and validate the data files | `battle_rules` | M4.1 | PR open #20 |
 | [M4.3](sessions/m4-03-clock-and-ap-pool.md) | Simulation clock and AP pool | `battle_rules` | M4.2 | todo |
 | [M4.4](sessions/m4-04-movement-cost.md) | Movement cost | `battle_rules` | M4.2 | todo |
 | [M4.5](sessions/m4-05-vision.md) | Vision | `battle_rules` | M4.2 | todo |
