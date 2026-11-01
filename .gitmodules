@@ -25,3 +25,6 @@
 [submodule "apps/battle_team"]
 	path = apps/battle_team
 	url = https://github.com/hawkbee1/battle_team.git
+[submodule "packages/battle_rules"]
+	path = packages/battle_rules
+	url = https://github.com/hawkbee1/battle_rules.git
