@@ -13,10 +13,19 @@
 - M3 tests use fixture maps and an injected cost: this package never reads `plan/data`.
 
 ## Acceptance criteria
-- [ ] The acceptance criteria of the issue (m3-pathfinding.md, Issue 1).
-- [ ] The package is in the root `workspace:` list, the melos `format` list and `.gitmodules`.
-- [ ] `dart pub deps` shows no `flutter`.
-- [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
+- [x] The acceptance criteria of the issue (m3-pathfinding.md, Issue 1).
+- [x] The package is in the root `workspace:` list, the melos `format` list and `.gitmodules`.
+- [x] `dart pub deps` shows no `flutter`.
+- [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
-_Written by the session agent when it finishes._
+Built (2026-11-01):
+- `packages/battle_pathfinding`: Very Good CLI `dart_package`, own public repository `hawkbee1/battle_pathfinding` (merge commits only), submodule of hawkbee, in the root `workspace:` and melos `format` lists. `.github/workflows/` and `dependabot.yaml` deleted, `test: ^1.31.0`. The template generated no `.vscode/` and already writes `const new()`.
+- `lib/`: only the template placeholder `BattlePathfinding`, with its placeholder test. M3.2 replaces it with the navigation model.
+- README: what the package is (injected movement cost, no game data), "Part of hawkbee", the specification paths, how to run the tests.
+
+Checks: analyze `--fatal-infos` clean, format clean, 1 test passes, coverage 100 % (1/1 line in `lib/`). `dart pub deps` for `battle_pathfinding`: `mocktail`, `test`, `very_good_analysis` only, no `flutter`.
+
+Deviations: none. Questions raised: none.
+
+Pitfall: the MCP `create` tool reports a failure because its `dart pub get` runs before the package is in the root `workspace:` list. The files are generated: add the package to the list, then run `flutter pub get` at the root.
