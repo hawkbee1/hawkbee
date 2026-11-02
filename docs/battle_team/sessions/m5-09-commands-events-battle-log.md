@@ -39,6 +39,6 @@ Choices:
 
 Not in version 1 (adding them later is a new tag at the end of its list, not a new version): the HQ manager's team-wide orders and map markers (HQ-09), guild requests during a battle (stack decision 8), a stop order.
 
-Open point for M5.11, not asked yet: who chooses the path of a pushed relic. RELIC-24 says the relic moves while 10 pushers push, but no rule names who gives its direction; `Push` carries only the contribution.
+Decision by the owner (2026-11-02), recorded in battle_team on `bt/m5-09-protocol`: decision 219 (Q-REL-14, RELIC-24), the player whose unit first tries to move a relic while its push pot is empty chooses its path. `Push` carries an optional `path`; the host uses it only when the pot is empty.
 
 Sizes (binary, version 1, the committed samples, IDs of 6 to 14 characters): a `Fire` command 53 bytes, a `Move` with a 3-cell path 70; an `Attacked` with 4 impacts 145 (about 26 per impact); the log entry of an artillery shot with its outcome and a dropped weapon 230; `OrderRefused` 18. The same `Fire` command in JSON: 176 bytes. String IDs dominate: stack decision 3 assumed about 40 bytes per event. If P-03 (M5.15) needs smaller logs, a battle-wide ID table is a version 2 change.
