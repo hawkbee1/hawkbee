@@ -6,6 +6,7 @@
 **Read** (`plan/` is `apps/battle_team/plan/`): `plan/stack/05-map-format.md` (all of it); MAP-01 to MAP-05, MAP-10, MAP-36, MAP-40; RELIC-02; HQ-01; `plan/data/terrain.yaml`; the M3.2 session log (`NavigationMap`, the fixture format).
 
 ## Notes
+- A map has fewer than 2 × `victory.relics_to_hold` relics, so no tie is possible (RELIC-17); `VictoryRules.start` (M5.5) refuses others. Check it when validating a map.
 - New package: the procedure of dc3d §2 with the Very Good CLI MCP `create` (`subcommand: dart_package`, `name: battle_map`, `output_directory: packages`, `workspace: true`, a description without a colon). Create `hawkbee1/battle_map` with `gh repo create --public`, add it to the root `workspace:` and melos `format` lists, and apply the new-package pitfalls of dc3d §2 (and of the M4.1 and M3.1 session logs).
 - Check the image package's API with context7 before use, and its licence with `packages_check_licenses`.
 - The loader builds `battle_pathfinding`'s `NavigationMap`; do not copy its model.
