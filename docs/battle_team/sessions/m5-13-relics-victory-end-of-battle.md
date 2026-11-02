@@ -7,6 +7,7 @@
 
 ## Notes
 - The end-of-battle event is what `end_battle` (M5.18) reads: give it the winner, the eliminations in order and the time, and version it with the log format (M5.9).
+- `VictoryRules` (M5.5) returns the events; the host applies `StorageRules.atElimination` to an eliminated team's units, and the order chain refuses that team's orders: it is out of the battle (HQ-18).
 
 ## Acceptance criteria
 - [ ] The acceptance criteria of the issue (m5-simulation-host.md, Issue 13).
