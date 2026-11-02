@@ -61,8 +61,8 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.4](sessions/m5-04-storage-deployment-commander-death.md) | Storage, deployment and the commander's death | `battle_rules` | M5.2, M5.3 | merged |
 | [M5.5](sessions/m5-05-relic-ownership-and-victory.md) | Relic ownership and victory | `battle_rules` | M5.4 | merged |
 | [M5.6](sessions/m5-06-teams-newcomers-hq-manager.md) | Teams, newcomers and the HQ manager | `battle_rules` | M5.2 | merged |
-| [M5.7](sessions/m5-07-wars-sections-guilds.md) | Wars, sections and guilds | `battle_rules` | M5.6 | PR open #43 |
-| [M5.8](sessions/m5-08-map-format-and-loader.md) | Map format and loader | `battle_map` | M3 (merged) | todo |
+| [M5.7](sessions/m5-07-wars-sections-guilds.md) | Wars, sections and guilds | `battle_rules` | M5.6 | merged |
+| [M5.8](sessions/m5-08-map-format-and-loader.md) | Map format and loader | `battle_map` | M3 (merged) | PR open #44 |
 | [M5.9](sessions/m5-09-commands-events-battle-log.md) | Commands, events and the battle log | `battle_protocol` | M4 (merged) | todo |
 | [M5.10](sessions/m5-10-host-scaffold-battle-state.md) | Host scaffold, battle state and clock | `battle_host` | M5.1, M5.8, M5.9 | todo |
 | [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | todo |
