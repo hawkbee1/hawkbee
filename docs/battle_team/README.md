@@ -29,21 +29,21 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 |---|---|---|---|---|
 | [M4.1](sessions/m4-01-project-scaffold.md) | `battle_rules`: project scaffold | `battle_rules` | prerequisites | merged |
 | [M3.1](sessions/m3-01-project-scaffold.md) | `battle_pathfinding`: project scaffold | `battle_pathfinding` | M4.1 (both edit the hawkbee root files) | merged |
-| [M4.2](sessions/m4-02-load-and-validate-data.md) | Load and validate the data files | `battle_rules` | M4.1 | PR open #20 |
-| [M4.3](sessions/m4-03-clock-and-ap-pool.md) | Simulation clock and AP pool | `battle_rules` | M4.2 | PR open #21 |
-| [M4.4](sessions/m4-04-movement-cost.md) | Movement cost | `battle_rules` | M4.2 | PR open #22 |
-| [M4.5](sessions/m4-05-vision.md) | Vision | `battle_rules` | M4.2 | PR open #23 |
-| [M4.6](sessions/m4-06-weapons-and-firing-cycle.md) | Weapons and firing cycle | `battle_rules` | M4.3 | PR open #25 |
-| [M4.7](sessions/m4-07-hit-chance-and-first-person-shots.md) | Hit chance and first-person shots | `battle_rules` | M4.5, M4.6 | PR open #27 |
-| [M4.8](sessions/m4-08-damage-friendly-fire-transports.md) | Damage, friendly fire, transports | `battle_rules` | M4.2 | PR open #24 |
-| [M4.9](sessions/m4-09-morale-and-zero-hp-outcomes.md) | Morale and 0-HP outcomes | `battle_rules` | M4.8 | PR open #28 |
-| [M4.10](sessions/m4-10-role-actions-pushing-hq-moves.md) | Role actions, pushing, HQ moves, interruption | `battle_rules` | M4.3, M4.4 | PR open #26 |
-| [M4.11](sessions/m4-11-scenario-harness.md) | Scenario harness | `battle_rules` | M4.3 to M4.10 | PR open #29 |
-| [M3.2](sessions/m3-02-navigation-model.md) | Navigation model | `battle_pathfinding` | M3.1 | PR open #30 |
-| [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | PR open #31 |
-| [M3.4](sessions/m3-04-paths-for-relics-and-hqs.md) | Paths for relics and HQs | `battle_pathfinding` | M3.3 | PR open #32 |
-| [M3.5](sessions/m3-05-world-changes.md) | World changes | `battle_pathfinding` | M3.3 | PR open #33 |
-| [M3.6](sessions/m3-06-long-paths-on-big-maps.md) | Long paths on big maps | `battle_pathfinding` | M3.3, M3.5 | PR open #34 |
+| [M4.2](sessions/m4-02-load-and-validate-data.md) | Load and validate the data files | `battle_rules` | M4.1 | merged |
+| [M4.3](sessions/m4-03-clock-and-ap-pool.md) | Simulation clock and AP pool | `battle_rules` | M4.2 | merged |
+| [M4.4](sessions/m4-04-movement-cost.md) | Movement cost | `battle_rules` | M4.2 | merged |
+| [M4.5](sessions/m4-05-vision.md) | Vision | `battle_rules` | M4.2 | merged |
+| [M4.6](sessions/m4-06-weapons-and-firing-cycle.md) | Weapons and firing cycle | `battle_rules` | M4.3 | merged |
+| [M4.7](sessions/m4-07-hit-chance-and-first-person-shots.md) | Hit chance and first-person shots | `battle_rules` | M4.5, M4.6 | merged |
+| [M4.8](sessions/m4-08-damage-friendly-fire-transports.md) | Damage, friendly fire, transports | `battle_rules` | M4.2 | merged |
+| [M4.9](sessions/m4-09-morale-and-zero-hp-outcomes.md) | Morale and 0-HP outcomes | `battle_rules` | M4.8 | merged |
+| [M4.10](sessions/m4-10-role-actions-pushing-hq-moves.md) | Role actions, pushing, HQ moves, interruption | `battle_rules` | M4.3, M4.4 | merged |
+| [M4.11](sessions/m4-11-scenario-harness.md) | Scenario harness | `battle_rules` | M4.3 to M4.10 | merged |
+| [M3.2](sessions/m3-02-navigation-model.md) | Navigation model | `battle_pathfinding` | M3.1 | merged |
+| [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | merged |
+| [M3.4](sessions/m3-04-paths-for-relics-and-hqs.md) | Paths for relics and HQs | `battle_pathfinding` | M3.3 | merged |
+| [M3.5](sessions/m3-05-world-changes.md) | World changes | `battle_pathfinding` | M3.3 | merged |
+| [M3.6](sessions/m3-06-long-paths-on-big-maps.md) | Long paths on big maps | `battle_pathfinding` | M3.3, M3.5 | merged |
 
 Parallel once their dependencies are merged: **M3 ∥ M4**; **M4.3 ∥ M4.4 ∥ M4.5 ∥ M4.8** after M4.2; **M4.6 ∥ M4.10** after M4.3 and M4.4; **M3.4 ∥ M3.5** after M3.3. Two parallel sessions of one package rebase on `main` before opening their PR.
 
