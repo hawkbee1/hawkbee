@@ -11,8 +11,20 @@
 - This is the code the host runs: a client never decides a hit (stack decision 8).
 
 ## Acceptance criteria
-- [ ] The acceptance criteria of the issue (m4-rules-core.md, Issue 7).
-- [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
+- [x] The acceptance criteria of the issue (m4-rules-core.md, Issue 7).
+- [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
-_Written by the session agent when it finishes._
+Built (2026-11-01), stacked on M4.10 (not merged yet), in `packages/battle_rules/lib/src/combat/`:
+- `seeded_random.dart`: the `SeededRandom` port (stack decision 7) and `DartSeededRandom(seed)`.
+- `hit_chance.dart`: `HitChance(combat)` with `of(weapon:, attack:, morale:, defense:, targetArmor:, targetSpeedMps:, distanceM:, cover:)` (the clamped formula; `Cover` none, partial, full), `moraleFactor`, `HitChance.roll` → `HitRoll(roll, chance)` (`hits`, `missImportance`), `HitChance.canTargetPosition` (indirect fire on a position seen by the section or relayed by a radio, within range), `landingPoint` (decision 154 scatter, pulled back to the range).
+- `vec3.dart`: `Vec3`, plain vector maths.
+- `first_person.dart`: `FirstPersonShots(combat)` with `spreadDeg`, `deviate` (uniform over the spread cone) and `fire(weapon:, origin:, aim:, fireTime:, attack:, morale:, random:, targets:, obstacles:)` → `ShotHitsTarget`, `ShotHitsObstacle` or `ShotMisses`. `ShotTarget` (position, `hit_box_m` turned by its heading, velocity during the flight); `ObstacleQuery` port for terrain and objects. The projectile flies straight at `projectile_speed_mps` up to `range_m`; moving boxes are met with a slab test in their own axes.
+
+Checks: analyze `--fatal-infos` clean, format clean, 379 tests pass, coverage 100 % (1235/1235 lines). Statistical test: 10,000 rolls with seed 7 on real data hit within 1 % of the chance.
+
+Deviations and choices:
+- The morale factor is linear over `morale.range` (`at_0` at its lowest, `at_100` at its highest), which is 0 to 100 in the data.
+- Spread: `base × (1 − reduction × attack) ÷ morale factor`, then `min_spread_deg` (the floor comes last). The deviation is uniform over the cone's opening.
+- Shots fly in a straight line (no drop); a shot that reaches its range stops.
+- COMBAT-16 (both modes give comparable results) is a balancing target: the test checks that attack and morale move the hit chance and the spread the same way. Measuring the averages belongs to the scenario harness (M4.11).
