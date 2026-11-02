@@ -55,7 +55,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 
 | Session | Issue | Package | Depends on | Status |
 |---|---|---|---|---|
-| [M5.1](sessions/m5-01-effective-stats-and-skill-trees.md) | Effective stats and skill trees | `battle_rules` | M4 (merged) | todo |
+| [M5.1](sessions/m5-01-effective-stats-and-skill-trees.md) | Effective stats and skill trees | `battle_rules` | M4 (merged) | PR open #37 |
 | [M5.2](sessions/m5-02-xp-and-commander-level.md) | XP, section XP and commander level | `battle_rules` | M4 (merged) | todo |
 | [M5.3](sessions/m5-03-money.md) | Money | `battle_rules` | M5.2 | todo |
 | [M5.4](sessions/m5-04-storage-deployment-commander-death.md) | Storage, deployment and the commander's death | `battle_rules` | M5.2, M5.3 | todo |
