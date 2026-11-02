@@ -38,3 +38,12 @@ Map build about 0.5 s and search preparation about 0.5 s per mover at 10 m. The 
 Proposal for the owner (P-01 time target, not written into `performance-tests.md` until confirmed): at 10 m cells, a fast path in at most 50 ms for 2 km and 500 ms for a map-crossing path, on the host, AOT. The stack estimate of about 1 ms per path is not reached by this method; if needed, the next step is a hierarchical search with precomputed paths between block entrances (HPA*). The 20 m cell halves the time and quarters the memory; the cell size stays a stack decision (stack decision 5).
 
 Deviations: the search covers the ground surface only; paths that use islands or links stay with `Pathfinder` (they are short).
+
+### Milestone review (VGV review agent, all of M3), 2026-11-02
+Fixed on this branch (`battle_pathfinding`, last commit; 120 tests, 100 % coverage):
+- Diagonal steps no longer cut corners: a diagonal needs both cells it passes between passable for the mode used (Q-MAP-18), in `Pathfinder` and `GroundSearch`; the live step cache indexes diagonals under those cells too.
+- The path check takes the cheapest of the plain step and every link between two cells, like the search (a flyer next to a ladder, a relic with a plain and a reinforced bridge).
+- Links and falls meet blocking objects: a wall at a bridge head or a ladder top stops ground classes; a fall cannot land on a building or a wall (Q-MAP-16).
+- `GroundSearch.apply(map, touched)` reloads only the changed cells and the block prices around them; `fast` answers null at once when the blocks have no path, and checks its arguments.
+- Craters are added incrementally (`NavigationMap.withCrater`, `copyWith`); links are validated; objects, constructions and links are kept unmodifiable; links and islands are indexed by cell; the step cache is private to `LivePathfinder`; `find` throws for a cell off the map; `check` fails an empty path.
+Deferred, for M5 (noted here so the host session picks them up): objects and constructions are still copied on each change (O(objects) per change); one `GroundSearch` per mover holds about 135 MB at 5 M cells (share the per-map arrays, Flyweight); unreachable goals with a block path still widen the corridor up to the whole ground (connected-component labels would answer at once).
