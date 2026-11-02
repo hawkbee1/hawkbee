@@ -8,6 +8,7 @@
 ## Notes
 - Balancing by power with guilds kept together is a partition problem: a greedy largest-block-first method is enough if its worst case is stated in the doc comment and tested.
 - Medal points come from the medals a player holds (M5.17 computes them); here they are an input.
+- A newcomer's commander arrives next to his section's portal (HQ-46, decision 129; `StorageRules.placeOf`). Decision 205 refuses a purchase whose arrival is blocked, but a commander is not bought: ask the owner what happens when an enemy within 20 m blocks his arrival before coding it.
 
 ## Acceptance criteria
 - [ ] The acceptance criteria of the issue (m5-simulation-host.md, Issue 6).
