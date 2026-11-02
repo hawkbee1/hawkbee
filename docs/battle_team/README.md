@@ -57,7 +57,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 |---|---|---|---|---|
 | [M5.1](sessions/m5-01-effective-stats-and-skill-trees.md) | Effective stats and skill trees | `battle_rules` | M4 (merged) | PR open #37 |
 | [M5.2](sessions/m5-02-xp-and-commander-level.md) | XP, section XP and commander level | `battle_rules` | M4 (merged) | PR open #38 |
-| [M5.3](sessions/m5-03-money.md) | Money | `battle_rules` | M5.2 | todo |
+| [M5.3](sessions/m5-03-money.md) | Money | `battle_rules` | M5.2 | PR open #39 |
 | [M5.4](sessions/m5-04-storage-deployment-commander-death.md) | Storage, deployment and the commander's death | `battle_rules` | M5.2, M5.3 | todo |
 | [M5.5](sessions/m5-05-relic-ownership-and-victory.md) | Relic ownership and victory | `battle_rules` | M5.4 | todo |
 | [M5.6](sessions/m5-06-teams-newcomers-hq-manager.md) | Teams, newcomers and the HQ manager | `battle_rules` | M5.2 | todo |
