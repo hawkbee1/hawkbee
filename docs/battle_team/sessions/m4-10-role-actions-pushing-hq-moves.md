@@ -12,9 +12,27 @@
 - Positions stay abstract: distances, "inside the radius", "a unit in the path". Paths come from M3 and the map from M5.
 
 ## Acceptance criteria
-- [ ] The acceptance criteria of the issue (m4-rules-core.md, Issue 10).
-- [ ] A capture pot records each contributor's AP.
-- [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
+- [x] The acceptance criteria of the issue (m4-rules-core.md, Issue 10).
+- [x] A capture pot records each contributor's AP.
+- [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
-_Written by the session agent when it finishes._
+Built (2026-11-01), stacked on M4.6 (not merged yet), in `packages/battle_rules/lib/src/actions/`:
+- `role_actions.dart`: `TimedAction(ap, duration, progress, startedAt)` (`remainingAp`, `endsAt`, `progressAt`, `interruptedAt`: AP lost, progress kept); `RoleActionRules(combat:, terrain:)` with `startBuild` (structure AP and build time, only the role's structures), `startRepair`, `resume` (pays the part left; any unit may resume), `heal` (instant, `heal_ap` for `heal` HP, capped at max), `repairHp`. Heal and repair: friendly targets only, never the HQ (`ActionTarget`).
+- `capture.dart`: `CapturePot(team, contributions by unit id, fullAt)`; `CaptureRules(settings)` with `contribute` (inside the radius, no enemy inside, `contribution_ap`, full at `pot_ap` and the timer starts), `withOccupants` (an enemy inside empties it, even with no unit of its team inside), `capturedAt`, `enemyInRadius` (every `Presence` counts).
+- `push.dart`: `PushPot(owner, ap)` with `capturedBy` and `fallen`; `PushingRules(push:, cost:)` with `contribute` and `move` (needs `min_pushers`, pays `pot_ap_per_m` × `push` profile per metre, stops when the pot is empty, crushes the first `(pushers − min) × crush_units_per_extra_pusher` units it meets and stops at the next, decision 185). `PushMove(distanceM, endsAt, pot, crushed, stop)`.
+- `hq_move.dart`: `moveHq(hq:, cost:, pool:, start:, path:, unitInPathAtM:)`: the HQ's own pool, `Mover.hq`, ended where a unit stands (`endedByUnit`); `pathUpTo`.
+- `action_result.dart`: `ActionResult` (sealed): `ActionRefused(ActionRefusal)`, `TimedActionStarted`, `Healed`, `CaptureContributed`, `PushContributed`. `Health.healed` added to M4.8's `Health`.
+
+Checks: analyze `--fatal-infos` clean, format clean, 342 tests pass, coverage 100 % (1105/1105 lines).
+
+Questions raised and decided by the owner (2026-11-01), recorded in battle_team on `bt/m4-10-role-actions`:
+- Decision 185 (Q-CBT-35, RELIC-25): with 10 + n pushers the relic crushes the first n units it meets, one by one, and stops at the next.
+- Decision 186 (Q-CBT-36, HQ-16): own fire damages the own HQ. M4.8 already does.
+- Decision 187 (Q-CBT-37, COMBAT-28, COMBAT-30): a swapped-in or picked-up weapon arrives unloaded; a new unit's default weapon comes loaded. M4.6 already does.
+
+Deviations:
+- A contribution adds the full `contribution_ap`; the pot is full once it holds at least `pot_ap` (the data's 50 and 5 divide exactly).
+- Positions stay abstract: `insideRadius`, the occupants of the radius, the distances of the units in a path.
+- The pusher count is fixed for one `move` call; the caller calls again when pushers come or go (the push stops while fewer than `min_pushers` push).
+- The manager's right to order HQ moves (HQ-10) is an order check of M5; here the HQ moves on its own pool with the push profile.
