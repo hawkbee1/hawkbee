@@ -58,8 +58,8 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.1](sessions/m5-01-effective-stats-and-skill-trees.md) | Effective stats and skill trees | `battle_rules` | M4 (merged) | merged |
 | [M5.2](sessions/m5-02-xp-and-commander-level.md) | XP, section XP and commander level | `battle_rules` | M4 (merged) | merged |
 | [M5.3](sessions/m5-03-money.md) | Money | `battle_rules` | M5.2 | merged |
-| [M5.4](sessions/m5-04-storage-deployment-commander-death.md) | Storage, deployment and the commander's death | `battle_rules` | M5.2, M5.3 | PR open #40 |
-| [M5.5](sessions/m5-05-relic-ownership-and-victory.md) | Relic ownership and victory | `battle_rules` | M5.4 | todo |
+| [M5.4](sessions/m5-04-storage-deployment-commander-death.md) | Storage, deployment and the commander's death | `battle_rules` | M5.2, M5.3 | merged |
+| [M5.5](sessions/m5-05-relic-ownership-and-victory.md) | Relic ownership and victory | `battle_rules` | M5.4 | PR open #41 |
 | [M5.6](sessions/m5-06-teams-newcomers-hq-manager.md) | Teams, newcomers and the HQ manager | `battle_rules` | M5.2 | todo |
 | [M5.7](sessions/m5-07-wars-sections-guilds.md) | Wars, sections and guilds | `battle_rules` | M5.6 | todo |
 | [M5.8](sessions/m5-08-map-format-and-loader.md) | Map format and loader | `battle_map` | M3 (merged) | todo |
