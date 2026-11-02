@@ -43,7 +43,7 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 | [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | PR open #31 |
 | [M3.4](sessions/m3-04-paths-for-relics-and-hqs.md) | Paths for relics and HQs | `battle_pathfinding` | M3.3 | PR open #32 |
 | [M3.5](sessions/m3-05-world-changes.md) | World changes | `battle_pathfinding` | M3.3 | PR open #33 |
-| [M3.6](sessions/m3-06-long-paths-on-big-maps.md) | Long paths on big maps | `battle_pathfinding` | M3.3, M3.5 | in progress |
+| [M3.6](sessions/m3-06-long-paths-on-big-maps.md) | Long paths on big maps | `battle_pathfinding` | M3.3, M3.5 | PR open #34 |
 
 Parallel once their dependencies are merged: **M3 ∥ M4**; **M4.3 ∥ M4.4 ∥ M4.5 ∥ M4.8** after M4.2; **M4.6 ∥ M4.10** after M4.3 and M4.4; **M3.4 ∥ M3.5** after M3.3. Two parallel sessions of one package rebase on `main` before opening their PR.
 
