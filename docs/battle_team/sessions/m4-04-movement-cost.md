@@ -11,9 +11,20 @@
 - Time along a path is its length ÷ `move_speed`, whatever the terrain and slope (decision 180).
 
 ## Acceptance criteria
-- [ ] The acceptance criteria of the issue (m4-rules-core.md, Issue 4).
-- [ ] A pushed relic and an HQ priced with the `push` profile on grass, mud, road and a slope.
-- [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
+- [x] The acceptance criteria of the issue (m4-rules-core.md, Issue 4).
+- [x] A pushed relic and an HQ priced with the `push` profile on grass, mud, road and a slope.
+- [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
-_Written by the session agent when it finishes._
+Built (2026-11-01), stacked on M4.3 (not merged yet), in `packages/battle_rules/lib/src/movement/movement_cost.dart`:
+- `MovementCost(terrain)`, Strategy (stack decision 7). `call(apPerM, mode, terrainType, slopeDegrees)` is the shape M3 injects: `apPerM × ap_multiplier[mode] × max(min_multiplier, 1 + slope × factor)`, null when the table says null or `|slope| > max_degrees`. Unknown terrain types and modes throw an `ArgumentError`.
+- `Mover(apPerM, modes, speedMps)` with `Mover.unit(unit, flying:)`, `Mover.hq(hq)` and `Mover.relic(push)`: the last two use the `push` profile with `hq.ap_per_m` and `push.pot_ap_per_m`, at their speed per hour.
+- `PathSample(terrainType, slopeDegrees, lengthM)`; `ofSample` (cheapest passable mode of the mover), `ofPath` (sum, null when a sample is impassable) and `move(mover:, pool:, start:, path:)`, which chains M4.3's `moveAlong` per sample and does not move at all when a sample is impassable.
+
+Checks: analyze `--fatal-infos` clean, format clean, 238 tests pass, coverage 100 % (806/806 lines). The fixture terrain gained `mud` and `road` for the push-profile cases.
+
+Deviations:
+- An amphibious unit uses its ground class and `sail`, and each sample takes the cheaper passable one. "Whichever fits the terrain" does not say what happens where both pass; no terrain of the current data allows both (water is null for ground classes, land is null for `sail`).
+- No amphibious unit exists in `units.yaml`: its test turns the fixture boat amphibious.
+
+For the next sessions: M3's path search can take `MovementCost.call` as its injected cost. M4.10 uses `Mover.hq` and `Mover.relic` (`ofPath` prices a push from the pot).
