@@ -12,8 +12,29 @@
 - Propose to the user a time-per-path target for P-01 from the measurement.
 
 ## Acceptance criteria
-- [ ] The acceptance criteria of the issue (m3-pathfinding.md, Issue 6).
-- [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
+- [x] The acceptance criteria of the issue (m3-pathfinding.md, Issue 6).
+- [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
-_Written by the session agent when it finishes._
+Built (2026-11-02), stacked on M3.5 (not merged yet), in `packages/battle_pathfinding`:
+- `lib/src/ground_search.dart`: `GroundSearch(map:, cost:, mover:, rules:)`, prepared per mover with typed arrays (heights, blocking objects, effective terrain per mode) and memoized costs per (mode, terrain, slope). `exact(from, to)`: Dijkstra over the whole ground. `fast(from, to, blockSize: 16, corridor: 1)`: the cheapest path over blocks (each block costs its cheapest cell on flat ground, so block paths follow roads; block costs are priced once per block size), then the exact search inside a corridor of blocks around it, the corridor doubling until a path is found, the whole ground last. Both price steps exactly as `Pathfinder` and return their path through `Pathfinder.check`. Ground only: no islands or links. `lastSettled` counts the work.
+- `PathRules.terrainFor` now holds the effective-terrain rule used by both searches.
+- `lib/src/synthetic_map.dart`: `syntheticMap(width:, depth:, seed:, cellSizeM:, roadEvery:)`: rolling heights, forests, mud, mountains, a road grid, a winding river with bridges where roads cross it; cells interned. Generated, never committed.
+- `bin/long_path_bench.dart` (P-01) and `benchmark_results/README.md` (P-01 and P-07 lines).
+
+Checks: analyze `--fatal-infos` clean, format clean, 104 tests pass, coverage 100 % (737/737 lines) with Very Good's test optimization off: with it on, the merged run reported lines of `path_search.dart` as uncovered that the tests do run (blank lines among them), a tooling problem; the unmerged run is the correct one.
+
+P-01 measurements (AOT, dev container; synthetic map, seed 42; full lines in `benchmark_results/README.md`):
+
+| Cells | Path | Fast, median | Fast, max | Exact | Max AP margin | Memory (RSS) |
+|---|---|---|---|---|---|---|
+| 10 m, 1,000 × 5,000 | 50 km, edge to edge | 146 ms (foot), 156 ms (wheeled) | 319 ms | 3.0 to 3.5 s | 0.58 % | 205 MB |
+| 10 m | 2 km | 14 ms | 174 ms (first path: block pricing) | 0.14 to 0.68 s | 0.07 % | 191 MB |
+| 20 m, 500 × 2,500 | 50 km | 75 to 83 ms | 119 ms | 0.75 to 0.8 s | 0.04 % | 65 MB |
+| 20 m | 2 km | 7 ms | 57 ms | 0.03 to 0.13 s | 0.15 % | 57 MB |
+
+Map build about 0.5 s and search preparation about 0.5 s per mover at 10 m. The margin target (at most 10 % more AP than exact) holds with a wide margin.
+
+Proposal for the owner (P-01 time target, not written into `performance-tests.md` until confirmed): at 10 m cells, a fast path in at most 50 ms for 2 km and 500 ms for a map-crossing path, on the host, AOT. The stack estimate of about 1 ms per path is not reached by this method; if needed, the next step is a hierarchical search with precomputed paths between block entrances (HPA*). The 20 m cell halves the time and quarters the memory; the cell size stays a stack decision (stack decision 5).
+
+Deviations: the search covers the ground surface only; paths that use islands or links stay with `Pathfinder` (they are short).
