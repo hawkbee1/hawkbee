@@ -26,7 +26,7 @@ Built (2026-11-01 and 2026-11-02), stacked on M4.9 (not merged yet), in `package
 Checks: analyze `--fatal-infos` clean, format clean, 417 tests pass, coverage 100 % (1578/1578 lines).
 
 Summaries on the current data (machine lines):
-- `scenario="rifle squad vs jeep" seed=1 shots=77 hits=43 damage=215.20 deaths=1 spared=0 crushed=0 ap_used=137.00 ends_at_s=31.9`: four rifles spend their pools on the jeep (180 HP) without destroying it; the jeep's machine gun kills one soldier.
+- `scenario="rifle squad vs jeep" seed=1 shots=90 hits=39 damage=194.40 deaths=0 spared=0 crushed=0 ap_used=150.00 ends_at_s=33.5`: four rifles spend their pools on the jeep (180 HP) without destroying it, and the jeep's machine gun does not kill a soldier either (summary after the switch to the replay-stable random, below).
 - `scenario="artillery with a radio-relayed target" seed=3 shots=2 hits=1 damage=38.50 deaths=0 spared=0 crushed=0 ap_used=30.00 ends_at_s=10.0`
 - `scenario="relic push with crushing" seed=5 shots=0 hits=0 damage=0.00 deaths=2 spared=0 crushed=2 ap_used=120.00 ends_at_s=4320.0`
 
@@ -41,3 +41,18 @@ Choices:
 - Units start with full AP, full HP, base morale and their default weapon loaded; positions are on one line, and the terrain under every unit is the scenario's `terrain`.
 - A unit at 0 HP leaves the scenario whatever the outcome; defections and prisoners are counted as `spared`.
 - The runner assumes the attacker's section has room for a defector.
+
+### Milestone review (VGV review agent, all of M4), 2026-11-02
+Fixed on this branch (`battle_rules`, last commit; 427 tests, 100 % coverage):
+- Paid actions run one after another: a payment that waited dates the pool in the future, and `apAt` before that time gives what the pool can spare without that payment (never below 0); `readyAt`, `payWhenReady` and `moveAlong` start after the last payment. Before, the next order on such a pool threw.
+- `XorshiftRandom` (xorshift128 on 32-bit words, golden-tested) replaces the `dart:math` wrapper, whose sequence may change between Dart releases: a battle log replays after a host upgrade, on the VM and the web. Scenario summaries were recomputed (above).
+- A push pot takes contributions only from the relic owner's team (RELIC-19, `ActionRefusal.notOwner`).
+- `moveHq` ends the order only for a unit standing on the path, not beyond its end.
+- `never_spared` is matched by category, like `only_when_final_blow_by` (decision 149 for any commander type).
+- A first-person shot never hits the shooter's own hit volume; an action of no duration is done at once; the scenario runner refuses to move a unit whose loaded weapon forbids it.
+
+Deferred to M5 (the host), where the order flow is built:
+- Re-check an order at the time its AP wait ends: the result of a waiting order (a contribution, a heal, a pick-up) is computed from the state when it was ordered; the host must re-run it at `at` (or the API must split into "ready at" and "pay now").
+- Evolved stats: the rules read base `UnitType` stats and role values; M5 passes effective stats (evolution up to ×3) instead.
+- Per-battle settings: `GameData` fuses the shared definitions and `battle.yaml`, which an admin sets per battle (decision 172); M5 separates them.
+- `startActivity` (M4.3) overlaps `Armory.fire` and `pickUp`; land and take-off times (`FlightTimes`) are not used yet; the three refusal enums should become one sealed type for the order chain.
