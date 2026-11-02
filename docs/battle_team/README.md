@@ -40,7 +40,7 @@ M3 (pathfinding) and M4 (rules core) do not depend on each other: the path searc
 | [M4.10](sessions/m4-10-role-actions-pushing-hq-moves.md) | Role actions, pushing, HQ moves, interruption | `battle_rules` | M4.3, M4.4 | PR open #26 |
 | [M4.11](sessions/m4-11-scenario-harness.md) | Scenario harness | `battle_rules` | M4.3 to M4.10 | PR open #29 |
 | [M3.2](sessions/m3-02-navigation-model.md) | Navigation model | `battle_pathfinding` | M3.1 | PR open #30 |
-| [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | todo |
+| [M3.3](sessions/m3-03-paths-for-units-and-path-check.md) | Paths for units, path check | `battle_pathfinding` | M3.2 | PR open #31 |
 | [M3.4](sessions/m3-04-paths-for-relics-and-hqs.md) | Paths for relics and HQs | `battle_pathfinding` | M3.3 | todo |
 | [M3.5](sessions/m3-05-world-changes.md) | World changes | `battle_pathfinding` | M3.3 | todo |
 | [M3.6](sessions/m3-06-long-paths-on-big-maps.md) | Long paths on big maps | `battle_pathfinding` | M3.3, M3.5 | todo |
