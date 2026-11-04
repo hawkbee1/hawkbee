@@ -34,3 +34,6 @@
 [submodule "packages/battle_map"]
 	path = packages/battle_map
 	url = https://github.com/hawkbee1/battle_map.git
+[submodule "packages/battle_protocol"]
+	path = packages/battle_protocol
+	url = https://github.com/hawkbee1/battle_protocol.git
