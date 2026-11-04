@@ -67,7 +67,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.10](sessions/m5-10-host-scaffold-battle-state.md) | Host scaffold, battle state and clock | `battle_host` | M5.1, M5.8, M5.9 | merged |
 | [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | merged |
 | [M5.12](sessions/m5-12-orders-storage-money-xp-prisoners.md) | Orders for storage, money, XP and prisoners | `battle_host` | M5.3, M5.4, M5.11 | PR open #48 |
-| [M5.13](sessions/m5-13-relics-victory-end-of-battle.md) | Relics, victory and the end of a battle | `battle_host` | M5.5, M5.11 | in progress |
+| [M5.13](sessions/m5-13-relics-victory-end-of-battle.md) | Relics, victory and the end of a battle | `battle_host` | M5.5, M5.11 | PR open #49 (stacked on #48) |
 | [M5.14](sessions/m5-14-world-delta-layer.md) | World delta layer | `battle_host` | M5.11 | todo |
 | [M5.15](sessions/m5-15-write-ahead-log-snapshots-recovery.md) | Write-ahead log, snapshots and recovery | `battle_host` | M5.11 | todo |
 | [M5.16](sessions/m5-16-server-managed-sections.md) | Server-managed sections | `battle_host` | M5.11 | todo |
