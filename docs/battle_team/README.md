@@ -65,7 +65,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.8](sessions/m5-08-map-format-and-loader.md) | Map format and loader | `battle_map` | M3 (merged) | merged |
 | [M5.9](sessions/m5-09-commands-events-battle-log.md) | Commands, events and the battle log | `battle_protocol` | M4 (merged) | merged |
 | [M5.10](sessions/m5-10-host-scaffold-battle-state.md) | Host scaffold, battle state and clock | `battle_host` | M5.1, M5.8, M5.9 | merged |
-| [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | in progress |
+| [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | PR open #47 |
 | [M5.12](sessions/m5-12-orders-storage-money-xp-prisoners.md) | Orders for storage, money, XP and prisoners | `battle_host` | M5.3, M5.4, M5.11 | todo |
 | [M5.13](sessions/m5-13-relics-victory-end-of-battle.md) | Relics, victory and the end of a battle | `battle_host` | M5.5, M5.11 | todo |
 | [M5.14](sessions/m5-14-world-delta-layer.md) | World delta layer | `battle_host` | M5.11 | todo |
