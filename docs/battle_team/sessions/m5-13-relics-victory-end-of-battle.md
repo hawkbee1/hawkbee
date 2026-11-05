@@ -26,15 +26,17 @@ Built (2026-11-04), stacked on M5.12 (hawkbee #48, not merged yet), in `packages
 - `Rewards`: capture XP shared by the AP put in (UNIT-07, decision 179); victory XP for every unit of the winning team (UNIT-11).
 - The order chain refuses every order once the battle has ended (`battle_over`). A destroyed HQ is no longer a target.
 
-Plan (`battle_team`): Q-REL-15, open with an assumed answer.
+Plan (`battle_team`): Q-REL-15, since answered by decision 225.
 
 Checks: analyze `--fatal-infos` and format clean; 157 tests pass with 100 % coverage.
 
 For `end_battle` (M5.18): `BattleEnded` carries the winner, how it won and the eliminated teams in order. Its log entry gives the time, and the log format carries the version (M5.9).
 
 Choices:
-- The pushers are the units that put AP into the pot since it was last empty and are still on the field (assumed, Q-REL-15).
-- A push is planned when it starts: the relic stands where it will stop, like a unit's move. The units then on its path, met where the relic enters their cell, are crushed when it arrives. A relic stops on the last whole cell it reaches.
+- The pushers are the units of the owner that put AP into the pot since it was last empty and stand on the field inside the capture radius (decision 225).
+- A push is planned when it starts: the relic stands where it will stop, like a unit's move. The units then on its path, met where the relic enters their cell, are crushed when it arrives. A relic stops on the last whole cell it reaches. The pot pays the push when it starts, so AP put in during it stay.
+- A push stops on the first cell where one of its pushers is outside the radius, and goes on from there with those inside. When a pusher moves inside the radius, comes into it or leaves the field, the push stops on the cell it has reached (`MoveStopped`), the pot gets back the rest, and it starts again with the pushers then inside. `RelicPush` keeps each cell's arrival and the AP spent by it, so a stop needs no path check.
+- The units crushed count for the whole path (`RelicState.crushes`, decision 185): a relic that crushed its *n* units stays at the next one until more pushers come. A relic stopped that way moves again on the next contribution or pusher move.
 - A path measures each cell step with its own samples: a step gives two half-cell samples, a fall none. The M5.11 HQ move counted one sample per step; it is fixed.
 - Listeners hear the events of those before them: `Relics`, then `Rewards`, then `StorageLocks`. An eliminated team's sections are not locked.
 - The valley's river is impassable for a push, so the tests push along row 0 and over the edge of `sky`.

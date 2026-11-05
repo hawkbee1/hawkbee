@@ -26,14 +26,14 @@ Built (2026-11-04) on `main` (M5.11 merged), in `packages/battle_host`:
 - State: unit XP history, tree and evolved type; each section's guild and chief role; the open offers; the war's money floor (`BattleSetup.minStartingMoney`, by default `economy.yaml`'s).
 - `HostRule` moved to `refusal.dart`; `refused` and `planAt` are shared by the order files. `not_available_yet` is gone: every protocol order now has a plan.
 
-Plan (`battle_team`): Q-UNIT-24 and Q-UNIT-25, open with assumed answers.
+Plan (`battle_team`): Q-UNIT-24 and Q-UNIT-25, since answered by decisions 223 and 224.
 
 Checks: analyze `--fatal-infos` and format clean; 139 tests pass with 100 % coverage.
 
 Choices:
 - XP and money come from the events, with the state before them (Observer). The listener finds the builder of a `StructureBuilt` and the repairer of a `Repaired` by the work they held, so the wire events need no new field.
-- A killing shot's kill XP is priced against the history from before its own hit. Otherwise decision 201 would halve it as a repeat of the same target.
-- A target taken prisoner or turned earns the kill (assumed, Q-UNIT-24). An HQ hit or destruction earns money only (assumed, Q-UNIT-25).
+- A killing shot's kill XP, and an HQ's destruction XP, is priced against the history from before its own hit, also for a unit with no history yet. Otherwise decision 201 would halve it as a repeat of the same target.
+- A target taken prisoner or turned earns the kill's XP, not its money (decision 223). An HQ hit earns `xp_sources.hq_hit` and its destruction `hq_destruction`, unscaled; repeats on the same HQ shrink like any target's, and a friendly HQ earns nothing (UNIT-10, decision 224).
 - A store order works only within the storage radius (`not_at_storage` beyond it); a recall works from anywhere, and within the radius it stores at once.
 - A bought unit arrives on its portal's cell, with full AP and HP and base morale, as `unit-<seq>`.
 - A stored unit may deploy and buy tree nodes; a prisoner buys nothing.

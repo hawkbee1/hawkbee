@@ -34,7 +34,7 @@ Built (2026-11-04), stacked on M5.13 (hawkbee #49, not merged yet):
   - A test for the flying altitude limit of the ground search, uncovered since M3.6 with optimization off.
 - **`battle_protocol`**: the events `ObjectDamaged`, `ObjectDestroyed` and `CraterDug`, added after the other events with their v1 samples.
 - **`battle_rules`**: `craters.depth_per_shot_m` is read; a weapon that `deforms_terrain` needs a `splash_radius_m`.
-- **`battle_team`**: Q-MAP-19 (assumed), `craters.depth_per_shot_m` in `terrain.yaml`, P-07's host figures.
+- **`battle_team`**: Q-MAP-19, since answered by decision 226, `craters.depth_per_shot_m` in `terrain.yaml`, P-07's host figures.
 
 Checks: analyze `--fatal-infos` and format clean; tests pass with 100 % coverage, optimization off:
 
@@ -50,7 +50,7 @@ P-07 on the host (AOT, 10 × 50 km synthetic map, three runs): the first change 
 Deviation: the issue asks that a destroyed tree change a path. In the rules a tree stops no mover (MAP-44) and changes no terrain, so its destruction changes sight lines, cover and shot tracing but no path. The test checks that the path stays the same.
 
 Choices:
-- Which weapons dig is in the data (`deforms_terrain`: artillery). The size is assumed (Q-MAP-19): a bowl as wide as the weapon's splash, `craters.depth_per_shot_m` deep, never deeper than `max_depth_m`. A crater is dug only on the map's ground.
-- An object takes a bombard shot's splash from its nearest cell, and a first-person shot that stops on it (assumed, Q-MAP-19). The ground takes nothing.
+- Which weapons dig is in the data (`deforms_terrain`: artillery). The size (decision 226): a bowl as wide as the weapon's splash, `craters.depth_per_shot_m` deep, never deeper than `max_depth_m`. A crater is dug only on the map's ground.
+- An object takes a bombard shot's splash from its nearest cell, and a first-person shot that stops on it (decision 226). The ground takes nothing.
 - An object is followed by its id, the loader's `<type>@(x, y)`, which built structures share with their site.
 - A battle copies the shared grid on its first change; until then its searches are the map's.

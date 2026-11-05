@@ -23,7 +23,7 @@ Built (2026-11-02 to 2026-11-04), after M5.9 and M5.10 were merged:
   - `SectionSetup.medals` and `UnitSetup.weapon`; `TeamSetup` no longer names a manager.
 - **`battle_rules`**: `TeamRules.afterLogIn` (HQ-07, decision 220). `hqManager` draws only on an exact tie, so it uses the random only then. Q-SOC-18 citations now cite decision 221.
 - **`battle_protocol`**: the order `EnterBattle`, sent by the server when a player logs in to the battle, with its v1 samples. `ManagerChanged` covers logins too.
-- **`battle_team`**: decisions 220 (HQ manager at login, Q-HQ-11) and 221 (guild levels, Q-SOC-18); open Q-HQ-12 with an assumed answer; HQ-07, HQ-08, SOC-29, SOC-47, R-07, M5 Issues 6 and 11; P-02 records that the map's memory is left to a later optimisation.
+- **`battle_team`**: decisions 220 (HQ manager at login, Q-HQ-11) and 221 (guild levels, Q-SOC-18); Q-HQ-12, since answered by decision 227; HQ-07, HQ-08, SOC-29, SOC-47, R-07, M5 Issues 6 and 11; P-02 records that the map's memory is left to a later optimisation.
 
 Checks: analyze `--fatal-infos` and format clean; tests pass with 100 % coverage: `battle_host` 110, `battle_rules` 615, `battle_protocol` 582.
 
@@ -37,4 +37,4 @@ Choices:
 - An encampment refuses a goal or a client path on a floating island (MAP-38). On the valley map the reinforced bridge to `sky` is too steep for every ground class anyway.
 - A command whose plan waits is logged with `OrderDelayed`. Its outcome is logged when the wait ends, as an entry without a command.
 
-Questions raised: Q-HQ-12 (does a player who logs in take the role from a delegated manager; who keeps it on an exact tie), with an assumed answer: compared with the current manager, delegated or not; an exact tie is drawn.
+Questions raised: Q-HQ-12 (does a player who logs in take the role from a delegated manager; who keeps it on an exact tie), answered by the owner: decision 227. A player who logs in is compared with the team's holder of the role by rank (`TeamState.holderAccountId`), the player who would manage the HQ had nobody delegated it; an exact tie is drawn (decision 211). Delegation changes the manager only.
