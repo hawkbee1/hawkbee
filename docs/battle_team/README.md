@@ -71,7 +71,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.14](sessions/m5-14-world-delta-layer.md) | World delta layer | `battle_host` | M5.11 | PR open #50 (stacked on #49) |
 | [M5.15](sessions/m5-15-write-ahead-log-snapshots-recovery.md) | Write-ahead log, snapshots and recovery | `battle_host` | M5.11 | PR open #51 (stacked on #50) |
 | [M5.16](sessions/m5-16-server-managed-sections.md) | Server-managed sections | `battle_host` | M5.11 | PR open #53 (stacked on #52) |
-| [M5.17](sessions/m5-17-statistics-and-medals.md) | Statistics and medals | `battle_stats` | M5.9 | todo |
+| [M5.17](sessions/m5-17-statistics-and-medals.md) | Statistics and medals | `battle_stats` | M5.9 | PR open #54 (stacked on #53) |
 | [M5.18](sessions/m5-18-appwrite-data-and-functions.md) | Appwrite data and functions around battles | `backend`, `hawkbee_schema` | M5.7, M5.13 | todo |
 | [M5.19](sessions/m5-19-load-test-and-hosting.md) | Load test and hosting | `battle_host` | M5.12 to M5.16 | todo |
 | [M5.20](sessions/m5-20-first-map-from-real-data.md) | First map from real data | `battle_map` | M5.8 | todo |
