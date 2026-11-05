@@ -74,7 +74,7 @@ hawkbee/
 │   ├── development.json           # local Appwrite: endpoint + project ID (no secrets)
 │   ├── staging.json               # Appwrite Cloud staging project
 │   └── production.json            # Appwrite Cloud production project
-├── tool/vendor_schema.dart        # copies hawkbee_schema into each function
+├── tool/vendor_packages.dart      # copies the packages each function needs into it
 ├── docs/
 ├── pubspec.yaml                   # melos config + pub workspace (lists every app/package)
 └── .claude/                       # Claude Code project settings and skills

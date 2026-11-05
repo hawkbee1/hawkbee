@@ -1,0 +1,28 @@
+name: daily_stats
+description: Daily Appwrite Function of a battle. Statistics, medals and hit-rate flags from its uploaded log (decision 143).
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Vendored copies of packages/ and of the plan's data, refreshed by
+  # `melos run backend:vendor`.
+  battle_protocol:
+    path: vendor/battle_protocol
+  battle_rules:
+    path: vendor/battle_rules
+  battle_stats:
+    path: vendor/battle_stats
+  crypto: ^3.0.7
+  dart_appwrite: ^31.1.0
+  hawkbee_schema:
+    path: vendor/hawkbee_schema
+  plan_data:
+    path: vendor/plan_data
+
+dev_dependencies:
+  mocktail: ^1.0.5
+  test: ^1.31.0
+  very_good_analysis: ^11.0.0

@@ -25,5 +25,15 @@ void main() {
     test('pingFunctionId is declared in appwrite.config.json', () {
       expect(idsOf('functions'), contains(AppwriteIds.pingFunctionId));
     });
+
+    test('the statistics IDs are declared in appwrite.config.json', () {
+      expect(idsOf('functions'), contains(AppwriteIds.dailyStatsFunctionId));
+      expect(idsOf('buckets'), contains(AppwriteIds.battleLogsBucketId));
+      expect(idsOf('tables'), [
+        AppwriteIds.statsTableId,
+        AppwriteIds.medalsTableId,
+        AppwriteIds.hitRateFlagsTableId,
+      ]);
+    });
   });
 }

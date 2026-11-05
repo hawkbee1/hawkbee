@@ -9,7 +9,198 @@
             "enabled": true
         }
     ],
-    "tables": [],
+    "tables": [
+        {
+            "$id": "stats",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Stats",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "scope",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 8
+                },
+                {
+                    "key": "scope_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "subject",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 8
+                },
+                {
+                    "key": "subject_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "stats",
+                    "type": "text",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_war",
+                    "type": "key",
+                    "columns": [
+                        "scope",
+                        "war_id"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "by_subject",
+                    "type": "key",
+                    "columns": [
+                        "scope",
+                        "subject",
+                        "subject_id"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC",
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "medals",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Medals",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "track",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "tier",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 16
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_account",
+                    "type": "key",
+                    "columns": [
+                        "account_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "hit_rate_flags",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "Hit-rate flags",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "battle_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "day",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "weapon",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 32
+                },
+                {
+                    "key": "fired",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "hits",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "mean",
+                    "type": "float",
+                    "required": true
+                },
+                {
+                    "key": "sigma",
+                    "type": "float",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_battle",
+                    "type": "key",
+                    "columns": [
+                        "battle_id",
+                        "day"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                }
+            ]
+        }
+    ],
     "buckets": [
         {
             "$id": "battle_logs",
@@ -58,6 +249,26 @@
             "commands": "dart pub get",
             "ignore": ".dart_tool\ntest",
             "path": "functions/ping"
+        },
+        {
+            "$id": "daily_stats",
+            "name": "daily_stats",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [
+                "files.read",
+                "rows.read",
+                "rows.write"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 900,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/daily_stats"
         }
     ]
 }
