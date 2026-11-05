@@ -27,7 +27,7 @@ Built (2026-11-05), stacked on M5.14 (hawkbee #50, not merged yet):
   - Tests: one contract suite per port, run on the memory stores and on the Appwrite adapters over an in-memory fake of `Storage`; the same suites on the local Appwrite, tagged `appwrite` and opt-in. A scripted battle: every M4 order, a purchase, storage, a recall and a 24-hour lock, over 34 hours. `expectReplay` (M5.11) now uses `replay` and compares whole snapshots; the `fingerprint` helper is gone.
 - **`battle_rules`**: `XorshiftRandom.resume` and `state`; `BattleSettings.toData`, the shape of `battle.yaml`.
 - **hawkbee `backend/appwrite.config.json`**: buckets `battle_logs` and `battle_snapshots`, with no client permission (the host's API key only), `.gz` files up to 30 MB.
-- **`battle_team`**: Q-GEN-02 (assumed); P-03 measured.
+- **`battle_team`**: decision 222 (Q-GEN-02); P-03 measured.
 
 Checks: analyze `--fatal-infos` and format clean; tests pass with 100 % coverage, optimization off: `battle_host` 244 (and the opt-in Appwrite suite, skipped), `battle_rules` 619.
 
@@ -45,9 +45,9 @@ Choices:
 - No snapshot in a 5-minute interval without new entries. The state is then the last snapshot advanced in time, which recovery reaches by itself. The first snapshot is taken when the battle starts.
 - Appwrite Storage: a batch's file ID comes from its log position, so recovery follows the batches by ID and needs no list query (none was tried against the instance). Snapshots use two files per battle and replace the older one, so the latest stays whole while the next is written. A battle ID has at most 23 characters, because a file ID has at most 36.
 - The snapshot is JSON in UTF-8, gzipped by the adapter. It is exact (each double prints as the shortest text that reads back as the same double) and keeps the order of maps, so a restored battle walks its units in the same order. A unit's type is stored as its base type and tree, and evolved again. A waiting command uses the protocol's JSON.
-- Battle time is wall time since the start, outages included (assumed, Q-GEN-02).
+- Battle time is wall time since the start, outages included (decision 222).
 - `dart_appwrite` 31.1.0 targets Appwrite 2.6 (Cloud). No release targets the local 2.3. The adapters use only `createFile`, `getFileDownload` and `deleteFile`.
 - The rate limit's buckets are not in the snapshot: a recovered host gives each sender a full burst.
 - The `run` command keeps its stores in memory. The file write-ahead log and the Appwrite stores are wired for hosting in M5.19.
 
-Questions raised: Q-GEN-02 (does a battle's time go on while its server is stopped), with an assumed answer: yes.
+Questions raised: Q-GEN-02 (does a battle's time go on while its server is stopped), answered by the owner: yes (decision 222).
