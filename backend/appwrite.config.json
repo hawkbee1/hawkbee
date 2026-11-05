@@ -10,7 +10,36 @@
         }
     ],
     "tables": [],
-    "buckets": [],
+    "buckets": [
+        {
+            "$id": "battle_logs",
+            "$permissions": [],
+            "fileSecurity": false,
+            "name": "Battle logs",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [
+                "gz"
+            ],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": false
+        },
+        {
+            "$id": "battle_snapshots",
+            "$permissions": [],
+            "fileSecurity": false,
+            "name": "Battle snapshots",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [
+                "gz"
+            ],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": false
+        }
+    ],
     "teams": [],
     "topics": [],
     "functions": [
