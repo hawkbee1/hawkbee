@@ -43,3 +43,6 @@
 [submodule "packages/battle_stats"]
 	path = packages/battle_stats
 	url = https://github.com/hawkbee1/battle_stats.git
+[submodule "packages/battle_backend"]
+	path = packages/battle_backend
+	url = https://github.com/hawkbee1/battle_backend.git
