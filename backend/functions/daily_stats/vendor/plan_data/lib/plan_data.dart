@@ -263,6 +263,35 @@ push:
   crush: kills
 ''';
 
+/// `economy.yaml`.
+const economyYaml = r'''
+# Economy numbers (decision 112). Starting values; the designer adjusts them over time.
+version: 0
+currency: "w€"
+
+war_defaults:
+  min_starting_money: 500    # also the starting money of a new section (decision 102)
+
+prices:
+  default: 100               # anything not listed below
+  encampment: 500            # decision 111
+
+earnings:                    # money for the acting unit's section
+  hit: 1
+  kill: 5
+  construction: 5
+  heal: 5
+  hq_hit: 10
+  hq_destruction: 100
+
+transfer_fees:               # share of the amount sent, rounded to whole w€ (decisions 200, 203)
+  inside_guild: 0.02
+  outside_guild: 0.07        # fees are destroyed (decision 25b)
+
+xp_purchasable: false
+build_destroy_farming_limit: none
+''';
+
 /// `medals.yaml`.
 const medalsYaml = r'''
 # Medals and statistics (decisions 105, 143). Thresholds are PLACEHOLDERS except the designer's example.
