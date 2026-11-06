@@ -25,5 +25,42 @@ void main() {
     test('pingFunctionId is declared in appwrite.config.json', () {
       expect(idsOf('functions'), contains(AppwriteIds.pingFunctionId));
     });
+
+    test('the statistics IDs are declared in appwrite.config.json', () {
+      expect(idsOf('functions'), contains(AppwriteIds.dailyStatsFunctionId));
+      expect(idsOf('buckets'), contains(AppwriteIds.battleLogsBucketId));
+      expect(
+        idsOf('tables'),
+        containsAll([
+          AppwriteIds.statsTableId,
+          AppwriteIds.medalsTableId,
+          AppwriteIds.hitRateFlagsTableId,
+        ]),
+      );
+    });
+
+    test('the battle IDs are declared in appwrite.config.json', () {
+      expect(
+        idsOf('tables'),
+        containsAll([
+          AppwriteIds.warsTableId,
+          AppwriteIds.battlesTableId,
+          AppwriteIds.sectionsTableId,
+          AppwriteIds.guildsTableId,
+          AppwriteIds.purchasesTableId,
+          AppwriteIds.apiKeysTableId,
+        ]),
+      );
+      expect(
+        idsOf('functions'),
+        containsAll([
+          AppwriteIds.createWarFunctionId,
+          AppwriteIds.createBattleFunctionId,
+          AppwriteIds.endBattleFunctionId,
+          AppwriteIds.guildRequestsFunctionId,
+          AppwriteIds.apiKeysFunctionId,
+        ]),
+      );
+    });
   });
 }

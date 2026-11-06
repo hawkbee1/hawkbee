@@ -1,0 +1,10 @@
+name: battle_rules
+description: Headless rules core of Battle Team (AP, movement, vision, combat), pure Dart.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  yaml: ^3.1.4

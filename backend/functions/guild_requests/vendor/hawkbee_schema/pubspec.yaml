@@ -1,0 +1,7 @@
+name: hawkbee_schema
+description: Appwrite IDs and row models shared by the apps and Appwrite Functions.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.13.0

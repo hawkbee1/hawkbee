@@ -9,8 +9,536 @@
             "enabled": true
         }
     ],
-    "tables": [],
-    "buckets": [],
+    "tables": [
+        {
+            "$id": "stats",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Stats",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "scope",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 8
+                },
+                {
+                    "key": "scope_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "subject",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 8
+                },
+                {
+                    "key": "subject_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "stats",
+                    "type": "text",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_war",
+                    "type": "key",
+                    "columns": [
+                        "scope",
+                        "war_id"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "by_subject",
+                    "type": "key",
+                    "columns": [
+                        "scope",
+                        "subject",
+                        "subject_id"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC",
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "medals",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Medals",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "track",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "tier",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 16
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_account",
+                    "type": "key",
+                    "columns": [
+                        "account_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "hit_rate_flags",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "Hit-rate flags",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "battle_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "day",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "weapon",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 32
+                },
+                {
+                    "key": "fired",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "hits",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "mean",
+                    "type": "float",
+                    "required": true
+                },
+                {
+                    "key": "sigma",
+                    "type": "float",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_battle",
+                    "type": "key",
+                    "columns": [
+                        "battle_id",
+                        "day"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "wars",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Wars",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "min_starting_money",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "planned",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "key": "current",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "sections",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "key": "over",
+                    "type": "boolean",
+                    "required": true
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "battles",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Battles",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "map_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "seed",
+                    "type": "integer",
+                    "required": true
+                },
+                {
+                    "key": "status",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 16
+                },
+                {
+                    "key": "teams",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "key": "winner",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "result",
+                    "type": "mediumtext",
+                    "required": false
+                },
+                {
+                    "key": "stats_done",
+                    "type": "boolean",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_war",
+                    "type": "key",
+                    "columns": [
+                        "war_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "by_status",
+                    "type": "key",
+                    "columns": [
+                        "status"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "sections",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Sections",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "guild_id",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
+                    "key": "kept",
+                    "type": "mediumtext",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_war",
+                    "type": "key",
+                    "columns": [
+                        "war_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "by_account",
+                    "type": "key",
+                    "columns": [
+                        "account_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "guilds",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "hawkbee",
+            "name": "Guilds",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "war_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "roles",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "key": "xp",
+                    "type": "float",
+                    "required": true
+                },
+                {
+                    "key": "opted_in",
+                    "type": "boolean",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_war",
+                    "type": "key",
+                    "columns": [
+                        "war_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "purchases",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "Purchases",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "item",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "payment_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 128
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_account",
+                    "type": "key",
+                    "columns": [
+                        "account_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "one_per_payment",
+                    "type": "unique",
+                    "columns": [
+                        "payment_id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "api_keys",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "API keys",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "account_id",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "hash",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 64
+                },
+                {
+                    "key": "revoked",
+                    "type": "boolean",
+                    "required": true
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "by_hash",
+                    "type": "key",
+                    "columns": [
+                        "hash"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "battle_logs",
+            "$permissions": [],
+            "fileSecurity": false,
+            "name": "Battle logs",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [
+                "gz"
+            ],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": false
+        },
+        {
+            "$id": "battle_snapshots",
+            "$permissions": [],
+            "fileSecurity": false,
+            "name": "Battle snapshots",
+            "enabled": true,
+            "maximumFileSize": 30000000,
+            "allowedFileExtensions": [
+                "gz"
+            ],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": false
+        }
+    ],
     "teams": [],
     "topics": [],
     "functions": [
@@ -29,6 +557,146 @@
             "commands": "dart pub get",
             "ignore": ".dart_tool\ntest",
             "path": "functions/ping"
+        },
+        {
+            "$id": "daily_stats",
+            "name": "daily_stats",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [
+                "files.read",
+                "rows.read",
+                "rows.write"
+            ],
+            "events": [],
+            "schedule": "0 4 * * *",
+            "timeout": 900,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/daily_stats"
+        },
+        {
+            "$id": "create_war",
+            "name": "create_war",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "execution.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/create_war"
+        },
+        {
+            "$id": "create_battle",
+            "name": "create_battle",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "execution.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/create_battle"
+        },
+        {
+            "$id": "end_battle",
+            "name": "end_battle",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "execution.write",
+                "files.read"
+            ],
+            "events": [
+                "databases.hawkbee.tables.battles.rows.*.update"
+            ],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/end_battle"
+        },
+        {
+            "$id": "guild_requests",
+            "name": "guild_requests",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "execution.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/guild_requests"
+        },
+        {
+            "$id": "api_keys",
+            "name": "api_keys",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "execution.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/api_keys"
         }
     ]
 }

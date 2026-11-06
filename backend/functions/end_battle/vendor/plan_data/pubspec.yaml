@@ -1,0 +1,7 @@
+name: plan_data
+description: The Battle Team plan's data files, vendored by tool/vendor_packages.dart.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0

@@ -1,0 +1,22 @@
+name: create_war
+description: Creates wars (admins) and lets players join them (SOC-16, SOC-30).
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Vendored copies of packages/ and of the plan's data, refreshed by
+  # `melos run backend:vendor`.
+  battle_backend:
+    path: vendor/battle_backend
+  battle_rules:
+    path: vendor/battle_rules
+  dart_appwrite: ^31.1.0
+  plan_data:
+    path: vendor/plan_data
+
+dev_dependencies:
+  test: ^1.31.0
+  very_good_analysis: ^11.0.0

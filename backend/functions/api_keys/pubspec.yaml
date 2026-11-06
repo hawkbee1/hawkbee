@@ -1,0 +1,18 @@
+name: api_keys
+description: Creates and revokes API keys (AI-04, decisions 158, 161).
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Vendored copies of packages/ and of the plan's data, refreshed by
+  # `melos run backend:vendor`.
+  battle_backend:
+    path: vendor/battle_backend
+  dart_appwrite: ^31.1.0
+
+dev_dependencies:
+  test: ^1.31.0
+  very_good_analysis: ^11.0.0

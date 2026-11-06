@@ -65,16 +65,16 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.8](sessions/m5-08-map-format-and-loader.md) | Map format and loader | `battle_map` | M3 (merged) | merged |
 | [M5.9](sessions/m5-09-commands-events-battle-log.md) | Commands, events and the battle log | `battle_protocol` | M4 (merged) | merged |
 | [M5.10](sessions/m5-10-host-scaffold-battle-state.md) | Host scaffold, battle state and clock | `battle_host` | M5.1, M5.8, M5.9 | merged |
-| [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | PR open #47 |
-| [M5.12](sessions/m5-12-orders-storage-money-xp-prisoners.md) | Orders for storage, money, XP and prisoners | `battle_host` | M5.3, M5.4, M5.11 | todo |
-| [M5.13](sessions/m5-13-relics-victory-end-of-battle.md) | Relics, victory and the end of a battle | `battle_host` | M5.5, M5.11 | todo |
-| [M5.14](sessions/m5-14-world-delta-layer.md) | World delta layer | `battle_host` | M5.11 | todo |
-| [M5.15](sessions/m5-15-write-ahead-log-snapshots-recovery.md) | Write-ahead log, snapshots and recovery | `battle_host` | M5.11 | todo |
-| [M5.16](sessions/m5-16-server-managed-sections.md) | Server-managed sections | `battle_host` | M5.11 | todo |
-| [M5.17](sessions/m5-17-statistics-and-medals.md) | Statistics and medals | `battle_stats` | M5.9 | todo |
-| [M5.18](sessions/m5-18-appwrite-data-and-functions.md) | Appwrite data and functions around battles | `backend`, `hawkbee_schema` | M5.7, M5.13 | todo |
+| [M5.11](sessions/m5-11-orders-movement-combat.md) | Orders for movement and combat | `battle_host` | M5.10 | merged |
+| [M5.12](sessions/m5-12-orders-storage-money-xp-prisoners.md) | Orders for storage, money, XP and prisoners | `battle_host` | M5.3, M5.4, M5.11 | PR open #48 |
+| [M5.13](sessions/m5-13-relics-victory-end-of-battle.md) | Relics, victory and the end of a battle | `battle_host` | M5.5, M5.11 | PR open #49 (stacked on #48) |
+| [M5.14](sessions/m5-14-world-delta-layer.md) | World delta layer | `battle_host` | M5.11 | PR open #50 (stacked on #49) |
+| [M5.15](sessions/m5-15-write-ahead-log-snapshots-recovery.md) | Write-ahead log, snapshots and recovery | `battle_host` | M5.11 | PR open #51 (stacked on #50) |
+| [M5.16](sessions/m5-16-server-managed-sections.md) | Server-managed sections | `battle_host` | M5.11 | PR open #53 (stacked on #52) |
+| [M5.17](sessions/m5-17-statistics-and-medals.md) | Statistics and medals | `battle_stats` | M5.9 | PR open #54 (stacked on #53) |
+| [M5.18](sessions/m5-18-appwrite-data-and-functions.md) | Appwrite data and functions around battles | `backend`, `hawkbee_schema` | M5.7, M5.13 | PR open #55 (stacked on #54) |
 | [M5.19](sessions/m5-19-load-test-and-hosting.md) | Load test and hosting | `battle_host` | M5.12 to M5.16 | todo |
-| [M5.20](sessions/m5-20-first-map-from-real-data.md) | First map from real data | `battle_map` | M5.8 | todo |
+| [M5.20](sessions/m5-20-first-map-from-real-data.md) | First map from real data | `battle_map` | M5.8 | PR open #56 (stacked on #55) |
 
 Parallel once their dependencies are merged: **M5.1 ∥ M5.2 ∥ M5.8 ∥ M5.9** at the start; **M5.3 ∥ M5.6** after M5.2; **M5.17** after M5.9 and **M5.20** after M5.8, beside the rest; **M5.12 to M5.16** after M5.11. Sessions that create a package edit the hawkbee root files: rebase on `main` before opening the PR.
 

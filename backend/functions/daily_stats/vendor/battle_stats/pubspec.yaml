@@ -1,0 +1,14 @@
+name: battle_stats
+description: Statistics and medals of Battle Team, computed from the battle logs, pure Dart.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  battle_protocol:
+    path: ../battle_protocol
+  battle_rules:
+    path: ../battle_rules
+  equatable: ^3.0.0
