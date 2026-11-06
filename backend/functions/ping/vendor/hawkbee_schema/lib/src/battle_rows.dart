@@ -97,7 +97,8 @@ enum BattleStatus {
 
 /// {@template battle_row}
 /// A battle of a war: its map and seed, its status, its teams once it
-/// starts (team ID to section IDs), its winner and its result once it ends.
+/// starts (team ID to section IDs), the host that runs it (its placement),
+/// its winner and its result once it ends.
 /// {@endtemplate}
 final class BattleRow {
   /// {@macro battle_row}
@@ -108,6 +109,7 @@ final class BattleRow {
     required this.seed,
     this.status = BattleStatus.planned,
     this.teams = const {},
+    this.host,
     this.winner,
     this.result,
     this.statsDone = false,
@@ -135,6 +137,7 @@ final class BattleRow {
             _ => throw const FormatException('not a row: teams'),
           },
       },
+      host: _as<String?>(data, 'host'),
       winner: _as<String?>(data, 'winner'),
       result: result == null
           ? null
@@ -161,6 +164,10 @@ final class BattleRow {
   /// Its teams once it runs: the section IDs of each team.
   final Map<String, List<String>> teams;
 
+  /// The simulation host that runs it, once one claimed it: where it is
+  /// placed (stack decision 1, hosting).
+  final String? host;
+
   /// The team that won, once it ended.
   final String? winner;
 
@@ -174,6 +181,9 @@ final class BattleRow {
   BattleRow copyWith({
     BattleStatus? status,
     Map<String, List<String>>? teams,
+    String? host,
+    String? winner,
+    BattleResult? result,
     bool? statsDone,
   }) => BattleRow(
     id: id,
@@ -182,8 +192,9 @@ final class BattleRow {
     seed: seed,
     status: status ?? this.status,
     teams: teams ?? this.teams,
-    winner: winner,
-    result: result,
+    host: host ?? this.host,
+    winner: winner ?? this.winner,
+    result: result ?? this.result,
     statsDone: statsDone ?? this.statsDone,
   );
 
@@ -194,6 +205,7 @@ final class BattleRow {
     'seed': seed,
     'status': status.name,
     'teams': jsonEncode(teams),
+    'host': host,
     'winner': winner,
     'result': result == null ? null : jsonEncode(result!.toJson()),
     'stats_done': statsDone,
