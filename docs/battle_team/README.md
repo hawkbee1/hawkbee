@@ -74,7 +74,7 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 | [M5.17](sessions/m5-17-statistics-and-medals.md) | Statistics and medals | `battle_stats` | M5.9 | PR open #54 (stacked on #53) |
 | [M5.18](sessions/m5-18-appwrite-data-and-functions.md) | Appwrite data and functions around battles | `backend`, `hawkbee_schema` | M5.7, M5.13 | PR open #55 (stacked on #54) |
 | [M5.19](sessions/m5-19-load-test-and-hosting.md) | Load test and hosting | `battle_host` | M5.12 to M5.16 | todo |
-| [M5.20](sessions/m5-20-first-map-from-real-data.md) | First map from real data | `battle_map` | M5.8 | todo |
+| [M5.20](sessions/m5-20-first-map-from-real-data.md) | First map from real data | `battle_map` | M5.8 | PR open #56 (stacked on #55) |
 
 Parallel once their dependencies are merged: **M5.1 ∥ M5.2 ∥ M5.8 ∥ M5.9** at the start; **M5.3 ∥ M5.6** after M5.2; **M5.17** after M5.9 and **M5.20** after M5.8, beside the rest; **M5.12 to M5.16** after M5.11. Sessions that create a package edit the hawkbee root files: rebase on `main` before opening the PR.
 
