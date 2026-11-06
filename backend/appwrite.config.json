@@ -278,6 +278,12 @@
                     "required": true
                 },
                 {
+                    "key": "host",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
+                },
+                {
                     "key": "winner",
                     "type": "varchar",
                     "required": false,

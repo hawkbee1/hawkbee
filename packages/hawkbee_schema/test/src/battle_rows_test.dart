@@ -52,6 +52,7 @@ void main() {
           'team-1': ['s-1'],
           'team-2': [],
         },
+        host: 'host-1',
         winner: 'team-1',
         result: BattleResult(
           winner: 'team-1',
@@ -70,6 +71,21 @@ void main() {
       expect(
         again.copyWith(status: BattleStatus.closed, statsDone: true).toData(),
         {...battle.toData(), 'status': 'closed', 'stats_done': true},
+      );
+      expect(
+        again
+            .copyWith(
+              host: 'host-2',
+              winner: 'team-2',
+              result: const BattleResult(winner: 'team-2', sections: {}),
+            )
+            .toData(),
+        {
+          ...battle.toData(),
+          'host': 'host-2',
+          'winner': 'team-2',
+          'result': '{"winner":"team-2","sections":{},"earned":{}}',
+        },
       );
       expect(
         BattleRow.fromData(
