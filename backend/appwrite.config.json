@@ -52,7 +52,7 @@
                 "rows.read",
                 "rows.write",
                 "users.read",
-                "execution.write",
+                "executions.write",
                 "files.read"
             ],
             "events": [],
@@ -76,7 +76,7 @@
                 "rows.read",
                 "rows.write",
                 "users.read",
-                "execution.write",
+                "executions.write",
                 "files.read"
             ],
             "events": [],
@@ -98,7 +98,7 @@
                 "rows.read",
                 "rows.write",
                 "users.read",
-                "execution.write",
+                "executions.write",
                 "files.read"
             ],
             "events": [
@@ -124,7 +124,7 @@
                 "rows.read",
                 "rows.write",
                 "users.read",
-                "execution.write",
+                "executions.write",
                 "files.read"
             ],
             "events": [],
@@ -148,7 +148,7 @@
                 "rows.read",
                 "rows.write",
                 "users.read",
-                "execution.write",
+                "executions.write",
                 "files.read"
             ],
             "events": [],
