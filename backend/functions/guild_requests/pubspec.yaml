@@ -18,5 +18,7 @@ dependencies:
     path: vendor/plan_data
 
 dev_dependencies:
+  hawkbee_schema:
+    path: vendor/hawkbee_schema
   test: ^1.31.0
   very_good_analysis: ^11.0.0

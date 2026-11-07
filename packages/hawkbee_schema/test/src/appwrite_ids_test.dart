@@ -28,7 +28,13 @@ void main() {
 
     test('the statistics IDs are declared in appwrite.config.json', () {
       expect(idsOf('functions'), contains(AppwriteIds.dailyStatsFunctionId));
-      expect(idsOf('buckets'), contains(AppwriteIds.battleLogsBucketId));
+      expect(
+        idsOf('buckets'),
+        containsAll([
+          AppwriteIds.battleLogsBucketId,
+          AppwriteIds.battleSnapshotsBucketId,
+        ]),
+      );
       expect(
         idsOf('tables'),
         containsAll([

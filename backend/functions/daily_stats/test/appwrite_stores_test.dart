@@ -8,6 +8,7 @@ import 'package:daily_stats/src/appwrite_stores.dart';
 import 'package:daily_stats/src/daily_stats.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:dart_appwrite/models.dart' as models;
+import 'package:hawkbee_schema/hawkbee_schema.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -20,7 +21,7 @@ class _MockTables extends Mock implements TablesDB;
 models.Row _row(String id, Map<String, Object?> data) => models.Row(
   $id: id,
   $sequence: '1',
-  $tableId: 'stats',
+  $tableId: AppwriteIds.statsTableId,
   $databaseId: 'hawkbee',
   $createdAt: '',
   $updatedAt: '',
@@ -39,7 +40,10 @@ void main() {
     setUp(() => storage = _MockStorage());
 
     void serve(String fileId, Uint8List data) => when(
-      () => storage.getFileDownload(bucketId: 'battle_logs', fileId: fileId),
+      () => storage.getFileDownload(
+        bucketId: AppwriteIds.battleLogsBucketId,
+        fileId: fileId,
+      ),
     ).thenAnswer((_) async => data);
 
     test(
@@ -49,7 +53,7 @@ void main() {
         serve('b-1-000000000003', batch(log.sublist(3)));
         when(
           () => storage.getFileDownload(
-            bucketId: 'battle_logs',
+            bucketId: AppwriteIds.battleLogsBucketId,
             fileId: 'b-1-${log.length.toString().padLeft(12, '0')}',
           ),
         ).thenThrow(AppwriteException('not found', 404));
@@ -62,7 +66,7 @@ void main() {
       serve('b-1-000000000000', batch(const []));
       when(
         () => storage.getFileDownload(
-          bucketId: 'battle_logs',
+          bucketId: AppwriteIds.battleLogsBucketId,
           fileId: 'b-2-000000000000',
         ),
       ).thenThrow(AppwriteException('down', 503));
@@ -126,9 +130,9 @@ void main() {
 
       expect(
         written(
-          'stats',
+          AppwriteIds.statsTableId,
           AppwriteStatsStore.rowId([
-            'stats',
+            AppwriteIds.statsTableId,
             'war',
             'w-1',
             'player',
@@ -165,9 +169,9 @@ void main() {
 
       expect(
         written(
-          'medals',
+          AppwriteIds.medalsTableId,
           AppwriteStatsStore.rowId([
-            'medals',
+            AppwriteIds.medalsTableId,
             'acc-red',
             null,
             'kills.jeep',
@@ -183,9 +187,9 @@ void main() {
       );
       expect(
         written(
-          'hit_rate_flags',
+          AppwriteIds.hitRateFlagsTableId,
           AppwriteStatsStore.rowId([
-            'hit_rate_flags',
+            AppwriteIds.hitRateFlagsTableId,
             'b-1',
             2,
             'acc-red',
@@ -208,7 +212,7 @@ void main() {
       when(
         () => tables.listRows(
           databaseId: 'hawkbee',
-          tableId: 'stats',
+          tableId: AppwriteIds.statsTableId,
           queries: any(named: 'queries'),
         ),
       ).thenAnswer((invocation) async {
@@ -235,7 +239,7 @@ void main() {
       final pages = verify(
         () => tables.listRows(
           databaseId: 'hawkbee',
-          tableId: 'stats',
+          tableId: AppwriteIds.statsTableId,
           queries: captureAny(named: 'queries'),
         ),
       ).captured.cast<List<String>>();

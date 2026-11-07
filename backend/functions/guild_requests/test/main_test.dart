@@ -1,6 +1,7 @@
 import 'package:battle_backend/battle_backend.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:guild_requests/main.dart' as function;
+import 'package:hawkbee_schema/hawkbee_schema.dart';
 import 'package:test/test.dart';
 
 class _Request {
@@ -52,8 +53,8 @@ void main() {
       guilds = Guilds(rows: wars.rows, wars: wars);
       await wars.create(caller: 'admin', warId: 'w-1');
       section = (await wars.join(caller: 'p-1', warId: 'w-1')).id;
-      await wars.rows.put('sections', section, {
-        ...(await wars.rows.get('sections', section))!,
+      await wars.rows.put(AppwriteIds.sectionsTableId, section, {
+        ...(await wars.rows.get(AppwriteIds.sectionsTableId, section))!,
         'kept': '{"money": 500, "xp": 30000, "weapons": [], "units": []}',
       });
     });

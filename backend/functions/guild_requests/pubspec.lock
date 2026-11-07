@@ -159,7 +159,7 @@ packages:
     source: hosted
     version: "2.2.0"
   hawkbee_schema:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       path: "vendor/hawkbee_schema"
       relative: true
