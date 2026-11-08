@@ -79,4 +79,21 @@ Milestone: `apps/battle_team/plan/milestones/m5-simulation-host.md`. Sessions M5
 
 Parallel once their dependencies are merged: **M5.1 ∥ M5.2 ∥ M5.8 ∥ M5.9** at the start; **M5.3 ∥ M5.6** after M5.2; **M5.17** after M5.9 and **M5.20** after M5.8, beside the rest; **M5.12 to M5.16** after M5.11. Sessions that create a package edit the hawkbee root files: rebase on `main` before opening the PR.
 
+### M6: networking
+
+Milestone: `apps/battle_team/plan/milestones/m6-networking.md`. Session M6.7 creates a package and its public repository (dc3d §2).
+
+| Session | Issue | Package | Depends on | Status |
+|---|---|---|---|---|
+| [M6.1](sessions/m6-01-protocol-spike.md) | Protocol spike, dashwire against M5's protocol | none (`stack/03`) | M5 | todo |
+| [M6.2](sessions/m6-02-messages.md) | Messages between the host and its clients | `battle_protocol` | M6.1 | todo |
+| [M6.3](sessions/m6-03-fog-of-war.md) | Fog of war per section | `battle_host` | M5 | todo |
+| [M6.4](sessions/m6-04-update-stream.md) | The update stream of a section | `battle_host` | M6.2, M6.3 | todo |
+| [M6.5](sessions/m6-05-endpoints-and-sign-in.md) | Endpoints and sign-in | `battle_host` | M6.2, M6.4 | todo |
+| [M6.6](sessions/m6-06-reaching-a-battle-host.md) | Reaching a battle's host | `battle_host`, `backend`, `hawkbee_schema` | M6.5 | todo |
+| [M6.7](sessions/m6-07-client-library.md) | Client library | `battle_client` | M6.2, M6.4 | todo |
+| [M6.8](sessions/m6-08-network-load-test.md) | A battle over the network, P-04 | `battle_host`, `battle_client` | M6.5, M6.7 | todo |
+
+Parallel once their dependencies are merged: **M6.1 ∥ M6.3** at the start; **M6.5 ∥ M6.7** after M6.4; **M6.6 ∥ M6.8** at the end.
+
 Status values: `todo` → `in progress` → `PR open #N` → `merged`. The session agent updates its own row.
