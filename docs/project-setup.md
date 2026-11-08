@@ -31,6 +31,7 @@ same Appwrite server is therefore reached through different addresses:
 | Client | Appwrite endpoint |
 |---|---|
 | Tools in `factory1` (Appwrite CLI, MCP server, scripts) | `http://appwrite-traefik/v1` (via `hermes-net`) |
+| Appwrite Functions | `http://appwrite-traefik/v1` (via `runtimes`): Appwrite sets it as `APPWRITE_FUNCTION_API_ENDPOINT` from `_APP_DOMAIN` |
 | Browser on the laptop (Flutter web, Console) | `http://localhost/v1` — Console at `http://localhost` |
 | Real phones, the Mac, the iPhone | `http://<LAN_IP>/v1` |
 | Android emulator running on the laptop | `http://10.0.2.2/v1` |
@@ -254,12 +255,13 @@ Never change these after the first start: `_APP_OPENSSL_KEY_V1` encrypts stored
 data, and the database passwords (`_APP_DB_*PASS*`, `_APP_USAGE_PASS`) are
 already set inside the database volumes.
 
-Keep the installer's `_APP_DOMAIN=localhost`. The Console answers on
-`localhost`, and the API answers on any host, so phones still reach
-`http://<LAN_IP>/v1`. Then set:
+The API answers on any host, so phones reach `http://<LAN_IP>/v1` whatever
+the domain settings. Set:
 
 | Variable | Set to | Why |
 |---|---|---|
+| `_APP_DOMAIN` | `appwrite-traefik` | The API host. Functions receive `http://<_APP_DOMAIN>/v1` as `APPWRITE_FUNCTION_API_ENDPOINT`; with `localhost` they call themselves and fail |
+| `_APP_CONSOLE_DOMAIN` | `localhost` (add it) | Keeps the Console at `http://localhost` |
 | `_APP_FUNCTIONS_RUNTIMES` | add `dart-3.13` | Dart functions (3.13 matches our SDK) |
 | `_APP_EXECUTOR_IMAGES` | add `openruntimes/dart:v5-3.13` | Pre-pull the Dart runtime image |
 | `_APP_SMTP_HOST` / `_APP_SMTP_PORT` | `maildev` / `1025` | Served by the maildev container added in 6.4 |
@@ -275,10 +277,13 @@ Keep `.env` out of git. It holds every secret of the local stack.
 
 ```yaml
 services:
-  # Put the router (not the internals) on hermes-net so factory1 can reach the API.
+  # Put the router (not the internals) on hermes-net so factory1 can reach the API,
+  # and on `runtimes` so functions reach it at APPWRITE_FUNCTION_API_ENDPOINT
+  # (http://appwrite-traefik/v1, from _APP_DOMAIN).
   traefik:
     networks:
       - hermes-net
+      - runtimes
 
   # Function containers are started on the `runtimes` network
   # (_APP_COMPUTE_RUNTIMES_NETWORK), but the official file only puts the executor
@@ -315,7 +320,8 @@ networks:
 Only `appwrite-traefik` and `appwrite-maildev` join `hermes-net`. Appwrite's
 internal service names (`redis`, `postgresql`, `clickhouse`, `orchestrator`)
 therefore can't clash with other stacks on that network, and function code can't
-reach `factory1`.
+reach `factory1`. On `runtimes`, functions reach only the router, so the API,
+never the database or Redis.
 
 ### 6.5 Start and verify
 
