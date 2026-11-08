@@ -25,7 +25,7 @@ Built (2026-11-08), stacked on M5.21 (`bt/appwrite-prefix`, hawkbee #58) and the
   - `BattleLoad` and `bin/load_test.dart` time the fog apart (`bench=host_fog`).
   - Tests: `test/src/fog/fog_of_war_test.dart` on a new 800 × 200 m test map (`test/helpers/plain.dart`: a wood, a 20 m grass ridge, a building), with a randomised run that checks the kept sets against a fresh fog after every step.
 - **`battle_rules`**: `GroundObstacle`, a sight obstacle that always blocks (MAP-26).
-- **`battle_team`**: P-02 and `stack/01` (fog cost); Q-MAP-25 assumed.
+- **`battle_team`**: P-02 and `stack/01` (fog cost); decision 235, MAP-26.
 
 Checks: analyze `--fatal-infos` and format clean; tests pass with 100 % line coverage, test optimization off: `battle_host` 318, `battle_rules` 630.
 
@@ -36,4 +36,4 @@ Choices:
 - Artillery keeps its own-section sight of the position as in M5.11, from every unit on the field, carried ones included.
 - A moving unit is seen at the cell the host holds for it, its destination, as shots already treat it (M5.11).
 
-Question raised, with an assumed answer (`95-open-questions.md`): **Q-MAP-25** sight line heights (top of the hit volumes; the ground blocks where it rises above the line) and carried units (they see from their transport and are not seen on their own, COMBAT-54).
+Question raised: **Q-MAP-25** sight line heights and carried units, answered by the owner on 2026-11-08 as assumed: decision 235 (from the top of the observer's hit volume to the top of the target's, the ground blocks where it rises above the line; a carried unit sees from its transport and is not seen on its own, COMBAT-54). The owner also confirmed that a radio of any section of the team relays.
