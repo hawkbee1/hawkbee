@@ -12,7 +12,7 @@
 - How long the host remembers request IDs, and the queue bound of a slow client: say which and why in the log.
 
 ## Acceptance criteria
-- [x] The acceptance criteria of the issue (m6-networking.md, Issue 5), but the opt-in run on the local Appwrite (written, not run here: see below).
+- [x] The acceptance criteria of the issue (m6-networking.md, Issue 5).
 - [x] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
@@ -31,7 +31,7 @@ Acceptance criteria (`test/src/endpoints/endpoints_test.dart`, `test/src/adapter
 - An order over the socket logged with the origin `player`, one over HTTPS with `ai`.
 - A resent command carried out once, on the socket and on HTTPS with the same request ID; a flood of 2,000 orders in a second throttled to the bucket (at most 511 handled) while a section's whole action plus two machine guns emptying their pools at 500 rounds a minute is never throttled.
 - Heartbeats and the idle timeout; a slow client dropped and caught up with its whole view; a socket that closes changes nothing in the battle (AI-02).
-- **Not run here:** the sign-in with a JWT of the local Appwrite. The instance answers from the container (`appwrite-traefik`, 2.7.1), but the container holds no API key, and the MCP test tool cannot pass one. To run (the key needs `users.read`, `users.write`, `rows.read`, `rows.write`; the test creates two users and deletes them; their key rows stay in `bt_api_keys`):
+- The sign-in with a JWT of the local Appwrite (`appwrite-traefik`, 2.7.1): run by the owner on 2026-11-08, passes. The container holds no API key, so it runs outside the MCP test tool (the key needs `users.read`, `users.write`, `rows.read`, `rows.write`; the test creates two users and deletes them; their key rows stay in `bt_api_keys`):
   ```sh
   cd packages/battle_host
   APPWRITE_API_KEY=<key> dart test --tags appwrite --run-skipped test/live/appwrite_sign_in_test.dart
