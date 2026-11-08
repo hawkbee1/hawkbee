@@ -5,6 +5,7 @@ Battle Team is a 3D, massive, persistent, real-time team battle game. Its rules 
 | File | Read it when |
 |---|---|
 | [agent-workflow.md](agent-workflow.md) | Always. How to read the plan, branch, test, open the PRs and hand off. |
+| [playtest.md](playtest.md) | To play a battle yourself: a 1 km map, blue against red, in the app. |
 | `apps/battle_team/AGENTS.md` | Always. How the plan works. |
 | [sessions/](sessions/) | Your session file, and the "Session log" of the sessions it depends on. |
 
