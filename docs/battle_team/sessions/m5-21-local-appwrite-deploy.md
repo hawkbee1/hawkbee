@@ -14,16 +14,24 @@
 - [x] Battle Team's Appwrite resources carry the `bt_` prefix (label `btadmin`), the rule in `plan/stack/02-persistence.md`.
 - [x] Local Appwrite 2.7.1 installed, project ID `hawkbee`, Web platform `localhost`, runtime `dart-3.13`, SMTP to maildev.
 - [x] `appwrite push table` and `appwrite push bucket`: 9 tables, 46 columns, 12 indexes available; a second push detects no change.
-- [ ] `appwrite push function --all --force` from `backend/` (after `dart run tool/vendor_packages.dart`); every deployment `ready`; executing `ping` answers `{"status":"ok","databaseId":"hawkbee"}`.
-- [ ] The live opt-in suites of `battle_backend` and `battle_host` pass against the local Appwrite.
+- [x] `appwrite push function --all --force` from `backend/` (after `dart run tool/vendor_packages.dart`); every deployment `ready`; executing `ping` answers `{"status":"ok","databaseId":"hawkbee"}`.
+- [x] The live opt-in suites of `battle_backend` and `battle_host` pass against the local Appwrite.
 - [ ] The owner's account carries the label `btadmin`; `bt_create_war` run as that account creates a war.
-- [ ] `appwrite` (Flutter SDK) bumped from `^27.0.0` to the 28.x line, which targets server 2.7.x; the apps still ping.
+- [x] `appwrite` (Flutter SDK) bumped from `^27.0.0` to the 28.x line, which targets server 2.7.x; the apps still ping.
 
 ## Session log
 Started (2026-11-06 to 2026-11-07) on `bt/m5-19-load-test`.
 
 - **`bt_` prefix**: the Hawkbee apps share one Appwrite project and its `hawkbee` database, so Battle Team's tables, buckets and functions are `bt_…` and its admin label is `btadmin` (labels allow only letters and digits). `AppwriteIds` holds every ID, the snapshots bucket included (`battle_host` no longer hard-codes its buckets); the tests use the constants. Function folders keep their names (`backend/functions/create_war`), mapped to the `bt_` IDs in `appwrite.config.json`.
 - **`appwrite.config.json`**: float columns are `double`, the type name the CLI accepts.
-- **`docs/project-setup.md` §6**: the official 2.7.1 installer (`--publish 20080:20080` for its web page), `_APP_DOMAIN=localhost` (the API answers any host, so phones use `http://<LAN_IP>/v1`), what `.env` may change after the first start, and creating the project ID `hawkbee` with the CLI when the Console offers no ID field.
+- **`docs/project-setup.md` §6**: the official 2.7.1 installer (`--publish 20080:20080` for its web page), why phones use `http://<LAN_IP>/v1` (the API answers any host), what `.env` may change after the first start, and creating the project ID `hawkbee` with the CLI when the Console offers no ID field.
 
 Checks: analyze `--fatal-infos` clean; tests pass with 100 % coverage, optimization off: `hawkbee_schema` 8, `battle_backend` 29, `battle_host` 294, the seven functions.
+
+Continued (2026-11-07 to 2026-11-08) in `factory1`, where `http://appwrite-traefik/v1` reaches the local Appwrite.
+
+- **Function scope**: Appwrite 2.7 names the scope `executions.write`; `execution.write` is a legacy alias that a key holding only the current scopes cannot grant, so `appwrite push function` refused the five functions asking for it. `appwrite.config.json` uses the current name; the key needs no extra scope. The seven deployments are `ready`; `ping` answers `{"status":"ok","databaseId":"hawkbee"}`. The CLI warns that it skips default domain rules without a Console session: functions run through the API, so they need none.
+- **Function endpoint**: Appwrite passes functions `APPWRITE_FUNCTION_API_ENDPOINT=http://<_APP_DOMAIN>/v1`. With `_APP_DOMAIN=localhost`, `bt_create_war` called itself and failed (connection refused), and function containers on `runtimes` could not reach the router anyway. Fix chosen by the owner, on the Docker side with no code change: `_APP_DOMAIN=appwrite-traefik`, `_APP_CONSOLE_DOMAIN=localhost` (2.7 keeps the Console on its own host), and `traefik` also on `runtimes`; `docs/project-setup.md` §1, §6.3 and §6.4 say so.
+- **Live suites**: run once in Bash with the owner's permission (the MCP test tool cannot pass `APPWRITE_API_KEY`): `battle_backend` 2 and `battle_host` 8 pass against the local Appwrite.
+- **Flutter SDK**: `appwrite_api_client` takes `appwrite: ^28.3.0`, which targets server 2.7.x. 28.x is a Flutter plugin with Android push code: its `flutter_local_notifications` needs core library desugaring, now enabled in the Android app of `hawkbee` and `battle_team` (`desugar_jdk_libs` 2.1.4). Both web builds show "Connected to Appwrite" against the local server; `pubspec.lock` also gains `dart_appwrite` and `sentry`, which were missing.
+- Battle Team's web preloader (`web/flutter_bootstrap.js`, from the template) fetches `assets/<path>` where Flutter serves `assets/assets/<path>`: four 404s it ignores before starting the app. Left as it is, outside this session.
