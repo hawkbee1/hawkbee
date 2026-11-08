@@ -85,7 +85,7 @@ Milestone: `apps/battle_team/plan/milestones/m6-networking.md`. Session M6.7 cre
 
 | Session | Issue | Package | Depends on | Status |
 |---|---|---|---|---|
-| [M6.1](sessions/m6-01-protocol-spike.md) | Protocol spike, dashwire against M5's protocol | none (`stack/03`) | M5 | PR open #60: option 3 recommended, awaiting confirmation |
+| [M6.1](sessions/m6-01-protocol-spike.md) | Protocol spike, dashwire against M5's protocol | none (`stack/03`) | M5 | PR open #60: option 3 confirmed |
 | [M6.2](sessions/m6-02-messages.md) | Messages between the host and its clients | `battle_protocol` | M6.1 | todo |
 | [M6.3](sessions/m6-03-fog-of-war.md) | Fog of war per section | `battle_host` | M5 | todo |
 | [M6.4](sessions/m6-04-update-stream.md) | The update stream of a section | `battle_host` | M6.2, M6.3 | todo |
