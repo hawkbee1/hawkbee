@@ -90,7 +90,7 @@ Milestone: `apps/battle_team/plan/milestones/m6-networking.md`. Session M6.7 cre
 | [M6.3](sessions/m6-03-fog-of-war.md) | Fog of war per section | `battle_host` | M5 | PR open #61 |
 | [M6.4](sessions/m6-04-update-stream.md) | The update stream of a section | `battle_host` | M6.2, M6.3 | PR open #63 |
 | [M6.5](sessions/m6-05-endpoints-and-sign-in.md) | Endpoints and sign-in | `battle_host` | M6.2, M6.4 | PR open #64 |
-| [M6.6](sessions/m6-06-reaching-a-battle-host.md) | Reaching a battle's host | `battle_host`, `backend`, `hawkbee_schema` | M6.5 | todo |
+| [M6.6](sessions/m6-06-reaching-a-battle-host.md) | Reaching a battle's host | `battle_host`, `battle_client`, `battle_backend`, `backend`, `hawkbee_schema` | M6.5 | in progress |
 | [M6.7](sessions/m6-07-client-library.md) | Client library | `battle_client` | M6.2, M6.4 | PR open #65 |
 | [M6.8](sessions/m6-08-network-load-test.md) | A battle over the network, P-04 | `battle_host`, `battle_client` | M6.5, M6.7 | todo |
 
