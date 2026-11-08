@@ -16,7 +16,7 @@
 - [x] `appwrite push table` and `appwrite push bucket`: 9 tables, 46 columns, 12 indexes available; a second push detects no change.
 - [x] `appwrite push function --all --force` from `backend/` (after `dart run tool/vendor_packages.dart`); every deployment `ready`; executing `ping` answers `{"status":"ok","databaseId":"hawkbee"}`.
 - [x] The live opt-in suites of `battle_backend` and `battle_host` pass against the local Appwrite.
-- [ ] The owner's account carries the label `btadmin`; `bt_create_war` run as that account creates a war.
+- [x] The owner's account carries the label `btadmin`; `bt_create_war` run as that account creates a war.
 - [x] `appwrite` (Flutter SDK) bumped from `^27.0.0` to the 28.x line, which targets server 2.7.x; the apps still ping.
 
 ## Session log
@@ -34,4 +34,5 @@ Continued (2026-11-07 to 2026-11-08) in `factory1`, where `http://appwrite-traef
 - **Function endpoint**: Appwrite passes functions `APPWRITE_FUNCTION_API_ENDPOINT=http://<_APP_DOMAIN>/v1`. With `_APP_DOMAIN=localhost`, `bt_create_war` called itself and failed (connection refused), and function containers on `runtimes` could not reach the router anyway. Fix chosen by the owner, on the Docker side with no code change: `_APP_DOMAIN=appwrite-traefik`, `_APP_CONSOLE_DOMAIN=localhost` (2.7 keeps the Console on its own host), and `traefik` also on `runtimes`; `docs/project-setup.md` §1, §6.3 and §6.4 say so.
 - **Live suites**: run once in Bash with the owner's permission (the MCP test tool cannot pass `APPWRITE_API_KEY`): `battle_backend` 2 and `battle_host` 8 pass against the local Appwrite.
 - **Flutter SDK**: `appwrite_api_client` takes `appwrite: ^28.3.0`, which targets server 2.7.x. 28.x is a Flutter plugin with Android push code: its `flutter_local_notifications` needs core library desugaring, now enabled in the Android app of `hawkbee` and `battle_team` (`desugar_jdk_libs` 2.1.4). Both web builds show "Connected to Appwrite" against the local server; `pubspec.lock` also gains `dart_appwrite` and `sentry`, which were missing.
+- **Admin**: the owner's account `toto` (created in the Console) carries `btadmin`. `bt_create_war` run as that account (a JWT of the user) created the war `m521war` in `bt_wars` (`min_starting_money` 500, the default); the same call from a user without the label answers `not_admin`.
 - Battle Team's web preloader (`web/flutter_bootstrap.js`, from the template) fetches `assets/<path>` where Flutter serves `assets/assets/<path>`: four 404s it ignores before starting the app. Left as it is, outside this session.
