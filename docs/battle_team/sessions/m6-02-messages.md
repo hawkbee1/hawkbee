@@ -3,7 +3,7 @@
 **Issue:** `apps/battle_team/plan/milestones/m6-networking.md`, Issue 2. It is the specification of this session: read it entirely, with the milestone's "Conventions".
 **Package:** `packages/battle_protocol` (`hawkbee1/battle_protocol`) · **Branch:** `bt/m6-02-messages` · **Depends on:** M6.1.
 **Skills:** `vgv-ai-flutter-plugin:testing`, `vgv-ai-flutter-plugin:green-gate`.
-**Read** (`plan/` is `apps/battle_team/plan/`): `plan/stack/03-networking.md` (update policy, traffic estimate); `plan/stack/08-workload-placement.md` (what the client computes); Q-MAP-24, Q-REL-16 and Q-CBT-38 in `plan/specs/95-open-questions.md`; the session logs of M5.9 (codecs, samples, sizes), M5.11 (refusal codes), M5.14 (the delta layer) and M6.1.
+**Read** (`plan/` is `apps/battle_team/plan/`): `plan/stack/03-networking.md` (update policy, traffic estimate); `plan/stack/08-workload-placement.md` (what the client computes); MAP-49, RELIC-10, COMBAT-57 (decisions 232 to 234); the session logs of M5.9 (codecs, samples, sizes), M5.11 (refusal codes), M5.14 (the delta layer) and M6.1.
 
 ## Notes
 - The messages are a family of their own beside commands, events and log entries, with the same `FieldWriter`/`FieldReader` codecs. The log format of M5.9 does not change.

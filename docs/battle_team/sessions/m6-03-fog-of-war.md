@@ -3,7 +3,7 @@
 **Issue:** `apps/battle_team/plan/milestones/m6-networking.md`, Issue 3. It is the specification of this session: read it entirely, with the milestone's "Conventions".
 **Package:** `packages/battle_host` (`hawkbee1/battle_host`) · **Branch:** `bt/m6-03-fog` · **Depends on:** M5 (M5.19 #57, M5.21 #58); not on M6.1.
 **Skills:** `vgv-ai-flutter-plugin:testing`, `vgv-ai-flutter-plugin:green-gate`.
-**Read** (`plan/` is `apps/battle_team/plan/`): `plan/specs/10-map-and-terrain.md` section 5 (vision); UNIT-34, UNIT-36, HQ-29, COMBAT-11, COMBAT-12; decisions 21, 59, 184; Q-MAP-24; `plan/stack/01-simulation-host.md` (tick, load); the session logs of M4.5 (vision), M5.1 (effective stats), M5.11 (scouts' reports for artillery, sight lines) and M5.19 (load test).
+**Read** (`plan/` is `apps/battle_team/plan/`): `plan/specs/10-map-and-terrain.md` section 5 (vision); UNIT-34, UNIT-36, HQ-29, COMBAT-11, COMBAT-12; decisions 21, 59, 184; MAP-49 (decision 232); `plan/stack/01-simulation-host.md` (tick, load); the session logs of M4.5 (vision), M5.1 (effective stats), M5.11 (scouts' reports for artillery, sight lines) and M5.19 (load test).
 **Measure** with `battle_host/bin/load_test.dart`, AOT.
 
 ## Notes
