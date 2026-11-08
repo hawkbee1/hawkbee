@@ -55,6 +55,7 @@ void main() {
           AppwriteIds.guildsTableId,
           AppwriteIds.purchasesTableId,
           AppwriteIds.apiKeysTableId,
+          AppwriteIds.hostsTableId,
         ]),
       );
       expect(
@@ -65,6 +66,7 @@ void main() {
           AppwriteIds.endBattleFunctionId,
           AppwriteIds.guildRequestsFunctionId,
           AppwriteIds.apiKeysFunctionId,
+          AppwriteIds.battleHostFunctionId,
         ]),
       );
     });

@@ -2,8 +2,11 @@ import 'package:battle_protocol/src/codec/fields.dart';
 import 'package:battle_protocol/src/command.dart';
 import 'package:battle_protocol/src/events.dart';
 import 'package:battle_protocol/src/log_entry.dart';
+import 'package:battle_protocol/src/messages.dart';
 import 'package:battle_protocol/src/orders.dart';
 import 'package:battle_protocol/src/values.dart';
+
+part 'wire_messages.dart';
 
 // The fields of every message, in order, written and read once for both
 // encodings. The order of the fields and of the tags below is version 1 of

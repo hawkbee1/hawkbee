@@ -51,6 +51,10 @@ abstract final class AppwriteIds {
   /// API keys, hashed (AI-04).
   static const apiKeysTableId = 'bt_api_keys';
 
+  /// The simulation hosts: each one's public address and when it was last
+  /// seen. Only the hosts and the functions read it.
+  static const hostsTableId = 'bt_hosts';
+
   /// The Appwrite label of admins (SOC-16, decision 161).
   static const adminLabel = 'btadmin';
 
@@ -68,4 +72,8 @@ abstract final class AppwriteIds {
 
   /// Creates and revokes API keys (decisions 158, 161).
   static const apiKeysFunctionId = 'bt_api_keys';
+
+  /// The address of the host that runs a battle, for its players and their
+  /// API keys (M6 Issue 6).
+  static const battleHostFunctionId = 'bt_battle_host';
 }

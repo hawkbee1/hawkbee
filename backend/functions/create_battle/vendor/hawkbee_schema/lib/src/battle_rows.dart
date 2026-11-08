@@ -177,11 +177,12 @@ final class BattleRow {
   /// Whether its statistics are final: computed after its end.
   final bool statsDone;
 
-  /// This battle with the values given.
+  /// This battle with the values given; [host] gives its new host, null
+  /// for none.
   BattleRow copyWith({
     BattleStatus? status,
     Map<String, List<String>>? teams,
-    String? host,
+    String? Function()? host,
     String? winner,
     BattleResult? result,
     bool? statsDone,
@@ -192,7 +193,7 @@ final class BattleRow {
     seed: seed,
     status: status ?? this.status,
     teams: teams ?? this.teams,
-    host: host ?? this.host,
+    host: host == null ? this.host : host(),
     winner: winner ?? this.winner,
     result: result ?? this.result,
     statsDone: statsDone ?? this.statsDone,
@@ -518,5 +519,43 @@ final class ApiKeyRow {
     'account_id': accountId,
     'hash': hash,
     'revoked': revoked,
+  };
+}
+
+/// {@template host_row}
+/// A simulation host (stack decision 1, hosting), by its host ID, the
+/// `host` of the battles it runs: the public [address] its players and AI
+/// agents reach it at, and when it was last [seenAt]. A host writes its row
+/// at each look at its battles; one not seen for a lease has stopped, and
+/// another host of its map may take its battles over.
+/// {@endtemplate}
+final class HostRow {
+  /// {@macro host_row}
+  const new({required this.address, required this.seenAt});
+
+  /// The host [data] holds.
+  ///
+  /// Throws a [FormatException] for data that is not a host's.
+  factory fromData(RowData data) => HostRow(
+    address: _as<String>(data, 'address'),
+    seenAt:
+        DateTime.tryParse(_as<String>(data, 'seen_at'))?.toUtc() ??
+        (throw const FormatException('not a row: seen_at is not a time')),
+  );
+
+  /// Its public address: the base URL of its endpoints, `https://…` live
+  /// behind the reverse proxy, `http://…` on the local stack.
+  final String address;
+
+  /// When it last wrote its row, in UTC.
+  final DateTime seenAt;
+
+  /// Whether it was seen within [lease] before [now].
+  bool aliveAt(DateTime now, Duration lease) => now.difference(seenAt) < lease;
+
+  /// The row's data.
+  RowData toData() => {
+    'address': address,
+    'seen_at': seenAt.toUtc().toIso8601String(),
   };
 }

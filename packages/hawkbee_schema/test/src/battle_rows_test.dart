@@ -75,7 +75,7 @@ void main() {
       expect(
         again
             .copyWith(
-              host: 'host-2',
+              host: () => 'host-2',
               winner: 'team-2',
               result: const BattleResult(winner: 'team-2', sections: {}),
             )
@@ -87,6 +87,7 @@ void main() {
           'result': '{"winner":"team-2","sections":{},"earned":{}}',
         },
       );
+      expect(again.copyWith(host: () => null).toData()['host'], isNull);
       expect(
         BattleRow.fromData(
           'b-2',
@@ -133,6 +134,40 @@ void main() {
         guild.toData(),
       );
       expect(ApiKeyRow.fromData(stored(key.toData())).toData(), key.toData());
+    });
+
+    test('a host reads back what it writes, in UTC', () {
+      final host = HostRow(
+        address: 'http://host-saint-lo:8080',
+        seenAt: DateTime.utc(2026, 11, 8, 10),
+      );
+      // Appwrite answers a datetime column with its offset.
+      final again = HostRow.fromData({
+        ...host.toData(),
+        'seen_at': '2026-11-08T11:00:00.000+01:00',
+      });
+
+      expect(HostRow.fromData(stored(host.toData())).toData(), host.toData());
+      expect(again.seenAt, host.seenAt);
+      expect(again.seenAt.isUtc, isTrue);
+      expect(
+        host.aliveAt(
+          DateTime.utc(2026, 11, 8, 10, 0, 59),
+          const Duration(minutes: 1),
+        ),
+        isTrue,
+      );
+      expect(
+        host.aliveAt(
+          DateTime.utc(2026, 11, 8, 10, 1),
+          const Duration(minutes: 1),
+        ),
+        isFalse,
+      );
+      expect(
+        () => HostRow.fromData({...host.toData(), 'seen_at': 'yesterday'}),
+        throwsFormatException,
+      );
     });
 
     test('refuse data that is not a row of theirs', () {

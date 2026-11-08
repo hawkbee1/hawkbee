@@ -1,0 +1,20 @@
+name: battle_host
+description: Gives a player of a battle, or their API key, the address of the host that runs it (M6 Issue 6).
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  # Vendored copies of packages/ and of the plan's data, refreshed by
+  # `melos run backend:vendor`.
+  battle_backend:
+    path: vendor/battle_backend
+  dart_appwrite: ^31.1.0
+
+dev_dependencies:
+  hawkbee_schema:
+    path: vendor/hawkbee_schema
+  test: ^1.31.0
+  very_good_analysis: ^11.0.0

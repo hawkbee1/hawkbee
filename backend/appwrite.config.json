@@ -158,6 +158,26 @@
             "commands": "dart pub get",
             "ignore": ".dart_tool\ntest",
             "path": "functions/api_keys"
+        },
+        {
+            "$id": "bt_battle_host",
+            "name": "bt_battle_host",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "any"
+            ],
+            "scopes": [
+                "rows.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/battle_host"
         }
     ],
     "tablesDB": [
@@ -671,6 +691,28 @@
                     ]
                 }
             ]
+        },
+        {
+            "$id": "bt_hosts",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "BT Hosts",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "address",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 2048
+                },
+                {
+                    "key": "seen_at",
+                    "type": "datetime",
+                    "required": true
+                }
+            ],
+            "indexes": []
         }
     ],
     "buckets": [
