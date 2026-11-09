@@ -34,6 +34,27 @@
             ]
         },
         {
+            "name": "battle_team (playtest - USB)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/battle_team/lib/main_playtest.dart",
+            "cwd": "apps/battle_team",
+            "toolArgs": [
+                "--host-vmservice-port",
+                "50505",
+                "--dds-port",
+                "50506"
+            ],
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_playtest.dart",
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
+            ]
+        },
+        {
             "name": "battle_team (profile)",
             "type": "dart",
             "request": "launch",
