@@ -22,6 +22,19 @@ Then launch **battle_team (playtest)** (root `.vscode/launch.json`). With `env/d
 
 The host is a process in `factory1`, not a service: it stops when the session that started it ends, and the app then shows "Host lost, coming back…". Start it again with the same command in the background, output to a log file (`nohup … > host.log 2>&1 &`). It recovers the battle from its last snapshot and uploads, and the app reconnects by itself within half a minute. Check `curl http://localhost:8091` answers before blaming the app.
 
+### With the Docker host `host-saint-lo-1`
+The compose host (`packages/battle_host/docker/compose.yaml`, container `battle_host-host-saint-lo-1`, port 8081) serves `saint_lo` and `saint_lo_1km`, so it can run the playtest battle and survives the end of a session. It needs an image that holds the 1 km map. On the laptop, from `packages/battle_host`:
+```sh
+docker/prepare.sh saint_lo saint_lo_1km
+docker build -f docker/Dockerfile -t battle_host build/docker
+# The address clients reach it at must work for the setup tool in factory1 and
+# for the app on the laptop or phone: the laptop's LAN address, not localhost.
+HOST_SAINT_LO_ADDRESS=http://<LAN_IP>:8081 APPWRITE_API_KEY=<key> \
+  docker compose -f docker/compose.yaml up -d host-saint-lo
+docker logs battle_host-host-saint-lo-1 2>&1 | grep 'address='   # what it registered
+```
+Then, in `factory1`, step 2 above only (`dart run tool/playtest.dart`): the host that serves `saint_lo_1km` claims the new battle at its next look (10 s), and blue's opening goes through it. Check `curl -i http://localhost:8081/v1/socket` answers `426` (it waits for a WebSocket) before blaming the app.
+
 ## What the rules make of it
 A foot unit holds 30 AP, spends 1 AP a metre and gets 1 AP back an hour (`data/units.yaml`, `data/battle.yaml`): a soldier dashes 30 m, then waits. That is the game as written; a faster AP rate for playtests would be a battle setting, which the rows do not hold yet.
 
