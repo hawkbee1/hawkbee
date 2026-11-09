@@ -58,14 +58,16 @@ class AppwriteApiClient {
     }
   }
 
-  /// Signs in with [email] and [password], unless a session is open.
+  /// Signs in as [email] with [password], unless that account's session is
+  /// already open. Another account's session is closed first: a JWT must
+  /// be the account that was asked for.
   ///
   /// Throws an [AppwriteSignInFailure] when it cannot.
   Future<void> signIn({required String email, required String password}) =>
       _signInFailure(() async {
         try {
-          await _account.get();
-          return;
+          if ((await _account.get()).email == email) return;
+          await _account.deleteSession(sessionId: 'current');
         } on AppwriteException catch (error) {
           if (error.code != 401) rethrow;
         }

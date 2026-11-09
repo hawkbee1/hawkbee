@@ -96,17 +96,46 @@ void main() {
       ).called(1);
     });
 
-    test('keeps the session that is open', () async {
-      when(() => account.get()).thenAnswer((_) async => _MockUser());
+    test('keeps the session of the account asked for', () async {
+      final user = _MockUser();
+      when(() => user.email).thenReturn('blue@x.local');
+      when(() => account.get()).thenAnswer((_) async => user);
 
       await apiClient.signIn(email: 'blue@x.local', password: 'secret');
 
+      verifyNever(
+        () => account.deleteSession(sessionId: any(named: 'sessionId')),
+      );
       verifyNever(
         () => account.createEmailPasswordSession(
           email: any(named: 'email'),
           password: any(named: 'password'),
         ),
       );
+    });
+
+    test("closes another account's session before signing in", () async {
+      final user = _MockUser();
+      when(() => user.email).thenReturn('someone@else.local');
+      when(() => account.get()).thenAnswer((_) async => user);
+      when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+          .thenAnswer((_) async {});
+      when(
+        () => account.createEmailPasswordSession(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => _MockSession());
+
+      await apiClient.signIn(email: 'blue@x.local', password: 'secret');
+
+      verify(() => account.deleteSession(sessionId: 'current')).called(1);
+      verify(
+        () => account.createEmailPasswordSession(
+          email: 'blue@x.local',
+          password: 'secret',
+        ),
+      ).called(1);
     });
 
     test('throws $AppwriteSignInFailure when Appwrite fails', () async {
