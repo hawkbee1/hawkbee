@@ -2,6 +2,10 @@
 ///
 /// Keep these in sync with that file: apps and functions refer to resources
 /// through these constants, never through string literals.
+///
+/// The Hawkbee apps share one Appwrite project, so each app's tables,
+/// buckets, functions and labels carry the app's prefix: `bt_` for Battle
+/// Team (`bt` for labels, which allow only letters and digits).
 abstract final class AppwriteIds {
   /// The main TablesDB database.
   static const databaseId = 'hawkbee';
@@ -11,54 +15,65 @@ abstract final class AppwriteIds {
 
   /// The daily statistics, medals and hit-rate flags of a battle, from its
   /// uploaded log (decision 143).
-  static const dailyStatsFunctionId = 'daily_stats';
+  static const dailyStatsFunctionId = 'bt_daily_stats';
 
   /// The batches of the battle logs, uploaded by the simulation host.
-  static const battleLogsBucketId = 'battle_logs';
+  static const battleLogsBucketId = 'bt_battle_logs';
+
+  /// The snapshots of the running battles, uploaded by the simulation host.
+  static const battleSnapshotsBucketId = 'bt_battle_snapshots';
 
   /// Statistics per unit, section and player, for a battle, a war and the
   /// game.
-  static const statsTableId = 'stats';
+  static const statsTableId = 'bt_stats';
 
   /// The medals of each player: war medals and game medals.
-  static const medalsTableId = 'medals';
+  static const medalsTableId = 'bt_medals';
 
   /// Hit rates far above the norm, for the moderation tools.
-  static const hitRateFlagsTableId = 'hit_rate_flags';
+  static const hitRateFlagsTableId = 'bt_hit_rate_flags';
 
   /// Wars (SOC-16).
-  static const warsTableId = 'wars';
+  static const warsTableId = 'bt_wars';
 
   /// Battles of the wars.
-  static const battlesTableId = 'battles';
+  static const battlesTableId = 'bt_battles';
 
   /// Sections of the wars: each player's, with what it keeps.
-  static const sectionsTableId = 'sections';
+  static const sectionsTableId = 'bt_sections';
 
   /// Guilds of the wars.
-  static const guildsTableId = 'guilds';
+  static const guildsTableId = 'bt_guilds';
 
   /// Purchases of cosmetics, one row per payment (SOC-27).
-  static const purchasesTableId = 'purchases';
+  static const purchasesTableId = 'bt_purchases';
 
   /// API keys, hashed (AI-04).
-  static const apiKeysTableId = 'api_keys';
+  static const apiKeysTableId = 'bt_api_keys';
+
+  /// The simulation hosts: each one's public address and when it was last
+  /// seen. Only the hosts and the functions read it.
+  static const hostsTableId = 'bt_hosts';
 
   /// The Appwrite label of admins (SOC-16, decision 161).
-  static const adminLabel = 'admin';
+  static const adminLabel = 'btadmin';
 
   /// Creates wars and lets players join them (SOC-16, SOC-30).
-  static const createWarFunctionId = 'create_war';
+  static const createWarFunctionId = 'bt_create_war';
 
   /// Plans and starts battles (SOC-16, SOC-20).
-  static const createBattleFunctionId = 'create_battle';
+  static const createBattleFunctionId = 'bt_create_battle';
 
   /// Carries the sections of an ended battle over (UNIT-30).
-  static const endBattleFunctionId = 'end_battle';
+  static const endBattleFunctionId = 'bt_end_battle';
 
   /// Guild requests between battles.
-  static const guildRequestsFunctionId = 'guild_requests';
+  static const guildRequestsFunctionId = 'bt_guild_requests';
 
   /// Creates and revokes API keys (decisions 158, 161).
-  static const apiKeysFunctionId = 'api_keys';
+  static const apiKeysFunctionId = 'bt_api_keys';
+
+  /// The address of the host that runs a battle, for its players and their
+  /// API keys (M6 Issue 6).
+  static const battleHostFunctionId = 'bt_battle_host';
 }

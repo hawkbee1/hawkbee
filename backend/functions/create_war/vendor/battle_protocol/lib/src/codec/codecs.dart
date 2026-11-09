@@ -8,6 +8,7 @@ import 'package:battle_protocol/src/codec/wire.dart';
 import 'package:battle_protocol/src/command.dart';
 import 'package:battle_protocol/src/events.dart';
 import 'package:battle_protocol/src/log_entry.dart';
+import 'package:battle_protocol/src/messages.dart';
 
 /// Encodes and decodes the messages of the protocol in one encoding, each
 /// with the format version (stack decision 2). Decoding throws a
@@ -31,6 +32,18 @@ abstract interface class ProtocolCodec<T> {
 
   /// The log entry [data] encodes.
   LogEntry decodeEntry(T data);
+
+  /// [message], from a client, encoded.
+  T encodeClientMessage(ClientMessage message);
+
+  /// The client message [data] encodes.
+  ClientMessage decodeClientMessage(T data);
+
+  /// [message], from the host, encoded.
+  T encodeHostMessage(HostMessage message);
+
+  /// The host message [data] encodes.
+  HostMessage decodeHostMessage(T data);
 }
 
 /// The first bytes of a battle log: `BTLG`.
@@ -79,6 +92,22 @@ final class BinaryProtocolCodec implements ProtocolCodec<Uint8List> {
 
   @override
   LogEntry decodeEntry(Uint8List data) => _decode(data, readEntry);
+
+  @override
+  Uint8List encodeClientMessage(ClientMessage message) =>
+      _encode(message, writeClientMessage);
+
+  @override
+  ClientMessage decodeClientMessage(Uint8List data) =>
+      _decode(data, readClientMessage);
+
+  @override
+  Uint8List encodeHostMessage(HostMessage message) =>
+      _encode(message, writeHostMessage);
+
+  @override
+  HostMessage decodeHostMessage(Uint8List data) =>
+      _decode(data, readHostMessage);
 
   /// The start of a battle log: `BTLG` and the version.
   Uint8List logHeader() =>
@@ -175,10 +204,25 @@ final class JsonProtocolCodec implements ProtocolCodec<String> {
 
   @override
   LogEntry decodeEntry(String data) => _decode(data, readEntry);
+
+  @override
+  String encodeClientMessage(ClientMessage message) =>
+      _encode(message, writeClientMessage);
+
+  @override
+  ClientMessage decodeClientMessage(String data) =>
+      _decode(data, readClientMessage);
+
+  @override
+  String encodeHostMessage(HostMessage message) =>
+      _encode(message, writeHostMessage);
+
+  @override
+  HostMessage decodeHostMessage(String data) => _decode(data, readHostMessage);
 }
 
 void _checkVersion(int version) {
   if (version != protocolVersion) {
-    throw ProtocolException('unsupported version $version');
+    throw UnsupportedVersionException(version);
   }
 }

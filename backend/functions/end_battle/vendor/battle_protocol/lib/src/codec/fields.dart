@@ -40,6 +40,18 @@ final class ProtocolException implements Exception {
   String toString() => 'ProtocolException: $message';
 }
 
+/// {@template unsupported_version_exception}
+/// A message of a format [version] the decoders do not read: the host
+/// answers a client that speaks it with a goodbye.
+/// {@endtemplate}
+final class UnsupportedVersionException extends ProtocolException {
+  /// {@macro unsupported_version_exception}
+  new(this.version) : super('unsupported version $version');
+
+  /// The version of the message.
+  final int version;
+}
+
 /// Where a message writes its fields, by name and in order: the binary
 /// writer keeps the order and drops the names, the JSON writer keeps the
 /// names (Strategy, stack decision 7). Each message lists its fields once,

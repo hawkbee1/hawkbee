@@ -20,7 +20,7 @@ The mechanics shared with the other hawkbee projects (repositories, submodules, 
 ## 2. Rules for Battle Team code
 - **Rule IDs everywhere.** A test name starts with the rule ID it checks (`COMBAT-06 moves at regen speed at 0 AP`), and the doc comment of the code that implements a rule cites it. Every rule the issue lists has at least one test.
 - **Numbers only in `plan/data`.** No game number in `lib/`. Tests on real values read the real files from the hawkbee checkout, `../../apps/battle_team/plan/data/` relative to the package (stack decision 7), through the test helper of M4.1. Synthetic cases use fixtures in `test/`.
-- **No I/O in `lib/`.** The caller passes YAML text, maps and time. Only command-line tools in `bin/` read files. The exception is `battle_host` (M5): its I/O lives in adapters behind ports, and its core follows this rule.
+- **No I/O in `lib/`.** The caller passes YAML text, maps and time. Only command-line tools in `bin/` read files. The exceptions are `battle_host` (M5) and `battle_client` (M6): their I/O lives in adapters behind ports, and their core follows this rule.
 - **Deterministic.** Time comes from an injected `Clock` or as an argument; randomness from an injected `SeededRandom`. No `DateTime.now()`, no unseeded `Random`, no global state, no singletons.
 - **Immutable models, sealed types** for variants (commands, events, states) with exhaustive `switch`. Use a Gang of Four pattern only where stack decision 7 names it, and cite it in the doc comment.
 - **Pure Dart:** no Flutter dependency.
@@ -39,7 +39,7 @@ For every package you touched:
 3. every rule listed in the issue has a test whose name starts with its ID;
 4. every acceptance criterion of the issue and of the session file is checked.
 
-M3 to M5 are headless: no goldens and no 3D tests.
+M3 to M6 are headless: no goldens and no 3D tests.
 
 ## 5. Finishing
 1. Append a **"Session log"** to your session file: what you built (main types and functions), deviations and why, questions raised, and any numbers the session asked for.

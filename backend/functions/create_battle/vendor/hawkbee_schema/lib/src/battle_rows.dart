@@ -97,7 +97,8 @@ enum BattleStatus {
 
 /// {@template battle_row}
 /// A battle of a war: its map and seed, its status, its teams once it
-/// starts (team ID to section IDs), its winner and its result once it ends.
+/// starts (team ID to section IDs), the host that runs it (its placement),
+/// its winner and its result once it ends.
 /// {@endtemplate}
 final class BattleRow {
   /// {@macro battle_row}
@@ -108,6 +109,7 @@ final class BattleRow {
     required this.seed,
     this.status = BattleStatus.planned,
     this.teams = const {},
+    this.host,
     this.winner,
     this.result,
     this.statsDone = false,
@@ -135,6 +137,7 @@ final class BattleRow {
             _ => throw const FormatException('not a row: teams'),
           },
       },
+      host: _as<String?>(data, 'host'),
       winner: _as<String?>(data, 'winner'),
       result: result == null
           ? null
@@ -161,6 +164,10 @@ final class BattleRow {
   /// Its teams once it runs: the section IDs of each team.
   final Map<String, List<String>> teams;
 
+  /// The simulation host that runs it, once one claimed it: where it is
+  /// placed (stack decision 1, hosting).
+  final String? host;
+
   /// The team that won, once it ended.
   final String? winner;
 
@@ -170,10 +177,14 @@ final class BattleRow {
   /// Whether its statistics are final: computed after its end.
   final bool statsDone;
 
-  /// This battle with the values given.
+  /// This battle with the values given; [host] gives its new host, null
+  /// for none.
   BattleRow copyWith({
     BattleStatus? status,
     Map<String, List<String>>? teams,
+    String? Function()? host,
+    String? winner,
+    BattleResult? result,
     bool? statsDone,
   }) => BattleRow(
     id: id,
@@ -182,8 +193,9 @@ final class BattleRow {
     seed: seed,
     status: status ?? this.status,
     teams: teams ?? this.teams,
-    winner: winner,
-    result: result,
+    host: host == null ? this.host : host(),
+    winner: winner ?? this.winner,
+    result: result ?? this.result,
     statsDone: statsDone ?? this.statsDone,
   );
 
@@ -194,6 +206,7 @@ final class BattleRow {
     'seed': seed,
     'status': status.name,
     'teams': jsonEncode(teams),
+    'host': host,
     'winner': winner,
     'result': result == null ? null : jsonEncode(result!.toJson()),
     'stats_done': statsDone,
@@ -506,5 +519,43 @@ final class ApiKeyRow {
     'account_id': accountId,
     'hash': hash,
     'revoked': revoked,
+  };
+}
+
+/// {@template host_row}
+/// A simulation host (stack decision 1, hosting), by its host ID, the
+/// `host` of the battles it runs: the public [address] its players and AI
+/// agents reach it at, and when it was last [seenAt]. A host writes its row
+/// at each look at its battles; one not seen for a lease has stopped, and
+/// another host of its map may take its battles over.
+/// {@endtemplate}
+final class HostRow {
+  /// {@macro host_row}
+  const new({required this.address, required this.seenAt});
+
+  /// The host [data] holds.
+  ///
+  /// Throws a [FormatException] for data that is not a host's.
+  factory fromData(RowData data) => HostRow(
+    address: _as<String>(data, 'address'),
+    seenAt:
+        DateTime.tryParse(_as<String>(data, 'seen_at'))?.toUtc() ??
+        (throw const FormatException('not a row: seen_at is not a time')),
+  );
+
+  /// Its public address: the base URL of its endpoints, `https://…` live
+  /// behind the reverse proxy, `http://…` on the local stack.
+  final String address;
+
+  /// When it last wrote its row, in UTC.
+  final DateTime seenAt;
+
+  /// Whether it was seen within [lease] before [now].
+  bool aliveAt(DateTime now, Duration lease) => now.difference(seenAt) < lease;
+
+  /// The row's data.
+  RowData toData() => {
+    'address': address,
+    'seen_at': seenAt.toUtc().toIso8601String(),
   };
 }

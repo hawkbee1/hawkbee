@@ -19,6 +19,21 @@
             ]
         },
         {
+            "name": "battle_team (playtest)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/battle_team/lib/main_playtest.dart",
+            "cwd": "apps/battle_team",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_playtest.dart",
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
+            ]
+        },
+        {
             "name": "battle_team (profile)",
             "type": "dart",
             "request": "launch",

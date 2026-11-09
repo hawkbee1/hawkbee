@@ -2,6 +2,184 @@
     "projectId": "hawkbee",
     "projectName": "Hawkbee",
     "endpoint": "http://appwrite-traefik/v1",
+    "functions": [
+        {
+            "$id": "ping",
+            "name": "ping",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/ping"
+        },
+        {
+            "$id": "bt_daily_stats",
+            "name": "bt_daily_stats",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [
+                "files.read",
+                "rows.read",
+                "rows.write"
+            ],
+            "events": [],
+            "schedule": "0 4 * * *",
+            "timeout": 900,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/daily_stats"
+        },
+        {
+            "$id": "bt_create_war",
+            "name": "bt_create_war",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "executions.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/create_war"
+        },
+        {
+            "$id": "bt_create_battle",
+            "name": "bt_create_battle",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "executions.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/create_battle"
+        },
+        {
+            "$id": "bt_end_battle",
+            "name": "bt_end_battle",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "executions.write",
+                "files.read"
+            ],
+            "events": [
+                "databases.hawkbee.tables.bt_battles.rows.*.update"
+            ],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/end_battle"
+        },
+        {
+            "$id": "bt_guild_requests",
+            "name": "bt_guild_requests",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "executions.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/guild_requests"
+        },
+        {
+            "$id": "bt_api_keys",
+            "name": "bt_api_keys",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "users"
+            ],
+            "scopes": [
+                "rows.read",
+                "rows.write",
+                "users.read",
+                "executions.write",
+                "files.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 60,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/api_keys"
+        },
+        {
+            "$id": "bt_battle_host",
+            "name": "bt_battle_host",
+            "enabled": true,
+            "logging": true,
+            "runtime": "dart-3.13",
+            "execute": [
+                "any"
+            ],
+            "scopes": [
+                "rows.read"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "lib/main.dart",
+            "commands": "dart pub get",
+            "ignore": ".dart_tool\ntest",
+            "path": "functions/battle_host"
+        }
+    ],
     "tablesDB": [
         {
             "$id": "hawkbee",
@@ -11,12 +189,12 @@
     ],
     "tables": [
         {
-            "$id": "stats",
+            "$id": "bt_stats",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Stats",
+            "name": "BT Stats",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -86,12 +264,12 @@
             ]
         },
         {
-            "$id": "medals",
+            "$id": "bt_medals",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Medals",
+            "name": "BT Medals",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -134,10 +312,10 @@
             ]
         },
         {
-            "$id": "hit_rate_flags",
+            "$id": "bt_hit_rate_flags",
             "$permissions": [],
             "databaseId": "hawkbee",
-            "name": "Hit-rate flags",
+            "name": "BT Hit-rate flags",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -176,12 +354,12 @@
                 },
                 {
                     "key": "mean",
-                    "type": "float",
+                    "type": "double",
                     "required": true
                 },
                 {
                     "key": "sigma",
-                    "type": "float",
+                    "type": "double",
                     "required": true
                 }
             ],
@@ -201,12 +379,12 @@
             ]
         },
         {
-            "$id": "wars",
+            "$id": "bt_wars",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Wars",
+            "name": "BT Wars",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -240,12 +418,12 @@
             "indexes": []
         },
         {
-            "$id": "battles",
+            "$id": "bt_battles",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Battles",
+            "name": "BT Battles",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -276,6 +454,12 @@
                     "key": "teams",
                     "type": "text",
                     "required": true
+                },
+                {
+                    "key": "host",
+                    "type": "varchar",
+                    "required": false,
+                    "size": 64
                 },
                 {
                     "key": "winner",
@@ -318,12 +502,12 @@
             ]
         },
         {
-            "$id": "sections",
+            "$id": "bt_sections",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Sections",
+            "name": "BT Sections",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -375,12 +559,12 @@
             ]
         },
         {
-            "$id": "guilds",
+            "$id": "bt_guilds",
             "$permissions": [
                 "read(\"users\")"
             ],
             "databaseId": "hawkbee",
-            "name": "Guilds",
+            "name": "BT Guilds",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -397,7 +581,7 @@
                 },
                 {
                     "key": "xp",
-                    "type": "float",
+                    "type": "double",
                     "required": true
                 },
                 {
@@ -420,10 +604,10 @@
             ]
         },
         {
-            "$id": "purchases",
+            "$id": "bt_purchases",
             "$permissions": [],
             "databaseId": "hawkbee",
-            "name": "Purchases",
+            "name": "BT Purchases",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -470,10 +654,10 @@
             ]
         },
         {
-            "$id": "api_keys",
+            "$id": "bt_api_keys",
             "$permissions": [],
             "databaseId": "hawkbee",
-            "name": "API keys",
+            "name": "BT API keys",
             "enabled": true,
             "rowSecurity": false,
             "columns": [
@@ -507,14 +691,36 @@
                     ]
                 }
             ]
+        },
+        {
+            "$id": "bt_hosts",
+            "$permissions": [],
+            "databaseId": "hawkbee",
+            "name": "BT Hosts",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "address",
+                    "type": "varchar",
+                    "required": true,
+                    "size": 2048
+                },
+                {
+                    "key": "seen_at",
+                    "type": "datetime",
+                    "required": true
+                }
+            ],
+            "indexes": []
         }
     ],
     "buckets": [
         {
-            "$id": "battle_logs",
+            "$id": "bt_battle_logs",
             "$permissions": [],
             "fileSecurity": false,
-            "name": "Battle logs",
+            "name": "BT Battle logs",
             "enabled": true,
             "maximumFileSize": 30000000,
             "allowedFileExtensions": [
@@ -525,10 +731,10 @@
             "antivirus": false
         },
         {
-            "$id": "battle_snapshots",
+            "$id": "bt_battle_snapshots",
             "$permissions": [],
             "fileSecurity": false,
-            "name": "Battle snapshots",
+            "name": "BT Battle snapshots",
             "enabled": true,
             "maximumFileSize": 30000000,
             "allowedFileExtensions": [
@@ -537,166 +743,6 @@
             "compression": "none",
             "encryption": true,
             "antivirus": false
-        }
-    ],
-    "teams": [],
-    "topics": [],
-    "functions": [
-        {
-            "$id": "ping",
-            "name": "ping",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [],
-            "scopes": [],
-            "events": [],
-            "schedule": "",
-            "timeout": 15,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/ping"
-        },
-        {
-            "$id": "daily_stats",
-            "name": "daily_stats",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [],
-            "scopes": [
-                "files.read",
-                "rows.read",
-                "rows.write"
-            ],
-            "events": [],
-            "schedule": "0 4 * * *",
-            "timeout": 900,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/daily_stats"
-        },
-        {
-            "$id": "create_war",
-            "name": "create_war",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [
-                "users"
-            ],
-            "scopes": [
-                "rows.read",
-                "rows.write",
-                "users.read",
-                "execution.write",
-                "files.read"
-            ],
-            "events": [],
-            "schedule": "",
-            "timeout": 60,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/create_war"
-        },
-        {
-            "$id": "create_battle",
-            "name": "create_battle",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [
-                "users"
-            ],
-            "scopes": [
-                "rows.read",
-                "rows.write",
-                "users.read",
-                "execution.write",
-                "files.read"
-            ],
-            "events": [],
-            "schedule": "",
-            "timeout": 60,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/create_battle"
-        },
-        {
-            "$id": "end_battle",
-            "name": "end_battle",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [],
-            "scopes": [
-                "rows.read",
-                "rows.write",
-                "users.read",
-                "execution.write",
-                "files.read"
-            ],
-            "events": [
-                "databases.hawkbee.tables.battles.rows.*.update"
-            ],
-            "schedule": "",
-            "timeout": 60,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/end_battle"
-        },
-        {
-            "$id": "guild_requests",
-            "name": "guild_requests",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [
-                "users"
-            ],
-            "scopes": [
-                "rows.read",
-                "rows.write",
-                "users.read",
-                "execution.write",
-                "files.read"
-            ],
-            "events": [],
-            "schedule": "",
-            "timeout": 60,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/guild_requests"
-        },
-        {
-            "$id": "api_keys",
-            "name": "api_keys",
-            "enabled": true,
-            "logging": true,
-            "runtime": "dart-3.13",
-            "execute": [
-                "users"
-            ],
-            "scopes": [
-                "rows.read",
-                "rows.write",
-                "users.read",
-                "execution.write",
-                "files.read"
-            ],
-            "events": [],
-            "schedule": "",
-            "timeout": 60,
-            "entrypoint": "lib/main.dart",
-            "commands": "dart pub get",
-            "ignore": ".dart_tool\ntest",
-            "path": "functions/api_keys"
         }
     ]
 }

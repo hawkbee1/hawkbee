@@ -31,6 +31,7 @@ same Appwrite server is therefore reached through different addresses:
 | Client | Appwrite endpoint |
 |---|---|
 | Tools in `factory1` (Appwrite CLI, MCP server, scripts) | `http://appwrite-traefik/v1` (via `hermes-net`) |
+| Appwrite Functions | `http://appwrite-traefik/v1` (via `runtimes`): Appwrite sets it as `APPWRITE_FUNCTION_API_ENDPOINT` from `_APP_DOMAIN` |
 | Browser on the laptop (Flutter web, Console) | `http://localhost/v1` — Console at `http://localhost` |
 | Real phones, the Mac, the iPhone | `http://<LAN_IP>/v1` |
 | Android emulator running on the laptop | `http://10.0.2.2/v1` |
@@ -159,8 +160,9 @@ Rules:
 - **Permissions are the security layer**, because apps query the database
   directly. Use row-level permissions and teams. Put any logic that must be
   trusted in Functions.
-- Keep the local Appwrite on the **same version as Appwrite Cloud** (2.3.0 as of
-  2026-09-23) and the SDK versions matched to it.
+- Keep the local Appwrite on the **same version as Appwrite Cloud** (2.7.x as of
+  2026-11-06) and the SDK versions matched to it: each SDK's README names the
+  server version it targets.
 
 ---
 
@@ -192,9 +194,10 @@ bundle ID, and Web hostnames `localhost` and `<LAN_IP>`.
 
 ---
 
-## 6. Fresh install of the local Appwrite (2.3.0) on `hermes-net`
+## 6. Fresh install of the local Appwrite (2.7.1) on `hermes-net`
 
-Run all of this **on the laptop** (the Docker host), not in `factory1`.
+Run all of this **on the laptop** (the Docker host), not in `factory1`. Reinstall
+rather than upgrade from the 1.9 line: 2.x runs on PostgreSQL and ClickHouse.
 
 ### 6.1 Remove the old install
 
@@ -211,53 +214,58 @@ docker network ls | grep -E 'appwrite|gateway|runtimes'   # remove leftovers wit
 docker volume ls | grep appwrite                         # remove leftovers with: docker volume rm <name>
 ```
 
-### 6.2 Create the folder
+### 6.2 Run the official installer
+
+```bash
+cd ~
+docker run -it --rm \
+  --publish 20080:20080 \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+  --entrypoint="install" \
+  appwrite/appwrite:2.7.1
+```
+
+It starts a web installer: open the `http://localhost:20080/?secret=…` link it
+prints (`--publish` makes that port reachable from the laptop's browser). It writes `~/appwrite/docker-compose.yml` and a production `.env` with random
+secrets, then starts the stack. Choose: hostname `localhost`, HTTPS off,
+database **PostgreSQL** (as on Appwrite Cloud), topology **Combined**, ports 80
+and 443, no SSL email. Then stop the stack to finish the setup:
+
+```bash
+cd ~/appwrite && docker compose down
+```
 
 ```
 ~/appwrite/
-├── docker-compose.yml            # the official 2.3.0 file, unchanged
-├── .env                          # from env.txt, corrected (6.3)
+├── docker-compose.yml            # from the installer, unchanged
+├── .env                          # from the installer, corrected (6.3)
 └── docker-compose.override.yml   # our additions (6.4)
 ```
 
 Leave `docker-compose.yml` untouched: Appwrite's `upgrade` command overwrites it.
-Docker Compose loads `docker-compose.override.yml` automatically, so our
-changes survive upgrades.
-
-> **Alternative:** the official installer generates `docker-compose.yml` and a
-> production `.env` with random secrets for you:
-> ```bash
-> docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock \
->   -v "$(pwd)"/appwrite:/usr/src/code/appwrite:rw --entrypoint="install" appwrite/appwrite:2.3.0
-> ```
-> If you use it, stop the stack afterwards, apply only 6.3's hostname, runtime and
-> SMTP settings, add the override from 6.4, and start it again.
+Docker Compose loads `docker-compose.override.yml` automatically, and `install`
+and `upgrade` keep it.
 
 ### 6.3 Fix the `.env`
 
-The `env.txt` provided is Appwrite's **development sample**, not a
-production-ready file. Change at least these values:
+Compose reads `.env` on every `docker compose up -d`, which recreates the
+containers whose settings changed (`docker compose restart` does not reread it).
+Never change these after the first start: `_APP_OPENSSL_KEY_V1` encrypts stored
+data, and the database passwords (`_APP_DB_*PASS*`, `_APP_USAGE_PASS`) are
+already set inside the database volumes.
 
-| Variable | Sample value | Set to | Why |
-|---|---|---|---|
-| `_APP_ENV` | `development` | `production` | Behave like Appwrite Cloud. Development mode is for people working on Appwrite itself. |
-| `_APP_OPENSSL_KEY_V1` | `your-secret-key` | `openssl rand -hex 32` | Encrypts stored data. **Never change it after the first start.** |
-| `_APP_EXECUTOR_SECRET`, `_APP_JOBS_SECRET`, `_APP_GEO_SECRET`, `_APP_NOTIFICATIONS_TRACKING_SECRET` | `your-secret-key` | a different `openssl rand -hex 32` each | Internal authentication between services |
-| `_APP_DB_PASS`, `_APP_DB_ROOT_PASS` | `password`, `rootsecretpassword` | random | PostgreSQL credentials |
-| `_APP_USAGE_PASS` | `appwrite` | random, **and** update the password inside `_APP_CONNECTIONS_DB_USAGE` and `_APP_CONNECTIONS_DB_EXECUTIONS` (`http://appwrite:<pass>@clickhouse:8123/appwrite`) | ClickHouse credentials |
-| `_APP_DOMAIN` | `appwrite.test` | `<LAN_IP>` | The address phones and the Mac use. The Console is also served on it. |
-| `_APP_CONSOLE_DOMAIN` | `localhost` | keep | Console at `http://localhost` on the laptop |
-| `_APP_CONSOLE_HOSTNAMES` | `localhost,appwrite.io,*.appwrite.io` | `localhost,<LAN_IP>` | Don't trust appwrite.io hostnames on a local server |
-| `_APP_CONSOLE_TRUSTED_PROJECTS` | `trusted-project,another-trusted-project` | *(empty)* | Test fixtures |
-| `_APP_CONSOLE_WHITELIST_ROOT` | `disabled` | `enabled` | Only the first account can sign up to the Console |
-| `_APP_DNS` | `172.16.238.100` | `1.1.1.1` | The sample points at a DNS server on Appwrite's test network |
-| `_APP_DOMAIN_TARGET_A` | `203.0.0.1` | `<LAN_IP>` | |
-| `_APP_DOMAIN_SITES` | `sites.localhost,rebranded.localhost` | `sites.localhost` | |
-| `_APP_FUNCTIONS_RUNTIMES` | `node-22` | `node-22,dart-3.13` | Dart functions (3.13 matches our SDK) |
-| `_APP_EXECUTOR_IMAGES` | `openruntimes/node:v5-22,openruntimes/static:v5-1` | `openruntimes/node:v5-22,openruntimes/dart:v5-3.13,openruntimes/static:v5-1` | Pre-pull the Dart runtime image |
-| `_APP_ASSISTANT_OPENAI_API_KEY` | `your-openai-api-key` | *(empty)* | Only needed for the Console AI assistant |
-| `_APP_SMTP_HOST` / `_APP_SMTP_PORT` | `maildev` / `1025` | keep | Served by the maildev container added in 6.4 |
-| `_APP_SYSTEM_EMAIL_ADDRESS` | `noreply@appwrite.io` | e.g. `noreply@hawkbee.local` | |
+The API answers on any host, so phones reach `http://<LAN_IP>/v1` whatever
+the domain settings. Set:
+
+| Variable | Set to | Why |
+|---|---|---|
+| `_APP_DOMAIN` | `appwrite-traefik` | The API host. Functions receive `http://<_APP_DOMAIN>/v1` as `APPWRITE_FUNCTION_API_ENDPOINT`; with `localhost` they call themselves and fail |
+| `_APP_CONSOLE_DOMAIN` | `localhost` (add it) | Keeps the Console at `http://localhost` |
+| `_APP_FUNCTIONS_RUNTIMES` | add `dart-3.13` | Dart functions (3.13 matches our SDK) |
+| `_APP_EXECUTOR_IMAGES` | add `openruntimes/dart:v5-3.13` | Pre-pull the Dart runtime image |
+| `_APP_SMTP_HOST` / `_APP_SMTP_PORT` | `maildev` / `1025` | Served by the maildev container added in 6.4 |
+| `_APP_SYSTEM_EMAIL_ADDRESS` | e.g. `noreply@hawkbee.local` | |
 
 If ports 80, 443, 8883 or 8084 are already used on the laptop, add
 `_APP_HTTP_PORT=…`, `_APP_HTTPS_PORT=…`, `_APP_MQTT_PORT=…`, `_APP_MQTT_WSS_PORT=…`.
@@ -269,10 +277,13 @@ Keep `.env` out of git. It holds every secret of the local stack.
 
 ```yaml
 services:
-  # Put the router (not the internals) on hermes-net so factory1 can reach the API.
+  # Put the router (not the internals) on hermes-net so factory1 can reach the API,
+  # and on `runtimes` so functions reach it at APPWRITE_FUNCTION_API_ENDPOINT
+  # (http://appwrite-traefik/v1, from _APP_DOMAIN).
   traefik:
     networks:
       - hermes-net
+      - runtimes
 
   # Function containers are started on the `runtimes` network
   # (_APP_COMPUTE_RUNTIMES_NETWORK), but the official file only puts the executor
@@ -309,7 +320,8 @@ networks:
 Only `appwrite-traefik` and `appwrite-maildev` join `hermes-net`. Appwrite's
 internal service names (`redis`, `postgresql`, `clickhouse`, `orchestrator`)
 therefore can't clash with other stacks on that network, and function code can't
-reach `factory1`.
+reach `factory1`. On `runtimes`, functions reach only the router, so the API,
+never the database or Redis.
 
 ### 6.5 Start and verify
 
@@ -317,20 +329,26 @@ reach `factory1`.
 cd ~/appwrite
 docker compose config --quiet && docker compose up -d
 docker compose ps                                   # all services healthy / running
-curl -s http://localhost/v1/health/version          # {"version":"2.3.0"}
+curl -s http://localhost/v1/health/version          # {"version":"2.7.1"}
 ```
 
 From `factory1` (Claude can run this):
 
 ```bash
-curl -s http://appwrite-traefik/v1/health/version   # {"version":"2.3.0"}
+curl -s http://appwrite-traefik/v1/health/version   # {"version":"2.7.1"}
 ```
 
 Then:
 
 1. Open `http://localhost` and create the root Console account.
-2. Create the project `hawkbee` and note its **project ID**.
-3. Add the platforms (§5).
+2. Create the project with the ID `hawkbee`, which `env/development.json` and
+   `backend/appwrite.config.json` use. If the Console has no field for the ID,
+   create it with the CLI from an empty folder:
+   `appwrite login --endpoint http://appwrite-traefik/v1`, then
+   `appwrite organization create-project --project-id hawkbee --name Hawkbee --organization-id <org ID>`.
+3. Add the platforms (§5). Each web app needs a Web platform for its live host
+   (Battle Team: `battleteam.eu`) and one for `localhost`, where `flutter run -d
+   chrome` serves it: Appwrite refuses origins it does not know.
 4. Create an **API key** for tooling, with database, users, teams, storage and
    functions scopes. Give it to Claude so it can wire up the local Appwrite MCP
    server and CLI. The key is stored in local user config, never in the repo.

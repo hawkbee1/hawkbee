@@ -46,3 +46,6 @@
 [submodule "packages/battle_backend"]
 	path = packages/battle_backend
 	url = https://github.com/hawkbee1/battle_backend.git
+[submodule "packages/battle_client"]
+	path = packages/battle_client
+	url = https://github.com/hawkbee1/battle_client.git
