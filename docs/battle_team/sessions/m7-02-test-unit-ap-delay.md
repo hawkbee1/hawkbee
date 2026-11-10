@@ -41,3 +41,31 @@
 - [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4).
 
 ## Session log
+
+Branch `bt/m7-02-test-unit` in hawkbee, `battle_rules`, `battle_host`, `battle_backend` and `battle_team` (plan data only), all from `main`; hawkbee also merges `origin/bt/playtest-phone`, which holds the M7 session files `main` lacks. Independent of M7.1 (#71).
+
+**Premise corrected, owner decided (2026-11-10).** The session said the battle row holds a settings map the host loads. It does not: `BattleRow` had none and `BattlePlacement.setupOf` used `battle.yaml` (M5.19 log). The owner chose a settings column on `bt_battles`. So this session also touches `hawkbee_schema`, `battle_backend` and `backend/` (beyond the packages listed above).
+
+**Built**
+- `battle_rules`
+  - `ApPool` takes `recoveryDelayS` (int, at least 1) and holds all the AP recovery math: `apAt`, `recoveredIn(elapsed)`, `timeToRecover(ap)`. `moveAlong` uses the last two instead of its own copy of the formula.
+  - `ApSettings.recoveryDelayS` reads `ap.recovery_delay_s` (an integer); `BattleSettings.parse` rejects `ap.recovery_per_hour` with a message naming the new key. `BattleSettings.testUnits` reads the new required top-level `test_units`.
+  - `BattleSettings.overriddenBy(overrides)` lays a map in the shape of `battle.yaml` over the settings (a key that is no setting, a non-map where the file has one, or a wrong type throws a `GameDataException`); `GameData.settingsWith(overrides)` does it and runs `checkSettings`. `validateSettings` and `validateGameData` check the delay is at least 1; `_checkApMax` exempts `testUnitId` (`'test_unit'`, exported) and nothing else.
+- `battle_host`
+  - Pools take the delay from the battle's settings; `SectionOrders.buyUnit` refuses `test_unit` with the host refusal `test_units_off` unless `battle.settings.testUnits`, before any other purchase rule.
+  - `BattlePlacement.setupOf` plays the battle with `definitions.settingsWith(row.settings)`; refused settings fail the start like any bad row (reported to the error reporter, retried at the next look).
+  - Snapshots: pools write `recoveryDelayS`, so `snapshotVersion` is 2 (a host does not read version-1 snapshots); the settings in a snapshot already come back through `toData`, and a recovered battle keeps its override (tested).
+  - `ApView.perHour` is unchanged: `SectionViews` sends `3600 / recoveryDelayS`, so the protocol, `battle_client` and the app did not change. M7.3+ may carry the delay itself if a client needs it.
+  - `tool/playtest.dart`: `--fast` is on by default, `--no-fast` plays the rules as written. Fast writes the battle with `{ap: {recovery_delay_s: 1}, test_units: true}` and blue's opening also buys a `test_unit`.
+- `hawkbee_schema`: `BattleRow.settings` (overrides only; empty for a battle that plays with the file's), a nullable text column `settings` in `bt_battles` (`backend/appwrite.config.json`).
+- `battle_backend`: `Wars.plan(settings:)` checks the overrides with `settingsWith` and refuses bad ones (`bad_settings`, 400); `objectOf` reads an object field of a function body; the `create_battle` function passes `settings` through. The vendored copies in `backend/functions/*/vendor` are regenerated (`tool/vendor_packages.dart`).
+- Plan data (`battle_team`): `test_unit` in `units.yaml`, price 0 in `milestones/economy.yaml`, `test_units: false` in `battle.yaml`. Two stale `recovery_per_hour` mentions (a comment in `combat.yaml`, a line of `specs/20-units-and-progression.md`) renamed; no rule changed. No `version` bumped (the plan PR that renamed the key did not either).
+
+**The test unit (Q-UNIT-26, still an assumption, written in the question).** A soldier's stats with the scout's 300 m sight, `ap_max` 10,000, `foot`. One weapon slot: the rifle by default, the six weapon types allowed. All six actions, with the engineer's build list and repair, the scout's observe, the medic's heal (20 HP for 10 AP) and the radio's relay (150 m, all sections of the team). It does not earn money by healing.
+
+**Not verified live.** The container reaches no local Appwrite, so `tool/playtest.dart` was not run, and the owner has to run `appwrite push tables` (the `settings` column) before the first fast playtest; a host with a version-1 snapshot folder (`build/playtest`) needs it cleared. The `create_battle` function test runs `respond` against in-memory rows, so the deployed function is not exercised with settings either; redeploy it (`appwrite push function`) to use them.
+
+**Numbers.** `battle_rules` 648 tests, `battle_host` 416, `hawkbee_schema` 12, `battle_backend` 37 (1 live suite skipped), `create_battle` 4, `create_war`, `end_battle`, `guild_requests`, `daily_stats`, `battle_host` and `api_keys` green (`ping` only vendors `hawkbee_schema`; not run); 100 % line coverage in the four packages, `dart analyze --fatal-infos` and `dart format` clean. Rules covered (test file in each package's `test/`): COMBAT-02 `src/ap/ap_pool_test.dart`, `src/data/battle_settings_test.dart`, `src/data/game_data_test.dart`; COMBAT-06 `src/ap/movement_test.dart`; UNIT-44 and decisions 167, 238, 239 `src/data/game_data_test.dart`; UNIT-44 `battle_host` `src/orders/section_orders_test.dart`; decision 238 `battle_host` `src/hosting/battle_placement_test.dart`, `src/stream/section_views_test.dart`.
+
+**For later.** The roster now has an 11th unit type everywhere the real `units.yaml` is read; tests that count unit types on real data would see it. A public war must never plan a battle with `test_units`: `Wars.plan` checks the values, not who plans (admins only); the real guard is "admins plan battles".
+

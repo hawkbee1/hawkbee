@@ -18,8 +18,9 @@ commander_death:
 
 ap:
   max: 30                    # AP maximum of every unit; each unit's ap_max in data/units.yaml equals it (decision 167)
-  # AP recovery (decisions 168, 172): AP every unit recovers per hour. Special events may use another rate.
-  recovery_per_hour: 1
+  # AP recovery (decisions 168, 172, 238): the delay for a unit to gain one AP.
+  # 3600 s = 1 AP per hour. A battle's settings can override it (testing battles use a short delay).
+  recovery_delay_s: 3600
 
 # Start of every battle of a war (decision 83)
 battle_start:
@@ -46,7 +47,7 @@ capture:
 # HQ (decisions 109, 177): moves on its own on the manager's order, paying from its own AP.
 hq:
   hp: 1000                   # armor type: hq (decision 114)
-  ap_max: 30                 # recovers at ap.recovery_per_hour
+  ap_max: 30                 # recovers at ap.recovery_delay_s
   ap_per_m: 0.2              # placeholder: flat grass, times the push profile (data/terrain.yaml)
   speed_m_per_h: 5           # placeholder: slower than any unit
   hit_box_m: { width: 20, length: 20, height: 8 }   # placeholder: first-person shots (decision 183)
@@ -79,6 +80,10 @@ weather:
 # section cannot deploy again for this long, from the moment the last one left it. Not after a
 # commander's death (decision 125).
 section_redeploy_lock_s: 86400
+
+# The test unit (UNIT-44, decision 239) can be bought only where this is on: testing battles, never a
+# public war. A battle's settings override it, like ap.recovery_delay_s (decision 238).
+test_units: false
 ''';
 
 /// `combat.yaml`.
@@ -230,7 +235,7 @@ weapon_swap:
   time_s: 5
 
 ap:
-  # AP recovery rate: ap.recovery_per_hour in data/battle.yaml (decisions 168, 172).
+  # AP recovery rate: ap.recovery_delay_s in data/battle.yaml (decisions 168, 172, 238).
   at_zero: act_at_regen_rate    # decision 56: movement continues at the AP recovery speed; paid actions wait for enough AP
   # An action that is not in the unit's units.yaml `actions` is refused (decision 132).
   costs_ap: [shot, move, push, pickup_weapon, role_actions]
@@ -275,6 +280,7 @@ war_defaults:
 prices:
   default: 100               # anything not listed below
   encampment: 500            # decision 111
+  test_unit: 0               # testing battles only (decision 239)
 
 earnings:                    # money for the acting unit's section
   hit: 1
@@ -428,8 +434,9 @@ objects:
   tree:      { armor_type: structure, blocks_los: false, conceals: forest, destructible: true, hp: 100 }
   building:  { armor_type: structure, blocks_los: true,  destructible: true, hp: 500 }
   wall:      { armor_type: structure, blocks_los: true,  destructible: true, hp: 200, built_by: engineer, ap: 10, build_time_s: 300 }
-  bridge:    { armor_type: structure, blocks_los: false, destructible: true, hp: 200, built_by: engineer, relic_crossable: false, ap: 10, build_time_s: 300 }
-  reinforced_bridge: { armor_type: structure, blocks_los: false, destructible: true, hp: 400, built_by: engineer, relic_crossable: true, ap: 20, build_time_s: 600 }  # decision 99
+  # width_m: the passable width of the deck (MAP-50, decision 240); a cell of open ground offers its 10 m. Placeholders.
+  bridge:    { armor_type: structure, blocks_los: false, destructible: true, hp: 200, built_by: engineer, relic_crossable: false, ap: 10, build_time_s: 300, width_m: 4 }
+  reinforced_bridge: { armor_type: structure, blocks_los: false, destructible: true, hp: 400, built_by: engineer, relic_crossable: true, ap: 20, build_time_s: 600, width_m: 8 }  # decision 99
   ladder:    { armor_type: structure, blocks_los: false, destructible: true, hp: 100, built_by: engineer, ap: 5, build_time_s: 120 }
   road_segment: { armor_type: structure, blocks_los: false, destructible: true, hp: 100, built_by: engineer, ap: 5, build_time_s: 120 }
   trap:      { armor_type: structure, blocks_los: false, destructible: true, hp: 50, built_by: engineer, hidden_from_enemies: true, ap: 5, build_time_s: 60 }
@@ -592,6 +599,28 @@ units:
     weapons: { default: machine_gun, allowed: [machine_gun] }
     actions: [capture]          # water only: does not push (decision 145)
     role: { max_total_weight: 4, max_unit_weight: 2 }   # boards/unloads next to the shore (decision 86)
+
+  # Testing battles only (UNIT-44, decision 239, Q-UNIT-26): bought where the battle setting
+  # test_units is on (data/battle.yaml), price 0 (data/economy.yaml). The one unit whose ap_max is
+  # not ap.max. A soldier's values, with every action and role of the roster, the roster's best
+  # sight (the scout's) and the longest range a unit can carry and still move (the rifle's).
+  test_unit:
+    category: soldier
+    movement_class: foot        # a unit has one movement class: infantry
+    armor_type: infantry
+    hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
+    base: { weight: 1, hp: 100, ap_max: 10000, ap_per_m: 1.0, attack: 12, defense: 5, move_speed: 5, vision_range: 300 }
+    weapons: { default: rifle, allowed: [rifle, machine_gun, anti_tank, artillery, anti_air, explosive] }
+    actions: [capture, push, build, repair, heal, observe]
+    role:
+      build: [bridge, reinforced_bridge, ladder, wall, road_segment, trap]   # the engineer's
+      repair: true
+      reports_to_radio: true                                                  # the scout's
+      observe: { vision_bonus_m: 30, duration_s: 1800, ap: 10, can_move: false }
+      heal: 20                                                                # the medic's
+      heal_ap: 10
+      relay_range: 150                                                        # the radio's
+      shares_with: all_sections_of_team
 
 # Progression (decisions 77-79)
 progression:

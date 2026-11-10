@@ -103,10 +103,10 @@ Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app 
 
 | Session | Issue | Package | Depends on | Status |
 |---|---|---|---|---|
-| [M7.1](sessions/m7-01-normal-launch.md) | Normal launch, from the playtest | `battle_team` | the playtest (merged) | PR open #71 |
-| [M7.2](sessions/m7-02-test-unit-ap-delay.md) | The test unit and the AP recovery delay | `battle_rules`, `battle_host`, `battle_team` (data) | none | todo |
-| [M7.3](sessions/m7-03-logging.md) | Logging | `battle_team`, `battle_client`, `appwrite_api_client` | M7.1 | PR open #73 |
-| [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | PR open #74 |
+| [M7.1](sessions/m7-01-normal-launch.md) | Normal launch, from the playtest | `battle_team` | the playtest (merged) | merged |
+| [M7.2](sessions/m7-02-test-unit-ap-delay.md) | The test unit and the AP recovery delay | `battle_rules`, `battle_host`, `hawkbee_schema`, `battle_backend`, `battle_team` (data) | none | PR open #72 |
+| [M7.3](sessions/m7-03-logging.md) | Logging | `battle_team`, `battle_client`, `appwrite_api_client` | M7.1 | merged |
+| [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | merged |
 | [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | todo |
 | [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team` | M7.1 | todo |
 | [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | todo |
