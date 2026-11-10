@@ -4,7 +4,7 @@ A first look at a battle in 3D, before M7 is planned: one player, blue, on a 1 �
 
 ## Pieces
 - **Map** `saint_lo_1km` (`battle_map` `maps/`): 1 × 1 km of the Vire valley inside `saint_lo`, imported from IGN and OpenStreetMap data, HQs north (blue) and south (red), five relics.
-- **Setup** `battle_host` `tool/playtest.dart`: the accounts `blue@battleteam.local` and `red@battleteam.local` (a new password each run), a war and its battle on `saint_lo_1km` with teams `blue` and `red`, one beginner section each (a commander and 500 w€, SOC-15). Once a host runs it, blue buys four soldiers and a scout and deploys them, through the socket as a player would. It writes blue's sign-in and the battle to `apps/battle_team/env/playtest.json` (not committed). Each run closes the playtest battles still running and starts new ones.
+- **Setup** `battle_host` `tool/playtest.dart`: the accounts `blue@battleteam.local` and `red@battleteam.local` (a new password each run), a war and its battle on `saint_lo_1km` with teams `blue` and `red`, one beginner section each (a commander and 500 w€, SOC-15). The battle is a **testing battle** (decisions 238, 239): by default (`--fast`) its settings give a recovery delay of 1 s (`ap.recovery_delay_s`, one AP back every second, so a soldier moves continuously) and allow the `test_unit` (10,000 AP, every action, price 0); `--no-fast` plays the rules as written. Once a host runs it, blue buys four soldiers, a scout and, when fast, a test unit, and deploys them, through the socket as a player would. It writes blue's sign-in and the battle to `apps/battle_team/env/playtest.json` (not committed). Each run closes the playtest battles still running and starts new ones.
 - **App** `apps/battle_team/lib/main_playtest.dart`: signs in as blue and opens straight into the battle. flutter_scene draws the ground (coloured by terrain, shaded by slope), trees, buildings, HQs, relics and the units the section sees; units glide to where the host puts them by their move's arrival time. Drag to pan, scroll or pinch to zoom, Q/E or two fingers to turn; tap one of your units, then the ground, to move it.
 
 ## Run it
@@ -16,7 +16,7 @@ APPWRITE_ENDPOINT=http://appwrite-traefik/v1 APPWRITE_PROJECT_ID=hawkbee APPWRIT
   --maps ../battle_map/maps/built --map saint_lo_1km --data build/playtest \
   --host-id playtest --port 8091 --public-address http://localhost:8091
 # 2. The accounts, the battle and blue's opening:
-APPWRITE_API_KEY=<key> dart run tool/playtest.dart
+APPWRITE_API_KEY=<key> dart run tool/playtest.dart   # --no-fast: the rules as written
 ```
 Then launch **battle_team (playtest)** (root `.vscode/launch.json`). With `env/development.json`'s `http://localhost/v1`, the app runs in a browser on the laptop (`-d web-server`): VS Code forwards the app's port and the host's 8091 to the laptop's `localhost`. On a phone, set the host's `--public-address` and the Appwrite endpoint to the laptop's LAN address, or use `adb reverse tcp:8091 tcp:8091`.
 
@@ -36,7 +36,9 @@ docker logs battle_host-host-saint-lo-1 2>&1 | grep 'address='   # what it regis
 Then, in `factory1`, step 2 above only (`dart run tool/playtest.dart`): the host that serves `saint_lo_1km` claims the new battle at its next look (10 s), and blue's opening goes through it. Check `curl -i http://localhost:8081/v1/socket` answers `426` (it waits for a WebSocket) before blaming the app.
 
 ## What the rules make of it
-A foot unit holds 30 AP, spends 1 AP a metre and gets 1 AP back an hour (`data/units.yaml`, `data/battle.yaml`): a soldier dashes 30 m, then waits. That is the game as written; a faster AP rate for playtests would be a battle setting, which the rows do not hold yet.
+A foot unit holds 30 AP, spends 1 AP a metre and gets 1 AP back an hour (`data/units.yaml`, `data/battle.yaml`): a soldier dashes 30 m, then waits. That is the game as written (`--no-fast`). The default playtest battle overrides the delay with its own settings (`bt_battles.settings`), so a soldier gets 1 AP a second and a test unit never runs out.
+
+The `settings` column is new in `bt_battles`: run `appwrite push tables` once (from `backend/`) before the first playtest on a local Appwrite that does not have it. A host started before M7.2 recovers no snapshot of the old format (`snapshotVersion` 2): clear its `--data` folder (`build/playtest`).
 
 ## Not done
 - No fire, deploy or buy buttons: only selecting and moving.
