@@ -109,9 +109,9 @@ Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app 
 | [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | todo |
 | [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | todo |
 | [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team` | M7.1 | todo |
-| [M7.7](sessions/m7-07-buy.md) | Buy | `battle_team` | M7.6 | todo |
+| [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | todo |
 | [M7.8](sessions/m7-08-path-preview.md) | Move: path preview and AP cost | `battle_client`, `battle_team` | M7.1 | todo |
-| [M7.9](sessions/m7-09-fog-and-alerts.md) | Fog shading and alerts | `battle_team` | M7.4 | todo |
+| [M7.9](sessions/m7-09-fog-and-alerts.md) | Fog shading and alerts | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.4 | todo |
 | [M7.10](sessions/m7-10-pings-markers-chat.md) | Pings, map markers and team chat | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.1 | todo |
 | [M7.11](sessions/m7-11-unit-filters.md) | Unit filters | `battle_team` | M7.1 | todo |
 | [M7.12](sessions/m7-12-accounts.md) | Accounts: sign up, sign in, log out | `battle_team`, `appwrite_api_client` | M7.1 | todo |
