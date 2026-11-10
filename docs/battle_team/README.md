@@ -99,14 +99,14 @@ Parallel once their dependencies are merged: **M6.1 ∥ M6.3** at the start; **M
 
 ### M7: client
 
-Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app follow `agent-workflow.md` §6. The plan PRs (battle_team #39, hawkbee #70, stacked on #38 and #69) must be merged first; until then, stack on `bt/m7-plan`.
+Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app follow `agent-workflow.md` §6.
 
 | Session | Issue | Package | Depends on | Status |
 |---|---|---|---|---|
-| [M7.1](sessions/m7-01-normal-launch.md) | Normal launch, from the playtest | `battle_team` | the playtest (merged) | todo |
+| [M7.1](sessions/m7-01-normal-launch.md) | Normal launch, from the playtest | `battle_team` | the playtest (merged) | merged |
 | [M7.2](sessions/m7-02-test-unit-ap-delay.md) | The test unit and the AP recovery delay | `battle_rules`, `battle_host`, `hawkbee_schema`, `battle_backend`, `battle_team` (data) | none | PR open #72 |
-| [M7.3](sessions/m7-03-logging.md) | Logging | `battle_team`, `battle_client`, `appwrite_api_client` | M7.1 | todo |
-| [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | todo |
+| [M7.3](sessions/m7-03-logging.md) | Logging | `battle_team`, `battle_client`, `appwrite_api_client` | M7.1 | merged |
+| [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | merged |
 | [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | todo |
 | [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team` | M7.1 | todo |
 | [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | todo |

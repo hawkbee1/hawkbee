@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:logging/logging.dart';
 
 /// {@template appwrite_ping_failure}
 /// Thrown when the Appwrite server cannot be reached with the configured
@@ -33,6 +34,9 @@ class AppwriteSignInFailure implements Exception {
 /// Talks to an Appwrite project through the Appwrite client SDK.
 ///
 /// This is the only package allowed to import `package:appwrite`.
+///
+/// It logs on `appwrite_api_client.AppwriteApiClient` when [signIn] and
+/// [createJwt] start, end and fail. Never the password, a JWT or a cookie.
 /// {@endtemplate}
 class AppwriteApiClient {
   /// {@macro appwrite_api_client}
@@ -55,6 +59,8 @@ class AppwriteApiClient {
   new withClient(this._client, {Account? account})
     : _account = account ?? Account(_client);
 
+  static final _log = Logger('appwrite_api_client.AppwriteApiClient');
+
   final Client _client;
   final Account _account;
 
@@ -75,9 +81,12 @@ class AppwriteApiClient {
   ///
   /// Throws an [AppwriteSignInFailure] when it cannot.
   Future<void> signIn({required String email, required String password}) =>
-      _signInFailure(() async {
+      _signInFailure('sign-in', () async {
         try {
-          if ((await _account.get()).email == email) return;
+          if ((await _account.get()).email == email) {
+            _log.info('sign-in: the session is already open');
+            return;
+          }
           await _account.deleteSession(sessionId: 'current');
         } on AppwriteException catch (error) {
           if (error.code != 401) rethrow;
@@ -92,13 +101,22 @@ class AppwriteApiClient {
   /// host checks at sign-in.
   ///
   /// Throws an [AppwriteSignInFailure] when there is no session.
-  Future<String> createJwt() =>
-      _signInFailure(() async => (await _account.createJWT()).jwt);
+  Future<String> createJwt() => _signInFailure(
+    'create JWT',
+    () async => (await _account.createJWT()).jwt,
+  );
 
-  static Future<T> _signInFailure<T>(Future<T> Function() work) async {
+  static Future<T> _signInFailure<T>(
+    String what,
+    Future<T> Function() work,
+  ) async {
+    _log.info('$what: started');
     try {
-      return await work();
+      final result = await work();
+      _log.info('$what: done');
+      return result;
     } on Object catch (error, stackTrace) {
+      _log.severe('$what: failed', error, stackTrace);
       Error.throwWithStackTrace(AppwriteSignInFailure(error), stackTrace);
     }
   }
