@@ -107,9 +107,9 @@ Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app 
 | [M7.2](sessions/m7-02-test-unit-ap-delay.md) | The test unit and the AP recovery delay | `battle_rules`, `battle_host`, `hawkbee_schema`, `battle_backend`, `battle_team` (data) | none | PR open #72 |
 | [M7.3](sessions/m7-03-logging.md) | Logging | `battle_team`, `battle_client`, `appwrite_api_client` | M7.1 | merged |
 | [M7.4](sessions/m7-04-view-from-unit.md) | View from a unit | `battle_team` | M7.3 | merged |
-| [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | PR open #75 |
-| [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team`, `battle_client` | M7.5 (stacked; M7.1 needed) | PR open #76 |
-| [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | todo |
+| [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | merged |
+| [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team`, `battle_client` | M7.5 (stacked; M7.1 needed) | merged |
+| [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | PR open #77 |
 | [M7.8](sessions/m7-08-path-preview.md) | Move: path preview and AP cost | `battle_client`, `battle_team` | M7.1 | todo |
 | [M7.9](sessions/m7-09-fog-and-alerts.md) | Fog shading and alerts | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.4 | todo |
 | [M7.10](sessions/m7-10-pings-markers-chat.md) | Pings, map markers and team chat | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.1 | todo |
