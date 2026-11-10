@@ -36,8 +36,19 @@ class AppwriteSignInFailure implements Exception {
 /// {@endtemplate}
 class AppwriteApiClient {
   /// {@macro appwrite_api_client}
-  new({required String endpoint, required String projectId})
-    : this.withClient(Client().setEndpoint(endpoint).setProject(projectId));
+  ///
+  /// [selfSigned] accepts the endpoint's self-signed certificate, for a local
+  /// Appwrite behind Traefik's default certificate.
+  new({
+    required String endpoint,
+    required String projectId,
+    bool selfSigned = false,
+  }) : this.withClient(
+         Client()
+             .setEndpoint(endpoint)
+             .setProject(projectId)
+             .setSelfSigned(status: selfSigned),
+       );
 
   /// Creates an [AppwriteApiClient] backed by an existing [Client], and
   /// its [account] service (one on [_client] by default).
