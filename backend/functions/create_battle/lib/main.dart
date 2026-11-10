@@ -23,8 +23,8 @@ Wars appwriteWars(Client client) => Wars(
 );
 
 /// Answers [execution] with [wars], for an admin: plans a battle (`plan`,
-/// with `warId`, `battleId`, `mapId` and `seed`) or starts the next one
-/// (`start`, `battleId`).
+/// with `warId`, `battleId`, `mapId`, `seed` and the `settings` it overrides,
+/// if any) or starts the next one (`start`, `battleId`).
 Future<Json> respond(Execution execution, Wars wars) async {
   final Execution(:caller, :body) = execution;
   final battle = switch (textOf(body, 'action')) {
@@ -34,6 +34,7 @@ Future<Json> respond(Execution execution, Wars wars) async {
       battleId: textOf(body, 'battleId'),
       mapId: textOf(body, 'mapId'),
       seed: integerOf(body, 'seed') ?? 0,
+      settings: objectOf(body, 'settings'),
     ),
     'start' => await wars.start(
       caller: caller,

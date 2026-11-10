@@ -104,6 +104,62 @@ void main() {
       );
     });
 
+    test('a battle keeps the settings it overrides (decision 238)', () {
+      const battle = BattleRow(
+        id: 'b-1',
+        warId: 'w-1',
+        mapId: 'valley',
+        seed: 7,
+        settings: {
+          'ap': {'recovery_delay_s': 1},
+          'test_units': true,
+        },
+      );
+      final again = BattleRow.fromData('b-1', stored(battle.toData()));
+
+      expect(again.settings, battle.settings);
+      expect(again.toData(), battle.toData());
+      expect(
+        again.copyWith(status: BattleStatus.running).settings,
+        battle.settings,
+      );
+    });
+
+    test('a battle with no settings writes none and reads a row without '
+        'the column', () {
+      const battle = BattleRow(
+        id: 'b-1',
+        warId: 'w-1',
+        mapId: 'valley',
+        seed: 7,
+      );
+      final data = stored(battle.toData());
+
+      expect(data['settings'], isNull);
+      expect(BattleRow.fromData('b-1', data).settings, isEmpty);
+      expect(
+        BattleRow.fromData('b-1', {...data}..remove('settings')).settings,
+        isEmpty,
+      );
+    });
+
+    test('a battle row whose settings are not a map is refused', () {
+      const battle = BattleRow(
+        id: 'b-1',
+        warId: 'w-1',
+        mapId: 'valley',
+        seed: 7,
+      );
+
+      expect(
+        () => BattleRow.fromData('b-1', {
+          ...stored(battle.toData()),
+          'settings': '[1]',
+        }),
+        throwsFormatException,
+      );
+    });
+
     test('a section, a guild and an API key read back what they write', () {
       const section = SectionRow(
         id: 's-1',

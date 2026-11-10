@@ -456,6 +456,11 @@
                     "required": true
                 },
                 {
+                    "key": "settings",
+                    "type": "text",
+                    "required": false
+                },
+                {
                     "key": "host",
                     "type": "varchar",
                     "required": false,

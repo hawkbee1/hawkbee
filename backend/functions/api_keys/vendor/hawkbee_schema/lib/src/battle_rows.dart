@@ -25,6 +25,15 @@ Map<String, T> _map<T>(Object? value, String key) => switch (value) {
   _ => throw FormatException('not a row: $key is not a map of $T'),
 };
 
+/// The battle settings a row's [text] holds (the overrides of `battle.yaml`,
+/// decision 238); none for a row that has none.
+Map<String, Object?> _settings(String? text) =>
+    switch (text == null ? null : jsonDecode(text)) {
+      null => const {},
+      final Map<String, Object?> map => Map.unmodifiable(map),
+      _ => throw const FormatException('not a row: settings is not a map'),
+    };
+
 /// {@template war_row}
 /// A war (SOC-16, SOC-17): its money floor, its battles planned in order,
 /// the one running, each player's section, and whether it has ended.
@@ -96,9 +105,9 @@ enum BattleStatus {
 }
 
 /// {@template battle_row}
-/// A battle of a war: its map and seed, its status, its teams once it
-/// starts (team ID to section IDs), the host that runs it (its placement),
-/// its winner and its result once it ends.
+/// A battle of a war: its map and seed, its own settings, its status, its
+/// teams once it starts (team ID to section IDs), the host that runs it (its
+/// placement), its winner and its result once it ends.
 /// {@endtemplate}
 final class BattleRow {
   /// {@macro battle_row}
@@ -107,6 +116,7 @@ final class BattleRow {
     required this.warId,
     required this.mapId,
     required this.seed,
+    this.settings = const {},
     this.status = BattleStatus.planned,
     this.teams = const {},
     this.host,
@@ -126,6 +136,7 @@ final class BattleRow {
       warId: _as<String>(data, 'war_id'),
       mapId: _as<String>(data, 'map_id'),
       seed: _as<int>(data, 'seed'),
+      settings: _settings(_as<String?>(data, 'settings')),
       status:
           BattleStatus.values.asNameMap()[_as<String>(data, 'status')] ??
           (throw const FormatException('not a row: status is unknown')),
@@ -157,6 +168,11 @@ final class BattleRow {
 
   /// The seed of its random.
   final int seed;
+
+  /// The settings this battle overrides, in the shape of `battle.yaml`
+  /// (decisions 172, 238): `{'ap': {'recovery_delay_s': 1}}`. Empty for a
+  /// battle that plays with the file's.
+  final Map<String, Object?> settings;
 
   /// What it is at.
   final BattleStatus status;
@@ -191,6 +207,7 @@ final class BattleRow {
     warId: warId,
     mapId: mapId,
     seed: seed,
+    settings: settings,
     status: status ?? this.status,
     teams: teams ?? this.teams,
     host: host == null ? this.host : host(),
@@ -204,6 +221,7 @@ final class BattleRow {
     'war_id': warId,
     'map_id': mapId,
     'seed': seed,
+    'settings': settings.isEmpty ? null : jsonEncode(settings),
     'status': status.name,
     'teams': jsonEncode(teams),
     'host': host,

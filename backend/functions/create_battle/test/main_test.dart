@@ -68,6 +68,36 @@ void main() {
       expect(started['status'], 'running');
     });
 
+    test('COMBAT-02 UNIT-44 a testing battle carries its settings', () async {
+      final wars = Wars(
+        rows: MemoryRows(),
+        admins: _Admins(),
+        data: function.planData,
+      );
+      await wars.create(caller: 'admin', warId: 'w-1');
+
+      final planned = await function.respond(
+        _as('admin', {
+          'action': 'plan',
+          'warId': 'w-1',
+          'battleId': 'b-1',
+          'mapId': 'valley',
+          'seed': 3,
+          'settings': {
+            'ap': {'recovery_delay_s': 1},
+            'test_units': true,
+          },
+        }),
+        wars,
+      );
+
+      expect(
+        planned['settings'],
+        '{"ap":{"recovery_delay_s":1},"test_units":true}',
+      );
+      expect((await wars.battle('b-1')).settings['test_units'], isTrue);
+    });
+
     test('answers 400 to an unknown action', () async {
       final unknown = _Context({'action': 'win'}, caller: 'admin');
       await function.main(unknown);
