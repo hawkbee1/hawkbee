@@ -38,7 +38,7 @@ timeout, and re-arm on expiry while the user is still testing. Poll the file
 rather than piping `tail -F` into filters:
 
 ```bash
-LOG=<log>; n=$(wc -l < "$LOG"); while true; do m=$(wc -l < "$LOG"); if [ "$m" -gt "$n" ]; then sed -n "$((n+1)),${m}p" "$LOG" | grep -aE '⛔|ERROR\[|Exception|FATAL|failed|Unhandled|RESPONSE\[[0-9]+\] => PATH|REQUEST\[[A-Z]+\] => PATH' | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-300; n=$m; fi; sleep 2; done
+LOG=<log>; n=$(wc -l < "$LOG"); while true; do m=$(wc -l < "$LOG"); if [ "$m" -gt "$n" ]; then sed -n "$((n+1)),${m}p" "$LOG" | grep -aE '⛔|ERROR\[|Exception|FATAL|failed|Unhandled|\[bt\] (SEVERE|WARNING)|RESPONSE\[[0-9]+\] => PATH|REQUEST\[[A-Z]+\] => PATH' | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-300; n=$m; fi; sleep 2; done
 ```
 
 Each poll runs a short pipeline that exits, so its output is flushed every
@@ -60,6 +60,13 @@ Silence in the log is not success. Check the app's code before trusting the log:
   appear in DevTools' Logging view; the Dart MCP server's
   `get_runtime_errors` also reports runtime errors if it is connected.
 - `print` and `debugPrint` do reach logcat under the `flutter` tag.
+- Battle Team (`apps/battle_team`) logs on `package:logging`, printed with
+  `debugPrint` in debug and profile, nothing in release. Every line starts
+  with `[bt] <LEVEL> <logger> `, so `grep '\[bt\]'` keeps an error and its
+  stack together; `SEVERE` is an exception, `WARNING` a refusal. The
+  connection (attempts, credential kind, host address, socket end, retry),
+  sign-in, and each order and its answer are logged; the units, positions
+  and secrets never are.
 - The Appwrite SDK does not log its requests. An `AppwriteException` shows up
   only where the app logs or displays it (format:
   `AppwriteException: <type>, <message> (<code>)`).

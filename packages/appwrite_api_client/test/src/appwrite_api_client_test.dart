@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -5,6 +6,7 @@ import 'package:appwrite/models.dart' as models;
 import 'package:appwrite_api_client/appwrite_api_client.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockClient extends Mock implements Client;
@@ -166,6 +168,122 @@ void main() {
           .thenThrow(AppwriteException('guests', 401));
 
       expect(apiClient.createJwt, throwsA(isA<AppwriteSignInFailure>()));
+    });
+  });
+
+  group('logging', () {
+    late Account account;
+    late AppwriteApiClient apiClient;
+    late List<LogRecord> records;
+    late StreamSubscription<LogRecord> subscription;
+    late Level previousLevel;
+
+    setUp(() {
+      account = _MockAccount();
+      apiClient = AppwriteApiClient.withClient(_MockClient(), account: account);
+      records = [];
+      previousLevel = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      subscription = Logger.root.onRecord.listen(records.add);
+    });
+
+    tearDown(() async {
+      await subscription.cancel();
+      Logger.root.level = previousLevel;
+    });
+
+    List<String> lines() => [
+      for (final record in records) '${record.level.name} ${record.message}',
+    ];
+
+    test(
+      'M7.3 a sign-in logs its start and its end, not the password',
+      () async {
+        when(() => account.get()).thenThrow(AppwriteException('guests', 401));
+        when(
+          () => account.createEmailPasswordSession(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        ).thenAnswer((_) async => _MockSession());
+
+        await apiClient.signIn(email: 'blue@x.local', password: 'secret');
+
+        expect(
+          lines(),
+          equals(['INFO sign-in: started', 'INFO sign-in: done']),
+        );
+        expect(
+          records.map((record) => record.loggerName).toSet(),
+          equals({'appwrite_api_client.AppwriteApiClient'}),
+        );
+      },
+    );
+
+    test('M7.3 a session already open is logged', () async {
+      final user = _MockUser();
+      when(() => user.email).thenReturn('blue@x.local');
+      when(() => account.get()).thenAnswer((_) async => user);
+
+      await apiClient.signIn(email: 'blue@x.local', password: 'secret');
+
+      expect(
+        lines(),
+        equals([
+          'INFO sign-in: started',
+          'INFO sign-in: the session is already open',
+          'INFO sign-in: done',
+        ]),
+      );
+    });
+
+    test('M7.3 a failed sign-in is SEVERE with its error and stack', () async {
+      final exception = AppwriteException('down', 503);
+      when(() => account.get()).thenThrow(exception);
+
+      await expectLater(
+        apiClient.signIn(email: 'blue@x.local', password: 'secret'),
+        throwsA(isA<AppwriteSignInFailure>()),
+      );
+
+      final failed = records.singleWhere(
+        (record) => record.level == Level.SEVERE,
+      );
+      expect(failed.message, equals('sign-in: failed'));
+      expect(failed.error, equals(exception));
+      expect(failed.stackTrace, isNotNull);
+      expect(
+        records.where((record) => record.message.contains('secret')),
+        isEmpty,
+      );
+    });
+
+    test('M7.3 a JWT is logged by its creation, never by its value', () async {
+      when(() => account.createJWT())
+          .thenAnswer((_) async => models.Jwt(jwt: 'jwt-value'));
+
+      await apiClient.createJwt();
+
+      expect(
+        lines(),
+        equals(['INFO create JWT: started', 'INFO create JWT: done']),
+      );
+      expect(
+        records.where((record) => record.message.contains('jwt-value')),
+        isEmpty,
+      );
+    });
+
+    test('M7.3 a JWT that cannot be created is SEVERE', () async {
+      when(() => account.createJWT())
+          .thenThrow(AppwriteException('guests', 401));
+
+      await expectLater(
+        apiClient.createJwt,
+        throwsA(isA<AppwriteSignInFailure>()),
+      );
+
+      expect(lines(), contains('SEVERE create JWT: failed'));
     });
   });
 

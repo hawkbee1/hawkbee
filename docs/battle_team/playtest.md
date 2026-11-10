@@ -35,6 +35,13 @@ docker logs battle_host-host-saint-lo-1 2>&1 | grep 'address='   # what it regis
 ```
 Then, in `factory1`, step 2 above only (`dart run tool/playtest.dart`): the host that serves `saint_lo_1km` claims the new battle at its next look (10 s), and blue's opening goes through it. Check `curl -i http://localhost:8081/v1/socket` answers `426` (it waits for a WebSocket) before blaming the app.
 
+## Logs
+The app logs on `package:logging` (`apps/battle_team/lib/logging/`), printed to the console in debug and profile, nothing in release. One line per event, `[bt] <LEVEL> <logger> <message>`; an error and its stack follow on lines with the same prefix. On a phone:
+```sh
+adb logcat | grep '\[bt\]'
+```
+A run reads, in order: `connecting (attempt n)`, `credential jwt`, `host address wss://…`, `socket open`, `sign-in accepted`, `command <id> sent: Move`, `command <id> accepted` (or `WARNING … refused <code>`). With the host down: `SEVERE … connecting failed` with the error, `host lost, retry in <s> s`, then the next attempt. `SEVERE` is an exception, `WARNING` a refusal. Sign-in with Appwrite logs `sign-in: started/done/failed` and `create JWT: …` (never the password or the JWT). Nothing of the units or the section's view is logged (decision 237).
+
 ## What the rules make of it
 A foot unit holds 30 AP, spends 1 AP a metre and gets 1 AP back an hour (`data/units.yaml`, `data/battle.yaml`): a soldier dashes 30 m, then waits. That is the game as written; a faster AP rate for playtests would be a battle setting, which the rows do not hold yet.
 
