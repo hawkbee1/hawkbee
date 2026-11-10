@@ -48,6 +48,6 @@ A foot unit holds 30 AP, spends 1 AP a metre and gets 1 AP back an hour (`data/u
 The `settings` column is new in `bt_battles`: run `appwrite push tables` once (from `backend/`) before the first playtest on a local Appwrite that does not have it. A host started before M7.2 recovers no snapshot of the old format (`snapshotVersion` 2): clear its `--data` folder (`build/playtest`).
 
 ## Not done
-- No buy button: selecting, moving, firing, reloading, swapping and deploying only.
+- No buy button: selecting, moving, firing, reloading, swapping, storing, recalling and deploying (from the Storage panel, M7.6) only.
 - Moves go straight to the tapped point; the host checks and paths them.
 - No fog shading: the map shows whole; units the section does not see are not drawn.
