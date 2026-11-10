@@ -99,7 +99,7 @@ Parallel once their dependencies are merged: **M6.1 ∥ M6.3** at the start; **M
 
 ### M7: client
 
-Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app follow `agent-workflow.md` §6. The plan PRs (battle_team #39, hawkbee #70, stacked on #38 and #69) must be merged first; until then, stack on `bt/m7-plan`.
+Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app follow `agent-workflow.md` §6.
 
 | Session | Issue | Package | Depends on | Status |
 |---|---|---|---|---|

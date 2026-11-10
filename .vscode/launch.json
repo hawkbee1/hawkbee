@@ -15,7 +15,8 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=../../env/development.json"
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
             ]
         },
         {
@@ -66,7 +67,8 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=../../env/development.json"
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
             ]
         },
         {
@@ -81,7 +83,8 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=../../env/development.json"
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
             ]
         },
         {

@@ -44,3 +44,39 @@
 - [ ] The definition of done (`docs/battle_team/agent-workflow.md` §4 and §6).
 
 ## Session log
+
+**Built** (`apps/battle_team`, branch `bt/m7-01-normal-launch`; the rename is its own commit, the rest a second one):
+- `lib/playtest/` is `lib/battle/`: `cubit/battle_cubit.dart` (`BattleCubit`, `BattleState`, `BattleStatus`), `view/battle_page.dart`, `view/battle_view.dart`, `world/` (`BattleWorld` is the interface, `SceneBattleWorld` the flutter_scene class, `// coverage:ignore-file`; "Strategy" in the doc comment), `data/`.
+- `BattleRepository` (`lib/battle/data/battle_repository.dart`) builds the `BattleClient` (`AppwriteHostFinder` for the address, a fresh JWT from `AppwriteApiClient.createJwt` as credential), signs in (`signIn()`), and gives the cubit `connection` (`ConnectionStatus`), `snapshots` (`BattleSnapshot`), `stopReason`, `battleTime`, `apNow`, `send(order)` (the refusal or null), `start()`, `close()`, `mapId`, `isConfigured`. The cubit imports no `battle_client`. The transport, address, clock and random are constructor ports, so tests use `FakeHost`.
+- `App(backendStatusRepository:, battleRepository:)` provides both repositories and shows `TitlePage`; Start does `pushReplacement(BattlePage.route())`. `App.fromApiClient` builds both from `BattleSettings.fromEnvironment()`, so `main_development/staging/production.dart` are `bootstrap(App.fromApiClient)`. `main_playtest.dart` keeps `trustHost` and `trustSelfSigned` and boots the same `App`. `BattleApp` (the playtest's `MaterialApp`) is gone.
+- Credits: a "Credits" button bottom right opens a dialog with `map.yaml`'s attribution (Q-MAP-22); the always-on panel is gone.
+- Flame out: `flame`, `flame_audio`, `flame_behaviors`, `audioplayers`, `flame_test`; `lib/game/`, `lib/loading/`, their tests, `test/helpers/test_game.dart`, `assets/audio/`, `assets/images/`; `pubspec.yaml` description; `Assets.audio/images` from `lib/gen/assets.gen.dart`; the generated macOS/Windows plugin registrants and the hawkbee `pubspec.lock` lose the same packages. `title` and `backend_status` stay (the flow shows them).
+- `app_fr.arb` with every key; the Flame-only keys left `app_en.arb`; `battleOrderName` localizes the order word of the host's answer; `battleCredits`, `battleCreditsClose` are new.
+
+**Choices and deviations**
+- **Repository in `lib/battle/data/`**, not a top-level `lib/repositories/`: only the battle feature uses it. Accounts (M7.12) will bring their own repository, and a second consumer is the moment to move it.
+- **The repository serves one session** (a `BattleClient` starts once). The title replaces itself with the battle and never comes back, so one `App`-level instance is enough. M7.12 must revisit this when a log-out returns to the title: the repository would have to be built per sign-in.
+- **`PlaytestSettings` is `BattleSettings`** (`lib/battle/data/`), with the same keys (`BT_PLAYTEST_*`, `APPWRITE_*`), as the issue says. The `development`, `staging` and `production` flavors read them; staging and production have no `env/playtest.json`, so they say how to set the battle up until M7.12. The root `launch.json` gives the three development entries (debug, profile, release) `--dart-define-from-file=env/playtest.json`.
+- **One dark theme** (the playtest's) replaces the template's light one; the Poppins font stays.
+- **Localization found a real bug.** The generated `AppLocalizations.localizationsDelegates` holds the Flutter SDK's Material and Cupertino delegates. With `material_ui`, French needs `GlobalMaterialLocalizations.delegates` (plural: `cupertino_ui`'s delegate is a different type from the SDK's, and one delegate alone logs "no CupertinoLocalizations delegate for fr"). The first French widget test found it. `appLocalizationsDelegates` in `lib/l10n/l10n.dart` is the one list; the app and the tests use it. The playtest app had the same flaw.
+- **Decision 237 test.** The playtest had no such test, so there was none to keep: `decision 237 draws and lists only what the section sees` (`battle_view_test.dart`) runs the recorded stream `fog_s-2` through the real repository and cubit into `FakeWorld` and asserts nothing the stream does not show is drawn, against the units `clear_s-2` shows and `fog_s-2` hides (it checks the two recordings differ, so it cannot pass empty). `battle_cubit_test.dart` also runs the four recorded streams and compares the cubit's units with each stream's host view. `FakeHost.recorded(name)` reads `battle_client`'s fixtures by relative path.
+- **Rules and their tests**: decision 3 (a player joins a battle that keeps running: the cubit over the eight recorded streams, `_late` ones included, `battle_cubit_test.dart`; the host's answer to an order, same file), decision 5 (`battle_view_test.dart`, pan, zoom, turn), decision 236 (the battle time handed to the world, `battle_view_test.dart`; the gliding itself is in the GPU class), decision 237 (above), Q-MAP-22 (`battle_view_test.dart`, the Credits dialog). Decision 3 is persistence in `00-overview.md`; the issue and `agent-workflow.md` read it as "the host decides": both are covered.
+- **Branches.** The M7 plan PRs (battle_team #39, hawkbee #70) were merged into `bt/playtest-phone`, which had already been merged: battle_team `main` holds the plan, hawkbee `main` did not hold the M7 session files. The hawkbee branch is `main` plus a merge of `origin/bt/playtest-phone`, so this PR carries those docs. The `agent-workflow.md` paragraph about stacking on `bt/m7-plan` is deleted; the README line about the plan PRs too.
+- `TitlePage.route()` had no user left and went.
+
+**Docs touched**: `agent-workflow.md` §6 (names, the localization pitfall, `flutter gen-l10n`, the screenshot recipe, what the coverage report holds), `playtest.md` (the app opens on the title), this file, the README row.
+
+**Numbers**: 85 tests, 100 % of the lines the tests load (16 files loaded; the GPU class, generated files and the files the tests do not load are outside), `dart analyze --fatal-infos` and `dart format` clean.
+
+**Questions for the owner**
+1. `web/flutter_bootstrap.js` (the VGV Flame template's preloader) fetches `assets/<key>` for every asset, but Flutter serves them under `assets/assets/<key>`: each fetch 404s, the error is logged and the app starts anyway. It is not Flame-only (a generic progress bar), so I left it. Remove it for the default loader?
+
+**Screenshots** (web build, headless Chromium on software WebGL; I looked at each one). **Not against a live host:** the local Appwrite did not answer from the container (`appwrite-traefik` did not resolve), so the host and the playtest tool could not run. The pictures are the app's real code (`App`, repository, cubit, flutter_scene, the `saint_lo_1km` map) fed by an in-memory host that sends one section view (a commander, four soldiers, a scout, one red soldier further south and off the picture, three relics) through the real `BattleClient`, with a throwaway entry point that is not committed. **To do on the owner's side:** run the development flavor against the host as `playtest.md` says, press Start, and check it plays as the playtest did (select a unit, tap the ground, see the host's answer).
+
+| Title, English | Battle, English |
+|---|---|
+| ![title](../screenshots/m7-01-title-en.png) | ![battle](../screenshots/m7-01-battle-en.png) |
+
+| Credits, English | Battle, French |
+|---|---|
+| ![credits](../screenshots/m7-01-credits-en.png) | ![battle in French](../screenshots/m7-01-battle-fr.png) |
