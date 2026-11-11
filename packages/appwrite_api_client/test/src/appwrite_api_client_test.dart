@@ -13,6 +13,8 @@ class _MockClient extends Mock implements Client;
 
 class _MockAccount extends Mock implements Account;
 
+class _MockTablesDB extends Mock implements TablesDB;
+
 class _MockUser extends Mock implements models.User;
 
 class _MockSession extends Mock implements models.Session;
@@ -287,11 +289,368 @@ void main() {
     });
   });
 
+  group('accounts', () {
+    late Account account;
+    late AppwriteApiClient apiClient;
+
+    setUp(() {
+      account = _MockAccount();
+      apiClient = AppwriteApiClient.withClient(_MockClient(), account: account);
+    });
+
+    void stubSession() => when(
+      () => account.createEmailPasswordSession(
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+      ),
+    ).thenAnswer((_) async => _MockSession());
+
+    void stubCreate() => when(
+      () => account.create(
+        userId: any(named: 'userId'),
+        email: any(named: 'email'),
+        password: any(named: 'password'),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async => _MockUser());
+
+    group('signUp', () {
+      test('M7.12 creates the account, then signs it in', () async {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenThrow(AppwriteException('guests', 401));
+        stubCreate();
+        stubSession();
+
+        await apiClient.signUp(
+          email: 'new@x.local',
+          password: 'secret-123',
+          name: 'New',
+        );
+
+        verifyInOrder([
+          () => account.create(
+            userId: any(named: 'userId', that: isNotEmpty),
+            email: 'new@x.local',
+            password: 'secret-123',
+            name: 'New',
+          ),
+          () => account.createEmailPasswordSession(
+            email: 'new@x.local',
+            password: 'secret-123',
+          ),
+        ]);
+      });
+
+      test('M7.12 closes a session still open first', () async {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenAnswer((_) async {});
+        stubCreate();
+        stubSession();
+
+        await apiClient.signUp(
+          email: 'new@x.local',
+          password: 'secret-123',
+          name: 'New',
+        );
+
+        verify(() => account.deleteSession(sessionId: 'current')).called(1);
+      });
+
+      test('M7.12 an email already used is a ${AppwriteFailureKind.conflict} '
+          'failure', () async {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenThrow(AppwriteException('guests', 401));
+        final exception = AppwriteException(
+          'exists',
+          409,
+          'user_already_exists',
+        );
+        when(
+          () => account.create(
+            userId: any(named: 'userId'),
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+            name: any(named: 'name'),
+          ),
+        ).thenThrow(exception);
+
+        await expectLater(
+          apiClient.signUp(
+            email: 'a@x.local',
+            password: 'secret-123',
+            name: 'A',
+          ),
+          throwsA(
+            isA<AppwriteAccountFailure>()
+                .having((failure) => failure.error, 'error', exception)
+                .having(
+                  (failure) => failure.kind,
+                  'kind',
+                  AppwriteFailureKind.conflict,
+                ),
+          ),
+        );
+        verifyNever(
+          () => account.createEmailPasswordSession(
+            email: any(named: 'email'),
+            password: any(named: 'password'),
+          ),
+        );
+      });
+    });
+
+    group('currentAccount', () {
+      test('M7.12 gives the account of the session', () async {
+        final user = _MockUser();
+        when(() => user.$id).thenReturn('u-1');
+        when(() => user.email).thenReturn('a@x.local');
+        when(() => user.name).thenReturn('A');
+        when(() => account.get()).thenAnswer((_) async => user);
+
+        final current = await apiClient.currentAccount();
+
+        expect(current?.id, 'u-1');
+        expect(current?.email, 'a@x.local');
+        expect(current?.name, 'A');
+      });
+
+      test('M7.12 is null without a session', () async {
+        when(() => account.get()).thenThrow(AppwriteException('guests', 401));
+
+        expect(await apiClient.currentAccount(), isNull);
+      });
+
+      test('M7.12 fails when Appwrite cannot say', () async {
+        when(() => account.get()).thenThrow(AppwriteException('down', 503));
+
+        await expectLater(
+          apiClient.currentAccount,
+          throwsA(
+            isA<AppwriteAccountFailure>().having(
+              (failure) => failure.kind,
+              'kind',
+              AppwriteFailureKind.serverError,
+            ),
+          ),
+        );
+      });
+    });
+
+    group('signOut', () {
+      test('M7.12 closes the current session', () async {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenAnswer((_) async {});
+
+        await apiClient.signOut();
+
+        verify(() => account.deleteSession(sessionId: 'current')).called(1);
+      });
+
+      test('M7.12 without a session the account is already signed out', () {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenThrow(AppwriteException('guests', 401));
+
+        expect(apiClient.signOut(), completes);
+      });
+
+      test('M7.12 fails when Appwrite is unreachable', () async {
+        when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+            .thenThrow(AppwriteException('SocketException: no route'));
+
+        await expectLater(
+          apiClient.signOut,
+          throwsA(
+            isA<AppwriteAccountFailure>().having(
+              (failure) => failure.kind,
+              'kind',
+              AppwriteFailureKind.unreachable,
+            ),
+          ),
+        );
+      });
+    });
+
+    test('M7.12 a sign-up, a sign-out and a lookup log no secret', () async {
+      final records = <LogRecord>[];
+      final previous = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      final subscription = Logger.root.onRecord.listen(records.add);
+      addTearDown(() async {
+        await subscription.cancel();
+        Logger.root.level = previous;
+      });
+      when(() => account.deleteSession(sessionId: any(named: 'sessionId')))
+          .thenAnswer((_) async {});
+      stubCreate();
+      stubSession();
+      final user = _MockUser();
+      when(() => user.$id).thenReturn('u-1');
+      when(() => user.email).thenReturn('private@x.local');
+      when(() => user.name).thenReturn('Private Name');
+      when(() => account.get()).thenAnswer((_) async => user);
+
+      await apiClient.signUp(
+        email: 'private@x.local',
+        password: 'secret-123',
+        name: 'Private Name',
+      );
+      await apiClient.currentAccount();
+      await apiClient.signOut();
+
+      expect(
+        [for (final record in records) record.message],
+        containsAll([
+          'sign-up: started',
+          'sign-up: done',
+          'current account: done',
+          'sign-out: done',
+        ]),
+      );
+      for (final record in records) {
+        expect(record.message, isNot(contains('secret-123')));
+        expect(record.message, isNot(contains('private@x.local')));
+        expect(record.message, isNot(contains('Private Name')));
+      }
+    });
+  });
+
+  group('findRows', () {
+    late TablesDB tables;
+    late AppwriteApiClient apiClient;
+
+    setUp(() {
+      tables = _MockTablesDB();
+      apiClient = AppwriteApiClient.withClient(_MockClient(), tables: tables);
+    });
+
+    models.Row row(String id, Map<String, dynamic> data) => models.Row(
+      $id: id,
+      $sequence: '1',
+      $tableId: 't',
+      $databaseId: 'd',
+      $createdAt: '',
+      $updatedAt: '',
+      $permissions: const [],
+      data: data,
+    );
+
+    test(
+      'M7.12 reads the rows that match, with their ID and columns',
+      () async {
+        when(
+          () => tables.listRows(
+            databaseId: any(named: 'databaseId'),
+            tableId: any(named: 'tableId'),
+            queries: any(named: 'queries'),
+          ),
+        ).thenAnswer(
+          (_) async => models.RowList(
+            total: 1,
+            rows: [
+              row('s-1', {'war_id': 'w-1'}),
+            ],
+          ),
+        );
+
+        final rows = await apiClient.findRows(
+          databaseId: 'hawkbee',
+          tableId: 'bt_sections',
+          equal: {
+            'account_id': ['a-1'],
+          },
+        );
+
+        expect(rows, hasLength(1));
+        expect(rows.single.id, 's-1');
+        expect(rows.single.data['war_id'], 'w-1');
+        final queries =
+            verify(
+                  () => tables.listRows(
+                    databaseId: 'hawkbee',
+                    tableId: 'bt_sections',
+                    queries: captureAny(named: 'queries'),
+                  ),
+                ).captured.single
+                as List<String>;
+        expect(queries, [
+          Query.equal('account_id', ['a-1']),
+          Query.limit(100),
+        ]);
+      },
+    );
+
+    test('M7.12 fails with a $AppwriteRowsFailure', () async {
+      when(
+        () => tables.listRows(
+          databaseId: any(named: 'databaseId'),
+          tableId: any(named: 'tableId'),
+          queries: any(named: 'queries'),
+        ),
+      ).thenThrow(AppwriteException('forbidden', 401));
+
+      await expectLater(
+        apiClient.findRows(databaseId: 'hawkbee', tableId: 'bt_sections'),
+        throwsA(
+          isA<AppwriteRowsFailure>().having(
+            (failure) => failure.kind,
+            'kind',
+            AppwriteFailureKind.unauthorized,
+          ),
+        ),
+      );
+    });
+  });
+
+  group(AppwriteFailureKind, () {
+    for (final (code, kind) in [
+      (400, AppwriteFailureKind.invalidInput),
+      (401, AppwriteFailureKind.unauthorized),
+      (409, AppwriteFailureKind.conflict),
+      (429, AppwriteFailureKind.tooManyRequests),
+      (500, AppwriteFailureKind.serverError),
+      (503, AppwriteFailureKind.serverError),
+      (404, AppwriteFailureKind.other),
+      (null, AppwriteFailureKind.unreachable),
+    ]) {
+      test('M7.12 is read from the status $code as $kind', () {
+        expect(AppwriteSignInFailure(AppwriteException('x', code)).kind, kind);
+      });
+    }
+
+    test(
+      "M7.12 an error that is not Appwrite's is ${AppwriteFailureKind.other}",
+      () {
+        expect(
+          AppwriteSignInFailure(StateError('x')).kind,
+          AppwriteFailureKind.other,
+        );
+      },
+    );
+  });
+
   group(AppwriteSignInFailure, () {
     test('describes the underlying error', () {
       expect(
         const AppwriteSignInFailure('boom').toString(),
         'AppwriteSignInFailure: boom',
+      );
+    });
+  });
+
+  group(AppwriteAccountFailure, () {
+    test('describes the underlying error', () {
+      expect(
+        const AppwriteAccountFailure('boom').toString(),
+        'AppwriteAccountFailure: boom',
+      );
+    });
+  });
+
+  group(AppwriteRowsFailure, () {
+    test('describes the underlying error', () {
+      expect(
+        const AppwriteRowsFailure('boom').toString(),
+        'AppwriteRowsFailure: boom',
       );
     });
   });
