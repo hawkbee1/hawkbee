@@ -15,6 +15,10 @@ class _MockAccount extends Mock implements Account;
 
 class _MockTablesDB extends Mock implements TablesDB;
 
+class _MockFunctions extends Mock implements Functions;
+
+class _MockExecution extends Mock implements models.Execution;
+
 class _MockUser extends Mock implements models.User;
 
 class _MockSession extends Mock implements models.Session;
@@ -601,6 +605,124 @@ void main() {
     });
   });
 
+  group('execute', () {
+    late Functions functions;
+    late AppwriteApiClient apiClient;
+
+    setUp(() {
+      functions = _MockFunctions();
+      apiClient = AppwriteApiClient.withClient(
+        _MockClient(),
+        functions: functions,
+      );
+    });
+
+    models.Execution answer(int status, String body) {
+      final execution = _MockExecution();
+      when(() => execution.responseStatusCode).thenReturn(status);
+      when(() => execution.responseBody).thenReturn(body);
+      return execution;
+    }
+
+    void stubExecution(models.Execution execution) => when(
+      () => functions.createExecution(
+        functionId: any(named: 'functionId'),
+        body: any(named: 'body'),
+        xasync: any(named: 'xasync'),
+      ),
+    ).thenAnswer((_) async => execution);
+
+    test('M7.12 runs the function with the body as JSON, and waits for its '
+        'answer', () async {
+      stubExecution(answer(200, '{"sectionId":"s-1"}'));
+
+      final result = await apiClient.execute(
+        functionId: 'bt_create_war',
+        body: {'action': 'join', 'warId': 'w-1'},
+      );
+
+      expect(result.statusCode, 200);
+      expect(result.body, {'sectionId': 's-1'});
+      verify(
+        () => functions.createExecution(
+          functionId: 'bt_create_war',
+          body: '{"action":"join","warId":"w-1"}',
+          xasync: false,
+        ),
+      ).called(1);
+    });
+
+    test('M7.12 a function that refuses answers with its status and body: '
+        'it is no failure', () async {
+      stubExecution(answer(409, '{"error":"already_in_war"}'));
+
+      final result = await apiClient.execute(functionId: 'bt_create_war');
+
+      expect(result.statusCode, 409);
+      expect(result.body, {'error': 'already_in_war'});
+    });
+
+    test(
+      'M7.12 an answer that is not a JSON object is an empty body',
+      () async {
+        for (final text in ['', 'not json', '[1, 2]']) {
+          stubExecution(answer(500, text));
+
+          final result = await apiClient.execute(functionId: 'bt_create_war');
+
+          expect(result.statusCode, 500);
+          expect(result.body, isEmpty, reason: text);
+        }
+      },
+    );
+
+    test(
+      'M7.12 fails with an $AppwriteExecutionFailure and its kind',
+      () async {
+        when(
+          () => functions.createExecution(
+            functionId: any(named: 'functionId'),
+            body: any(named: 'body'),
+            xasync: any(named: 'xasync'),
+          ),
+        ).thenThrow(AppwriteException('SocketException: no route'));
+
+        await expectLater(
+          apiClient.execute(functionId: 'bt_create_war'),
+          throwsA(
+            isA<AppwriteExecutionFailure>().having(
+              (failure) => failure.kind,
+              'kind',
+              AppwriteFailureKind.unreachable,
+            ),
+          ),
+        );
+      },
+    );
+
+    test('M7.12 logs the run, never what the function was sent or '
+        'answered', () async {
+      final records = <LogRecord>[];
+      final previous = Logger.root.level;
+      Logger.root.level = Level.ALL;
+      final subscription = Logger.root.onRecord.listen(records.add);
+      addTearDown(() async {
+        await subscription.cancel();
+        Logger.root.level = previous;
+      });
+      stubExecution(answer(200, '{"sectionId":"s-private"}'));
+
+      await apiClient.execute(
+        functionId: 'bt_create_war',
+        body: {'warId': 'w-private'},
+      );
+
+      expect([
+        for (final record in records) record.message,
+      ], equals(['run function: started', 'run function: done']));
+    });
+  });
+
   group(AppwriteFailureKind, () {
     for (final (code, kind) in [
       (400, AppwriteFailureKind.invalidInput),
@@ -672,6 +794,15 @@ void main() {
       expect(
         const AppwriteAccountFailure('boom').toString(),
         'AppwriteAccountFailure: boom',
+      );
+    });
+  });
+
+  group(AppwriteExecutionFailure, () {
+    test('describes the underlying error', () {
+      expect(
+        const AppwriteExecutionFailure('boom').toString(),
+        'AppwriteExecutionFailure: boom',
       );
     });
   });

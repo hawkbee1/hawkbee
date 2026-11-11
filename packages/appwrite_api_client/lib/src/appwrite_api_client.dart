@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:logging/logging.dart';
 
@@ -106,6 +108,39 @@ class AppwriteRowsFailure implements Exception {
   String toString() => 'AppwriteRowsFailure: $error';
 }
 
+/// {@template appwrite_execution_failure}
+/// Thrown when a function cannot be executed (not when the function itself
+/// answers with a refusal: that is an [AppwriteExecution]).
+/// {@endtemplate}
+class AppwriteExecutionFailure implements Exception {
+  /// {@macro appwrite_execution_failure}
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
+
+  /// The underlying error raised by the Appwrite SDK or the network stack.
+  final Object error;
+
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
+
+  @override
+  String toString() => 'AppwriteExecutionFailure: $error';
+}
+
+/// {@template appwrite_execution}
+/// What a function answered: its HTTP [statusCode] and its JSON [body]
+/// (empty when it answered none).
+/// {@endtemplate}
+class AppwriteExecution {
+  /// {@macro appwrite_execution}
+  const new({required this.statusCode, required this.body});
+
+  /// The function's HTTP status: 200, or the status of its refusal.
+  final int statusCode;
+
+  /// The JSON object the function answered.
+  final Map<String, Object?> body;
+}
+
 /// {@template appwrite_account}
 /// The signed-in account: what Appwrite Auth knows of it that the app shows.
 /// {@endtemplate}
@@ -143,8 +178,9 @@ class AppwriteRow {
 /// This is the only package allowed to import `package:appwrite`.
 ///
 /// It logs on `appwrite_api_client.AppwriteApiClient` when [signIn],
-/// [signUp], [signOut], [currentAccount], [createJwt] and [findRows] start,
-/// end and fail. Never the password, an email, a JWT or a cookie.
+/// [signUp], [signOut], [currentAccount], [createJwt], [findRows] and
+/// [execute] start, end and fail. Never the password, an email, a JWT, a
+/// cookie or what a function was sent or answered.
 ///
 /// The SDK keeps the session in its cookie jar, so an account stays signed in
 /// across the app's restarts until [signOut].
@@ -167,15 +203,21 @@ class AppwriteApiClient {
 
   /// Creates an [AppwriteApiClient] backed by an existing [Client], with its
   /// [account] and [tables] services (ones on [_client] by default).
-  new withClient(this._client, {Account? account, TablesDB? tables})
-    : _account = account ?? Account(_client),
-      _tables = tables ?? TablesDB(_client);
+  new withClient(
+    this._client, {
+    Account? account,
+    TablesDB? tables,
+    Functions? functions,
+  }) : _account = account ?? Account(_client),
+       _tables = tables ?? TablesDB(_client),
+       _functions = functions ?? Functions(_client);
 
   static final _log = Logger('appwrite_api_client.AppwriteApiClient');
 
   final Client _client;
   final Account _account;
   final TablesDB _tables;
+  final Functions _functions;
 
   /// Checks that the Appwrite project answers.
   ///
@@ -298,6 +340,37 @@ class AppwriteApiClient {
       for (final row in found.rows) AppwriteRow(id: row.$id, data: row.data),
     ];
   });
+
+  /// Runs the function [functionId] as the signed-in account, with [body] as
+  /// JSON, and waits for its answer. A function that refuses answers with its
+  /// own status and body: that is not a failure.
+  ///
+  /// Throws an [AppwriteExecutionFailure] when it cannot be executed.
+  Future<AppwriteExecution> execute({
+    required String functionId,
+    Map<String, Object?> body = const {},
+  }) => _guard('run function', AppwriteExecutionFailure.new, () async {
+    final execution = await _functions.createExecution(
+      functionId: functionId,
+      body: jsonEncode(body),
+      xasync: false,
+    );
+    return AppwriteExecution(
+      statusCode: execution.responseStatusCode,
+      body: _objectOf(execution.responseBody),
+    );
+  });
+
+  static Map<String, Object?> _objectOf(String text) {
+    try {
+      return switch (jsonDecode(text)) {
+        final Map<String, Object?> object => object,
+        _ => const {},
+      };
+    } on FormatException {
+      return const {};
+    }
+  }
 
   static Future<T> _guard<T>(
     String what,
