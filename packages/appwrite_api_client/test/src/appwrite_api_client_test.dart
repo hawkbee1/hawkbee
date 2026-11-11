@@ -612,20 +612,50 @@ void main() {
       (404, AppwriteFailureKind.other),
       (null, AppwriteFailureKind.unreachable),
     ]) {
-      test('M7.12 is read from the status $code as $kind', () {
-        expect(AppwriteSignInFailure(AppwriteException('x', code)).kind, kind);
+      test('M7.12 is read from the status $code as $kind', () async {
+        final account = _MockAccount();
+        when(account.createJWT).thenThrow(AppwriteException('x', code));
+        final apiClient = AppwriteApiClient.withClient(
+          _MockClient(),
+          account: account,
+        );
+
+        await expectLater(
+          apiClient.createJwt,
+          throwsA(
+            isA<AppwriteSignInFailure>().having(
+              (failure) => failure.kind,
+              'kind',
+              kind,
+            ),
+          ),
+        );
       });
     }
 
-    test(
-      "M7.12 an error that is not Appwrite's is ${AppwriteFailureKind.other}",
-      () {
-        expect(
-          AppwriteSignInFailure(StateError('x')).kind,
-          AppwriteFailureKind.other,
-        );
-      },
-    );
+    test("M7.12 an error that is not Appwrite's is other", () async {
+      final account = _MockAccount();
+      when(account.createJWT).thenThrow(StateError('x'));
+      final apiClient = AppwriteApiClient.withClient(
+        _MockClient(),
+        account: account,
+      );
+
+      await expectLater(
+        apiClient.createJwt,
+        throwsA(
+          isA<AppwriteSignInFailure>().having(
+            (failure) => failure.kind,
+            'kind',
+            AppwriteFailureKind.other,
+          ),
+        ),
+      );
+    });
+
+    test('M7.12 a failure made without a kind is other', () {
+      expect(const AppwriteAccountFailure('x').kind, AppwriteFailureKind.other);
+    });
   });
 
   group(AppwriteSignInFailure, () {

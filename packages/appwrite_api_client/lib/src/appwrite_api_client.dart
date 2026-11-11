@@ -60,13 +60,13 @@ class AppwritePingFailure implements Exception {
 /// {@endtemplate}
 class AppwriteSignInFailure implements Exception {
   /// {@macro appwrite_sign_in_failure}
-  const new(this.error);
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
 
   /// The underlying error raised by the Appwrite SDK or the network stack.
   final Object error;
 
-  /// Why it failed.
-  AppwriteFailureKind get kind => _kindOf(error);
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
 
   @override
   String toString() => 'AppwriteSignInFailure: $error';
@@ -77,13 +77,13 @@ class AppwriteSignInFailure implements Exception {
 /// {@endtemplate}
 class AppwriteAccountFailure implements Exception {
   /// {@macro appwrite_account_failure}
-  const new(this.error);
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
 
   /// The underlying error raised by the Appwrite SDK or the network stack.
   final Object error;
 
-  /// Why it failed.
-  AppwriteFailureKind get kind => _kindOf(error);
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
 
   @override
   String toString() => 'AppwriteAccountFailure: $error';
@@ -94,13 +94,13 @@ class AppwriteAccountFailure implements Exception {
 /// {@endtemplate}
 class AppwriteRowsFailure implements Exception {
   /// {@macro appwrite_rows_failure}
-  const new(this.error);
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
 
   /// The underlying error raised by the Appwrite SDK or the network stack.
   final Object error;
 
-  /// Why it failed.
-  AppwriteFailureKind get kind => _kindOf(error);
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
 
   @override
   String toString() => 'AppwriteRowsFailure: $error';
@@ -301,7 +301,7 @@ class AppwriteApiClient {
 
   static Future<T> _guard<T>(
     String what,
-    Exception Function(Object error) failure,
+    Exception Function(Object error, {AppwriteFailureKind kind}) failure,
     Future<T> Function() work,
   ) async {
     _log.info('$what: started');
@@ -311,7 +311,10 @@ class AppwriteApiClient {
       return result;
     } on Object catch (error, stackTrace) {
       _log.severe('$what: failed', error, stackTrace);
-      Error.throwWithStackTrace(failure(error), stackTrace);
+      Error.throwWithStackTrace(
+        failure(error, kind: _kindOf(error)),
+        stackTrace,
+      );
     }
   }
 }
