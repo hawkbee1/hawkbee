@@ -49,5 +49,5 @@ The `settings` column is new in `bt_battles`: run `appwrite push tables` once (f
 
 ## Not done
 - Selecting, moving, firing, reloading, swapping, storing, recalling, deploying (from the Storage panel, M7.6) and buying units and weapons (from the Shop panel, M7.7: the host's roster, the test unit only in a battle with `test_units`). Not the guild camp, not skill nodes.
-- Moves go straight to the tapped point; the host checks and paths them.
+- A tap on the ground previews the move (M7.8): the path, its AP cost and the wait for AP, from the built map in the app's assets; Confirm sends it with the path, which the host checks. The preview knows the map as built: structures built or destroyed in the battle are not applied to it. From a unit's eyes a move still goes at once.
 - No fog shading: the map shows whole; units the section does not see are not drawn.

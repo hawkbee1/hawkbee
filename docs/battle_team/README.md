@@ -110,7 +110,7 @@ Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app 
 | [M7.5](sessions/m7-05-fire.md) | Fire | `battle_team`, `battle_client` | M7.4 | merged |
 | [M7.6](sessions/m7-06-storage.md) | Storage: view, store, unstore | `battle_team`, `battle_client` | M7.5 (stacked; M7.1 needed) | merged |
 | [M7.7](sessions/m7-07-buy.md) | Buy | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.6 | PR open #77 |
-| [M7.8](sessions/m7-08-path-preview.md) | Move: path preview and AP cost | `battle_client`, `battle_team` | M7.1 | todo |
+| [M7.8](sessions/m7-08-path-preview.md) | Move: path preview and AP cost | `battle_client`, `battle_team` | M7.1 | PR open #78 |
 | [M7.9](sessions/m7-09-fog-and-alerts.md) | Fog shading and alerts | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.4 | todo |
 | [M7.10](sessions/m7-10-pings-markers-chat.md) | Pings, map markers and team chat | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.1 | todo |
 | [M7.11](sessions/m7-11-unit-filters.md) | Unit filters | `battle_team` | M7.1 | todo |
