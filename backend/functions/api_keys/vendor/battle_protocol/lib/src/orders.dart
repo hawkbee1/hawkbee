@@ -508,3 +508,46 @@ final class EnterBattle extends Order {
   /// {@macro enter_battle}
   const new();
 }
+
+/// {@template admitted_unit}
+/// A unit a section starts with when it is admitted to a running battle: its
+/// ID and its unit type.
+/// {@endtemplate}
+final class AdmittedUnit extends Equatable {
+  /// {@macro admitted_unit}
+  const new({required this.unitId, required this.unitType});
+
+  /// The unit.
+  final String unitId;
+
+  /// Its unit type, as `units.yaml` names it.
+  final String unitType;
+
+  @override
+  List<Object?> get props => [unitId, unitType];
+}
+
+/// {@template admit_section}
+/// The server admits the sender's section to the battle, which is running: a
+/// newcomer joined the war and the battle's host did not know his section
+/// (SOC-30). It joins [team] (SOC-02, drawn by the backend that created the
+/// section) with [money] and the [units] it starts with, its commander
+/// (UNIT-24), all in storage (HQ-03). The server sends it, so the log holds
+/// the section the battle did not start with and a replay makes it again.
+/// {@endtemplate}
+final class AdmitSection extends Order {
+  /// {@macro admit_section}
+  const new({required this.team, required this.money, required this.units});
+
+  /// The team the section joins.
+  final String team;
+
+  /// Its money, in whole w€ (SOC-15).
+  final int money;
+
+  /// Its units, the commander first.
+  final List<AdmittedUnit> units;
+
+  @override
+  List<Object?> get props => [team, money, units];
+}
