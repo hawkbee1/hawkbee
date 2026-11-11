@@ -50,6 +50,7 @@ enum _OrderTag {
   refuseOffer,
   delegateHq,
   enterBattle,
+  admitSection,
 }
 
 /// The `type` of an event.
@@ -295,6 +296,12 @@ void writeOrder(FieldWriter w, Order order) {
         ..text('account', accountId);
     case EnterBattle():
       w.choice('type', _OrderTag.enterBattle);
+    case AdmitSection(:final team, :final money, :final units):
+      w
+        ..choice('type', _OrderTag.admitSection)
+        ..text('team', team)
+        ..integer('money', money)
+        ..items('units', units, _writeAdmittedUnit);
   }
 }
 
@@ -386,8 +393,20 @@ Order readOrder(FieldReader r) {
     _OrderTag.refuseOffer => RefuseOffer(offerId: r.integer('offer')),
     _OrderTag.delegateHq => DelegateHq(accountId: r.text('account')),
     _OrderTag.enterBattle => const EnterBattle(),
+    _OrderTag.admitSection => AdmitSection(
+      team: r.text('team'),
+      money: r.integer('money'),
+      units: r.items('units', _readAdmittedUnit),
+    ),
   };
 }
+
+void _writeAdmittedUnit(FieldWriter w, AdmittedUnit unit) => w
+  ..text('unit', unit.unitId)
+  ..text('type', unit.unitType);
+
+AdmittedUnit _readAdmittedUnit(FieldReader r) =>
+    AdmittedUnit(unitId: r.text('unit'), unitType: r.text('type'));
 
 void _writeImpact(FieldWriter w, Impact impact) => w
   ..text('target', impact.targetId)

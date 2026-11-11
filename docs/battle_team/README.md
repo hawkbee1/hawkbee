@@ -114,7 +114,7 @@ Milestone: `apps/battle_team/plan/milestones/m7-client.md`. Sessions in the app 
 | [M7.9](sessions/m7-09-fog-and-alerts.md) | Fog shading and alerts | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.4 | PR open #79 |
 | [M7.10](sessions/m7-10-pings-markers-chat.md) | Pings, map markers and team chat | `battle_protocol`, `battle_host`, `battle_client`, `battle_team` | M7.1 | todo |
 | [M7.11](sessions/m7-11-unit-filters.md) | Unit filters | `battle_team` | M7.1 | todo |
-| [M7.12](sessions/m7-12-accounts.md) | Accounts: sign up, sign in, log out | `battle_team`, `appwrite_api_client` | M7.1 | todo |
+| [M7.12](sessions/m7-12-accounts.md) | Accounts: sign up, sign in, log out | `battle_team`, `appwrite_api_client` | M7.1 | PR open #80 |
 | [M7.13](sessions/m7-13-rendering-benchmarks.md) | P-05 and P-06, the rendering benchmarks | `battle_team` | M7.9, the owner's devices | todo |
 
 Parallel once their dependencies are merged: **M7.1 ∥ M7.2** at the start; **M7.6 ∥ M7.8 ∥ M7.10 ∥ M7.11 ∥ M7.12** after M7.1, one at a time in the app to avoid rebases; M7.13 last. M6.8 stays open beside M7.

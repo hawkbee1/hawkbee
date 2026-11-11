@@ -15,7 +15,6 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=env/playtest.json",
                 "--dart-define-from-file=../../env/development.json"
             ]
         },
@@ -56,6 +55,21 @@
             ]
         },
         {
+            "name": "battle_team (phone)",
+            "type": "dart",
+            "request": "launch",
+            "program": "apps/battle_team/lib/main_development.dart",
+            "cwd": "apps/battle_team",
+            "args": [
+                "--flavor",
+                "development",
+                "--target",
+                "lib/main_development.dart",
+                "--dart-define-from-file=../../env/development.json",
+                "--dart-define-from-file=env/playtest.json"
+            ]
+        },
+        {
             "name": "battle_team (profile)",
             "type": "dart",
             "request": "launch",
@@ -67,7 +81,6 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=env/playtest.json",
                 "--dart-define-from-file=../../env/development.json"
             ]
         },
@@ -83,7 +96,6 @@
                 "development",
                 "--target",
                 "lib/main_development.dart",
-                "--dart-define-from-file=env/playtest.json",
                 "--dart-define-from-file=../../env/development.json"
             ]
         },

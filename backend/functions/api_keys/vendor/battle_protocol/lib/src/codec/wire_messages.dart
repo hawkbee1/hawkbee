@@ -17,6 +17,7 @@ enum _HostTag {
   tickUpdate,
   relicAlert,
   goodbye,
+  roster,
 }
 
 /// Writes a client message: its type, then its fields.
@@ -87,6 +88,7 @@ void writeHostMessage(FieldWriter w, HostMessage message) {
         ..text('reason', reason);
     case SectionView(
       :final at,
+      :final weather,
       :final section,
       :final units,
       :final hqs,
@@ -97,6 +99,7 @@ void writeHostMessage(FieldWriter w, HostMessage message) {
       w
         ..choice('type', _HostTag.sectionView)
         ..time('at_us', at)
+        ..text('weather', weather)
         ..item('section', section, _writeSectionPrivate)
         ..items('units', units, _writeUnitView)
         ..items('hqs', hqs, _writeHqView)
@@ -107,6 +110,7 @@ void writeHostMessage(FieldWriter w, HostMessage message) {
       w
         ..choice('type', _HostTag.tickUpdate)
         ..time('at_us', message.at)
+        ..maybe('weather', message.weather, _writeOptionalText)
         ..items('moved', message.moved, _writeUnitPosition)
         ..items('appeared', message.appeared, _writeUnitView)
         ..texts('gone', message.gone)
@@ -133,6 +137,11 @@ void writeHostMessage(FieldWriter w, HostMessage message) {
       w
         ..choice('type', _HostTag.goodbye)
         ..choice('reason', reason);
+    case Roster(:final units, :final weapons):
+      w
+        ..choice('type', _HostTag.roster)
+        ..items('units', units, _writeRosterUnit)
+        ..items('weapons', weapons, _writeRosterWeapon);
   }
 }
 
@@ -158,6 +167,7 @@ HostMessage readHostMessage(FieldReader r) =>
       ),
       _HostTag.sectionView => SectionView(
         at: r.time('at_us'),
+        weather: r.text('weather'),
         section: r.item('section', _readSectionPrivate),
         units: r.items('units', _readUnitView),
         hqs: r.items('hqs', _readHqView),
@@ -167,6 +177,7 @@ HostMessage readHostMessage(FieldReader r) =>
       ),
       _HostTag.tickUpdate => TickUpdate(
         at: r.time('at_us'),
+        weather: r.maybe('weather', _readOptionalText),
         moved: r.items('moved', _readUnitPosition),
         appeared: r.items('appeared', _readUnitView),
         gone: r.texts('gone'),
@@ -186,7 +197,31 @@ HostMessage readHostMessage(FieldReader r) =>
         team: r.text('team'),
       ),
       _HostTag.goodbye => Goodbye(r.choice('reason', GoodbyeReason.values)),
+      _HostTag.roster => Roster(
+        units: r.items('units', _readRosterUnit),
+        weapons: r.items('weapons', _readRosterWeapon),
+      ),
     };
+
+void _writeRosterUnit(FieldWriter w, RosterUnit unit) => w
+  ..text('unit_type', unit.unitType)
+  ..text('category', unit.category)
+  ..integer('price', unit.price)
+  ..texts('weapons', unit.weapons);
+
+RosterUnit _readRosterUnit(FieldReader r) => RosterUnit(
+  unitType: r.text('unit_type'),
+  category: r.text('category'),
+  price: r.integer('price'),
+  weapons: r.texts('weapons'),
+);
+
+void _writeRosterWeapon(FieldWriter w, RosterWeapon weapon) => w
+  ..text('weapon', weapon.weapon)
+  ..integer('price', weapon.price);
+
+RosterWeapon _readRosterWeapon(FieldReader r) =>
+    RosterWeapon(weapon: r.text('weapon'), price: r.integer('price'));
 
 void _writeTime(FieldWriter w, String key, Duration value) =>
     w.time(key, value);
@@ -209,6 +244,7 @@ ApView _readApView(FieldReader r) => ApView(
 void _writeUnitPrivate(FieldWriter w, UnitPrivate unit) => w
   ..choice('place', unit.place)
   ..item('ap', unit.ap, _writeApView)
+  ..number('sight_range_m', unit.sightRangeM)
   ..number('morale', unit.morale)
   ..integer('rounds', unit.rounds)
   ..number('xp_earned', unit.xpEarned)
@@ -221,6 +257,7 @@ void _writeUnitPrivate(FieldWriter w, UnitPrivate unit) => w
 UnitPrivate _readUnitPrivate(FieldReader r) => UnitPrivate(
   place: r.choice('place', UnitPlace.values),
   ap: r.item('ap', _readApView),
+  sightRangeM: r.number('sight_range_m'),
   morale: r.number('morale'),
   rounds: r.integer('rounds'),
   xpEarned: r.number('xp_earned'),

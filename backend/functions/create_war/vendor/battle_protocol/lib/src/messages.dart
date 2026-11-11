@@ -201,6 +201,7 @@ final class SectionView extends HostMessage {
   /// {@macro section_view}
   const new({
     required this.at,
+    required this.weather,
     required this.section,
     required this.units,
     required this.hqs,
@@ -211,6 +212,11 @@ final class SectionView extends HostMessage {
 
   /// The battle time.
   final Duration at;
+
+  /// The battle's weather, a key of `terrain.yaml` `weather` (MAP-31):
+  /// every section knows it, and the client needs it to show how far its
+  /// own units see (M7 Issue 9).
+  final String weather;
 
   /// The section's own state.
   final SectionPrivate section;
@@ -234,7 +240,16 @@ final class SectionView extends HostMessage {
   final List<BattleEvent> world;
 
   @override
-  List<Object?> get props => [at, section, units, hqs, relics, hold, world];
+  List<Object?> get props => [
+    at,
+    weather,
+    section,
+    units,
+    hqs,
+    relics,
+    hold,
+    world,
+  ];
 }
 
 /// {@template tick_update}
@@ -245,6 +260,7 @@ final class TickUpdate extends HostMessage {
   /// {@macro tick_update}
   const new({
     required this.at,
+    this.weather,
     this.moved = const [],
     this.appeared = const [],
     this.gone = const [],
@@ -261,6 +277,9 @@ final class TickUpdate extends HostMessage {
 
   /// The battle time.
   final Duration at;
+
+  /// The weather, when it changed (MAP-31).
+  final String? weather;
 
   /// The positions of the units it sees that moved: sent when a unit's
   /// position changes (stack decision 3, decision 236).
@@ -306,6 +325,7 @@ final class TickUpdate extends HostMessage {
   @override
   List<Object?> get props => [
     at,
+    weather,
     moved,
     appeared,
     gone,
@@ -342,6 +362,72 @@ final class RelicAlert extends HostMessage {
 
   @override
   List<Object?> get props => [at, relicId, team];
+}
+
+/// {@template roster}
+/// What the battle lets the section buy (ECO-04, ECO-05, COMBAT-27): the unit
+/// types with their prices and the weapons with theirs. It comes from the
+/// host's data and the battle's settings, never from a copy in the client:
+/// the test unit is listed only where the battle allows test units (UNIT-44).
+/// Sent after each [SectionView]; the same for every section of a battle, so
+/// it holds nothing a section does not see (decision 237).
+/// {@endtemplate}
+final class Roster extends HostMessage {
+  /// {@macro roster}
+  const new({required this.units, required this.weapons});
+
+  /// The unit types a commander can buy, in the host's order. The commander
+  /// and the guild camp are not for sale here (UNIT-41, ECO-06).
+  final List<RosterUnit> units;
+
+  /// The weapons a commander can buy for the section's storage (COMBAT-27).
+  final List<RosterWeapon> weapons;
+
+  @override
+  List<Object?> get props => [units, weapons];
+}
+
+/// A unit type on sale: its [unitType] (a key of `units.yaml`, which the
+/// client names in its own language), its [category] and its [price] in
+/// whole w€ (decision 112), with the weapons it may equip.
+final class RosterUnit extends Equatable {
+  /// A unit type on sale.
+  const new({
+    required this.unitType,
+    required this.category,
+    required this.price,
+    this.weapons = const [],
+  });
+
+  /// The unit type, a key of `units.yaml`.
+  final String unitType;
+
+  /// Its category, for example `soldier` or `vehicle`.
+  final String category;
+
+  /// The price in w€; its default weapon is included (COMBAT-27).
+  final int price;
+
+  /// The weapon types it may equip (`weapons.allowed` of `units.yaml`).
+  final List<String> weapons;
+
+  @override
+  List<Object?> get props => [unitType, category, price, weapons];
+}
+
+/// A weapon on sale: its [weapon] type and its [price] in whole w€.
+final class RosterWeapon extends Equatable {
+  /// A weapon on sale.
+  const new({required this.weapon, required this.price});
+
+  /// The weapon type, a key of `weapon_types` in `combat.yaml`.
+  final String weapon;
+
+  /// The price in w€.
+  final int price;
+
+  @override
+  List<Object?> get props => [weapon, price];
 }
 
 /// Why the host closes a socket.
@@ -432,6 +518,7 @@ final class UnitPrivate extends Equatable {
   const new({
     required this.place,
     required this.ap,
+    required this.sightRangeM,
     required this.morale,
     required this.rounds,
     required this.xpEarned,
@@ -447,6 +534,12 @@ final class UnitPrivate extends Equatable {
 
   /// Its AP pool.
   final ApView ap;
+
+  /// How far it sees before weather, terrain and height, in metres: its
+  /// vision range after its skills and, while it observes, the observe
+  /// bonus (MAP-31, UNIT-34). The client lights the ground its section sees
+  /// with it (M7 Issue 9); only its own section knows it (decision 237).
+  final double sightRangeM;
 
   /// Its morale.
   final double morale;
@@ -476,6 +569,7 @@ final class UnitPrivate extends Equatable {
   List<Object?> get props => [
     place,
     ap,
+    sightRangeM,
     morale,
     rounds,
     xpEarned,

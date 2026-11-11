@@ -1,5 +1,46 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
 import 'package:logging/logging.dart';
+
+/// Why a call to Appwrite failed, read from the answer or the lack of one.
+///
+/// What a kind means depends on the call: [unauthorized] is a wrong password
+/// for a sign-in, [conflict] an email already used for a sign-up.
+enum AppwriteFailureKind {
+  /// 400: Appwrite refused what was sent (a password too short, an email that
+  /// is not one).
+  invalidInput,
+
+  /// 401: no session, or the credentials do not match an account.
+  unauthorized,
+
+  /// 409: the thing already exists (an account with that email).
+  conflict,
+
+  /// 429: too many requests; try again later.
+  tooManyRequests,
+
+  /// No answer: the server is down or the network is.
+  unreachable,
+
+  /// 5xx: the server failed.
+  serverError,
+
+  /// Anything else.
+  other,
+}
+
+AppwriteFailureKind _kindOf(Object error) => switch (error) {
+  AppwriteException(code: null) => AppwriteFailureKind.unreachable,
+  AppwriteException(code: 400) => AppwriteFailureKind.invalidInput,
+  AppwriteException(code: 401) => AppwriteFailureKind.unauthorized,
+  AppwriteException(code: 409) => AppwriteFailureKind.conflict,
+  AppwriteException(code: 429) => AppwriteFailureKind.tooManyRequests,
+  AppwriteException(:final code?) when code >= 500 =>
+    AppwriteFailureKind.serverError,
+  _ => AppwriteFailureKind.other,
+};
 
 /// {@template appwrite_ping_failure}
 /// Thrown when the Appwrite server cannot be reached with the configured
@@ -21,13 +62,114 @@ class AppwritePingFailure implements Exception {
 /// {@endtemplate}
 class AppwriteSignInFailure implements Exception {
   /// {@macro appwrite_sign_in_failure}
-  const new(this.error);
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
 
   /// The underlying error raised by the Appwrite SDK or the network stack.
   final Object error;
 
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
+
   @override
   String toString() => 'AppwriteSignInFailure: $error';
+}
+
+/// {@template appwrite_account_failure}
+/// Thrown when an account cannot be created, read, or signed out.
+/// {@endtemplate}
+class AppwriteAccountFailure implements Exception {
+  /// {@macro appwrite_account_failure}
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
+
+  /// The underlying error raised by the Appwrite SDK or the network stack.
+  final Object error;
+
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
+
+  @override
+  String toString() => 'AppwriteAccountFailure: $error';
+}
+
+/// {@template appwrite_rows_failure}
+/// Thrown when rows cannot be read.
+/// {@endtemplate}
+class AppwriteRowsFailure implements Exception {
+  /// {@macro appwrite_rows_failure}
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
+
+  /// The underlying error raised by the Appwrite SDK or the network stack.
+  final Object error;
+
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
+
+  @override
+  String toString() => 'AppwriteRowsFailure: $error';
+}
+
+/// {@template appwrite_execution_failure}
+/// Thrown when a function cannot be executed (not when the function itself
+/// answers with a refusal: that is an [AppwriteExecution]).
+/// {@endtemplate}
+class AppwriteExecutionFailure implements Exception {
+  /// {@macro appwrite_execution_failure}
+  const new(this.error, {this.kind = AppwriteFailureKind.other});
+
+  /// The underlying error raised by the Appwrite SDK or the network stack.
+  final Object error;
+
+  /// Why it failed, as the client read it from the answer.
+  final AppwriteFailureKind kind;
+
+  @override
+  String toString() => 'AppwriteExecutionFailure: $error';
+}
+
+/// {@template appwrite_execution}
+/// What a function answered: its HTTP [statusCode] and its JSON [body]
+/// (empty when it answered none).
+/// {@endtemplate}
+class AppwriteExecution {
+  /// {@macro appwrite_execution}
+  const new({required this.statusCode, required this.body});
+
+  /// The function's HTTP status: 200, or the status of its refusal.
+  final int statusCode;
+
+  /// The JSON object the function answered.
+  final Map<String, Object?> body;
+}
+
+/// {@template appwrite_account}
+/// The signed-in account: what Appwrite Auth knows of it that the app shows.
+/// {@endtemplate}
+class AppwriteAccount {
+  /// {@macro appwrite_account}
+  const new({required this.id, required this.email, required this.name});
+
+  /// The account ID, the one Battle Team's sections are filed under.
+  final String id;
+
+  /// The email it signs in with.
+  final String email;
+
+  /// The name it was created with.
+  final String name;
+}
+
+/// {@template appwrite_row}
+/// A row of a table: its ID and its columns.
+/// {@endtemplate}
+class AppwriteRow {
+  /// {@macro appwrite_row}
+  const new({required this.id, required this.data});
+
+  /// The row ID.
+  final String id;
+
+  /// The columns, by name (a text column holding JSON is still text).
+  final Map<String, Object?> data;
 }
 
 /// {@template appwrite_api_client}
@@ -35,8 +177,13 @@ class AppwriteSignInFailure implements Exception {
 ///
 /// This is the only package allowed to import `package:appwrite`.
 ///
-/// It logs on `appwrite_api_client.AppwriteApiClient` when [signIn] and
-/// [createJwt] start, end and fail. Never the password, a JWT or a cookie.
+/// It logs on `appwrite_api_client.AppwriteApiClient` when [signIn],
+/// [signUp], [signOut], [currentAccount], [createJwt], [findRows] and
+/// [execute] start, end and fail. Never the password, an email, a JWT, a
+/// cookie or what a function was sent or answered.
+///
+/// The SDK keeps the session in its cookie jar, so an account stays signed in
+/// across the app's restarts until [signOut].
 /// {@endtemplate}
 class AppwriteApiClient {
   /// {@macro appwrite_api_client}
@@ -54,15 +201,23 @@ class AppwriteApiClient {
              .setSelfSigned(status: selfSigned),
        );
 
-  /// Creates an [AppwriteApiClient] backed by an existing [Client], and
-  /// its [account] service (one on [_client] by default).
-  new withClient(this._client, {Account? account})
-    : _account = account ?? Account(_client);
+  /// Creates an [AppwriteApiClient] backed by an existing [Client], with its
+  /// [account] and [tables] services (ones on [_client] by default).
+  new withClient(
+    this._client, {
+    Account? account,
+    TablesDB? tables,
+    Functions? functions,
+  }) : _account = account ?? Account(_client),
+       _tables = tables ?? TablesDB(_client),
+       _functions = functions ?? Functions(_client);
 
   static final _log = Logger('appwrite_api_client.AppwriteApiClient');
 
   final Client _client;
   final Account _account;
+  final TablesDB _tables;
+  final Functions _functions;
 
   /// Checks that the Appwrite project answers.
   ///
@@ -81,7 +236,7 @@ class AppwriteApiClient {
   ///
   /// Throws an [AppwriteSignInFailure] when it cannot.
   Future<void> signIn({required String email, required String password}) =>
-      _signInFailure('sign-in', () async {
+      _guard('sign-in', AppwriteSignInFailure.new, () async {
         try {
           if ((await _account.get()).email == email) {
             _log.info('sign-in: the session is already open');
@@ -97,17 +252,129 @@ class AppwriteApiClient {
         );
       });
 
+  /// Creates the account [email] with [password] and [name], and signs it in.
+  /// A session still open is closed first, since Appwrite opens no second one.
+  ///
+  /// Throws an [AppwriteAccountFailure] when it cannot: of kind
+  /// [AppwriteFailureKind.conflict] when the email already has an account,
+  /// [AppwriteFailureKind.invalidInput] when Appwrite refuses the email or
+  /// the password.
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String name,
+  }) => _guard('sign-up', AppwriteAccountFailure.new, () async {
+    await _closeSession();
+    await _account.create(
+      userId: ID.unique(),
+      email: email,
+      password: password,
+      name: name,
+    );
+    await _account.createEmailPasswordSession(email: email, password: password);
+  });
+
+  /// The signed-in account, or null when there is no session.
+  ///
+  /// Throws an [AppwriteAccountFailure] when Appwrite cannot say.
+  Future<AppwriteAccount?> currentAccount() =>
+      _guard('current account', AppwriteAccountFailure.new, () async {
+        try {
+          final user = await _account.get();
+          return AppwriteAccount(
+            id: user.$id,
+            email: user.email,
+            name: user.name,
+          );
+        } on AppwriteException catch (error) {
+          if (error.code == 401) return null;
+          rethrow;
+        }
+      });
+
+  /// Closes the current session. No session is already signed out.
+  ///
+  /// Throws an [AppwriteAccountFailure] when it cannot.
+  Future<void> signOut() =>
+      _guard('sign-out', AppwriteAccountFailure.new, _closeSession);
+
+  Future<void> _closeSession() async {
+    try {
+      await _account.deleteSession(sessionId: 'current');
+    } on AppwriteException catch (error) {
+      if (error.code != 401) rethrow;
+    }
+  }
+
   /// A JWT of the signed-in account, valid 15 minutes: what a Battle Team
   /// host checks at sign-in.
   ///
   /// Throws an [AppwriteSignInFailure] when there is no session.
-  Future<String> createJwt() => _signInFailure(
+  Future<String> createJwt() => _guard(
     'create JWT',
+    AppwriteSignInFailure.new,
     () async => (await _account.createJWT()).jwt,
   );
 
-  static Future<T> _signInFailure<T>(
+  /// The first [limit] rows of [tableId] in [databaseId] whose every column
+  /// of [equal] holds one of the values listed for it. The signed-in account
+  /// reads what the table's permissions let it.
+  ///
+  /// Throws an [AppwriteRowsFailure] when it cannot.
+  Future<List<AppwriteRow>> findRows({
+    required String databaseId,
+    required String tableId,
+    Map<String, List<String>> equal = const {},
+    int limit = 100,
+  }) => _guard('read rows', AppwriteRowsFailure.new, () async {
+    final found = await _tables.listRows(
+      databaseId: databaseId,
+      tableId: tableId,
+      queries: [
+        for (final MapEntry(:key, :value) in equal.entries)
+          Query.equal(key, value),
+        Query.limit(limit),
+      ],
+    );
+    return [
+      for (final row in found.rows) AppwriteRow(id: row.$id, data: row.data),
+    ];
+  });
+
+  /// Runs the function [functionId] as the signed-in account, with [body] as
+  /// JSON, and waits for its answer. A function that refuses answers with its
+  /// own status and body: that is not a failure.
+  ///
+  /// Throws an [AppwriteExecutionFailure] when it cannot be executed.
+  Future<AppwriteExecution> execute({
+    required String functionId,
+    Map<String, Object?> body = const {},
+  }) => _guard('run function', AppwriteExecutionFailure.new, () async {
+    final execution = await _functions.createExecution(
+      functionId: functionId,
+      body: jsonEncode(body),
+      xasync: false,
+    );
+    return AppwriteExecution(
+      statusCode: execution.responseStatusCode,
+      body: _objectOf(execution.responseBody),
+    );
+  });
+
+  static Map<String, Object?> _objectOf(String text) {
+    try {
+      return switch (jsonDecode(text)) {
+        final Map<String, Object?> object => object,
+        _ => const {},
+      };
+    } on FormatException {
+      return const {};
+    }
+  }
+
+  static Future<T> _guard<T>(
     String what,
+    Exception Function(Object error, {AppwriteFailureKind kind}) failure,
     Future<T> Function() work,
   ) async {
     _log.info('$what: started');
@@ -117,7 +384,10 @@ class AppwriteApiClient {
       return result;
     } on Object catch (error, stackTrace) {
       _log.severe('$what: failed', error, stackTrace);
-      Error.throwWithStackTrace(AppwriteSignInFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        failure(error, kind: _kindOf(error)),
+        stackTrace,
+      );
     }
   }
 }
