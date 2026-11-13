@@ -1110,7 +1110,7 @@ packages:
       path: "packages/flutter_scene/packages/scene"
       relative: true
     source: path
-    version: "0.4.1"
+    version: "0.4.2"
   sentry:
     dependency: transitive
     description:

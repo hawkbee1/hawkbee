@@ -39,7 +39,7 @@ Not done here (no Docker socket in `factory1`); for the owner, from `packages/ba
 ```sh
 docker/prepare.sh saint_lo
 docker build -f docker/Dockerfile -t battle_host build/docker
-APPWRITE_API_KEY=<key with tables and storage> docker compose -f docker/compose.yaml up -d
+APPWRITE_API_KEY=<key with tables and storage> dabocker compose -f docker/compose.yaml up -d
 docker compose -f docker/compose.yaml --profile spare up -d host-saint-lo-b
 docker compose -f docker/compose.yaml stop host-saint-lo   # the spare takes its battles
 ```
