@@ -445,7 +445,7 @@ objects:
 /// `units.yaml`.
 const unitsYaml = r'''
 # Draft units table. All numbers are PLACEHOLDERS to be tuned.
-version: 14
+version: 15
 
 # AP max is the same for every unit: data/battle.yaml ap.max (decision 167). AP recovery is one rate for all units, a battle setting (data/battle.yaml, decision 172).
 # ap_per_m: AP per metre on flat ground (decisions 169, 181). Terrain, movement class and slope multiply it
@@ -477,6 +477,7 @@ common_stats: [hp, ap_max, ap_per_m, attack, defense, move_speed, vision_range, 
 units:
   commander:
     category: commander
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
@@ -487,6 +488,7 @@ units:
     permadeath: false          # resurrects in storage at once (decisions 80, 125)
   soldier:
     category: soldier
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
@@ -495,6 +497,7 @@ units:
     actions: [capture, push]
   engineer:
     category: engineer
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
@@ -504,6 +507,7 @@ units:
     role: { build: [bridge, reinforced_bridge, ladder, wall, road_segment, trap], repair: true }
   scout:
     category: scout
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
@@ -513,6 +517,7 @@ units:
     role: { reports_to_radio: true, observe: { vision_bonus_m: 30, duration_s: 1800, ap: 10, can_move: false } }   # decision 119
   medic:
     category: soldier          # decision 60: a medic is a soldier with a heal role
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
@@ -522,6 +527,7 @@ units:
     role: { heal: 20, heal_ap: 10, earns_money_when_healing: true }   # instant heal: 10 AP restores 20 HP (decision 91)
   artillery:
     category: artillery
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: tracked
     armor_type: light_vehicle
     hit_box_m: { width: 3.5, length: 7.0, height: 3.0 }
@@ -530,6 +536,7 @@ units:
     actions: [capture, push]
   radio:
     category: radio
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: tracked
     armor_type: structure
     hit_box_m: { width: 3.0, length: 6.0, height: 3.0 }
@@ -541,6 +548,7 @@ units:
 
   encampment:                   # guild camp (decision 141)
     category: encampment          # guild storage place with a portal (decisions 28, 46h4)
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     owner: guild_commander        # a unit of the guild chief's section
     counts_in_section_cap: false  # outside the cap, and never stored (decision 127) but between battles and at its team's elimination (decisions 208, 212)
     storable: false
@@ -556,6 +564,7 @@ units:
   # Roster v1 additions (decision 61)
   jeep:
     category: vehicle
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: wheeled
     armor_type: light_vehicle
     hit_box_m: { width: 1.9, length: 4.5, height: 1.8 }
@@ -564,6 +573,7 @@ units:
     actions: [capture, push]
   tank:
     category: vehicle
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: tracked
     armor_type: heavy_vehicle
     hit_box_m: { width: 3.6, length: 7.5, height: 2.5 }
@@ -572,6 +582,7 @@ units:
     actions: [capture, push]
   truck:
     category: transport
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: wheeled
     armor_type: light_vehicle
     hit_box_m: { width: 2.5, length: 8.0, height: 3.0 }
@@ -581,6 +592,7 @@ units:
     role: { max_total_weight: 6, max_unit_weight: 2 }   # decision 91
   helicopter:                   # base move_speed at most the jeep's; evolution may exceed it (decisions 174, 178)
     category: vehicle
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: wheeled     # ground class used while landed (decision 68)
     capabilities: [flying]
     flying: { land_time_s: 8, take_off_time_s: 8 }   # placeholder; max altitude is set by the map
@@ -591,6 +603,7 @@ units:
     actions: [capture]          # does not push (decision 145)
   boat:                         # base move_speed at most the tank's; evolution may exceed it (decisions 174, 178)
     category: transport
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: null        # water only (sail without ground class)
     capabilities: [sail]
     armor_type: light_vehicle
@@ -606,6 +619,7 @@ units:
   # sight (the scout's) and the longest range a unit can carry and still move (the rifle's).
   test_unit:
     category: soldier
+    base_power: 10  # added to the sum of a section\'s power (SOC-05); placeholder
     movement_class: foot        # a unit has one movement class: infantry
     armor_type: infantry
     hit_box_m: { width: 0.6, length: 0.6, height: 1.8 }
