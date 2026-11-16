@@ -67,6 +67,7 @@ session, unless the dependency table below says they are independent.
 | 14 | [Selection, info panel, labels, search, minimap](sessions/14-viewer-selection-hud-minimap.md) | 13 | merged (hawkbee#14, dart_code_3d#7) |
 | 15 | [New analysis flow, recent maps, open & share](sessions/15-analysis-flow-and-files.md) | 09, 10, 11 | merged (hawkbee#15, dart_code_3d#8, code_map_repository#3) |
 | 16 | [MVP hardening: AltMe end-to-end, perf, a11y, docs](sessions/16-mvp-hardening.md) | all | PR open hawkbee#16, dart_code_3d#9 (phone and real-GPU runs left to the owner) |
+| 17 | [Goldens from the shared packages, images in one tree](sessions/17-goldens-packages.md) | G1 and G2 of [`docs/goldens/`](../goldens/README.md) | todo |
 
 Sessions that can run in parallel once their dependencies are merged: **02 ∥ 03**,
 **08 ∥ 04–07**, **10 ∥ 06–09**, **15 ∥ 12–14**.
