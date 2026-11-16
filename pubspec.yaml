@@ -32,6 +32,8 @@ workspace:
 dependency_overrides:
   flutter_scene:
     path: packages/flutter_scene/packages/flutter_scene
+  flutter_scene_soloud:
+    path: packages/flutter_scene/packages/flutter_scene_soloud
   scene:
     path: packages/flutter_scene/packages/scene
 
