@@ -2,4 +2,5 @@
 library;
 
 export 'src/appwrite_ids.dart';
+export 'src/battle_ids.dart';
 export 'src/battle_rows.dart';

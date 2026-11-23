@@ -131,8 +131,8 @@ final class Wars {
 
   /// [caller], a player, joins the war [warId] with a new section: the
   /// war's starting money and a commander (SOC-15, SOC-30). During a
-  /// battle, the section joins the team with the lowest power per section, a tie drawn with a random
-  /// of the battle's seed (SOC-02, decision 211).
+  /// battle, the section joins the team with the lowest power per section,
+  /// a tie drawn with a random of the battle's seed (SOC-02, decision 211).
   Future<SectionRow> join({
     required String caller,
     required String warId,
@@ -190,7 +190,9 @@ final class Wars {
   }
 
   /// [caller], an admin, plans the battle [battleId] of the war [warId] on
-  /// [mapId], with the random of [seed], after the others (SOC-16).
+  /// [mapId], with the random of [seed], after the others (SOC-16). The
+  /// host names the battle's files after [battleId], so it must be one
+  /// ([isBattleId]): at most [maxBattleIdLength] characters.
   ///
   /// The battle plays with the plan's settings, except those [settings]
   /// override, in the shape of `battle.yaml` (decisions 172, 238): a testing
@@ -206,6 +208,9 @@ final class Wars {
     Map<String, Object?> settings = const {},
   }) async {
     await _admin(caller);
+    if (!isBattleId(battleId)) {
+      throw const Refused('bad_battle_id', status: 400);
+    }
     if (await rows.get(AppwriteIds.battlesTableId, battleId) != null) {
       throw const Refused('battle_exists');
     }
