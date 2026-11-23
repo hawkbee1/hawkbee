@@ -1,3 +1,5 @@
 analyzer:
   exclude:
     - packages/flutter_scene/**
+    # Resolved against the flutter_scene submodule's packages, not ours.
+    - tool/fscene_mcp/**
