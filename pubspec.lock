@@ -571,7 +571,7 @@ packages:
       path: "packages/flutter_scene/packages/flutter_scene"
       relative: true
     source: path
-    version: "0.24.3"
+    version: "0.24.4"
   flutter_scene_soloud:
     dependency: "direct overridden"
     description:
