@@ -18,6 +18,7 @@ enum _HostTag {
   relicAlert,
   goodbye,
   roster,
+  managerNotice,
 }
 
 /// Writes a client message: its type, then its fields.
@@ -142,6 +143,10 @@ void writeHostMessage(FieldWriter w, HostMessage message) {
         ..choice('type', _HostTag.roster)
         ..items('units', units, _writeRosterUnit)
         ..items('weapons', weapons, _writeRosterWeapon);
+    case ManagerNotice(:final accountId):
+      w
+        ..choice('type', _HostTag.managerNotice)
+        ..maybe('account', accountId, _writeOptionalText);
   }
 }
 
@@ -200,6 +205,9 @@ HostMessage readHostMessage(FieldReader r) =>
       _HostTag.roster => Roster(
         units: r.items('units', _readRosterUnit),
         weapons: r.items('weapons', _readRosterWeapon),
+      ),
+      _HostTag.managerNotice => ManagerNotice(
+        accountId: r.maybe('account', _readOptionalText),
       ),
     };
 

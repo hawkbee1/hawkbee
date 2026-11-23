@@ -387,6 +387,23 @@ final class Roster extends HostMessage {
   List<Object?> get props => [units, weapons];
 }
 
+/// {@template manager_notice}
+/// Who manages the HQ of the section's team (HQ-05, HQ-07): the [accountId] of
+/// the manager, null while no player of the team has logged in. Sent after
+/// each [Roster]; the `ManagerChanged` events say each change after it. Only
+/// the section's own team, never another's (decision 237).
+/// {@endtemplate}
+final class ManagerNotice extends HostMessage {
+  /// {@macro manager_notice}
+  const new({this.accountId});
+
+  /// The manager's account; null while there is none.
+  final String? accountId;
+
+  @override
+  List<Object?> get props => [accountId];
+}
+
 /// A unit type on sale: its [unitType] (a key of `units.yaml`, which the
 /// client names in its own language), its [category] and its [price] in
 /// whole w€ (decision 112), with the weapons it may equip.
